@@ -8,7 +8,18 @@ import {
 } from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
-import {div, filler, hbox, hframe, placeholder, span, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {
+    div,
+    filler,
+    fragment,
+    hbox,
+    hframe,
+    placeholder,
+    span,
+    vbox,
+    vframe
+} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import type {HoistProps, Intent} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -309,13 +320,13 @@ const viewBar = hoistCmp.factory<EditorModel>({
         const {shell} = model,
             doc = shell.documentModel.document;
         if (!model.shown || doc?.access !== 'write') return null;
-        return hbox({
+        return toolbar({
             className: classNames(
                 'tb-viewbar',
                 shell.editorView === 'preview' && 'tb-viewbar--preview'
             ),
             children: [
-                tabSwitcher({model: model.viewTabsModel, className: 'tb-viewbar__tabs'}),
+                tabSwitcher({model: model.viewTabsModel, className: 'xh-no-pad'}),
                 filler(),
                 viewTools()
             ]
@@ -380,27 +391,24 @@ const jsonTools = hoistCmp.factory<EditorModel>({
     render: ({model}) => {
         const {applyError, isJsonDirty, isDesigning} = model;
         if (!isDesigning) return null;
-        return hbox({
-            className: 'tb-viewbar__tools',
-            children: [
-                applyError ? span({className: 'xh-intent-danger', children: applyError}) : null,
-                button({
-                    text: 'Revert',
-                    icon: Icon.reset(),
-                    minimal: true,
-                    disabled: !isJsonDirty,
-                    onClick: () => model.revertDraft()
-                }),
-                button({
-                    text: 'Apply',
-                    icon: Icon.check(),
-                    intent: 'primary',
-                    minimal: false,
-                    disabled: !isJsonDirty,
-                    onClick: () => model.applyDraft()
-                })
-            ]
-        });
+        return fragment(
+            applyError ? span({className: 'xh-intent-danger', children: applyError}) : null,
+            button({
+                text: 'Revert',
+                icon: Icon.reset(),
+                minimal: true,
+                disabled: !isJsonDirty,
+                onClick: () => model.revertDraft()
+            }),
+            button({
+                text: 'Apply',
+                icon: Icon.check(),
+                intent: 'primary',
+                minimal: false,
+                disabled: !isJsonDirty,
+                onClick: () => model.applyDraft()
+            })
+        );
     }
 });
 
@@ -413,36 +421,31 @@ const compareTools = hoistCmp.factory<EditorModel>({
             from = model.compareVersion,
             to = model.compareTo,
             openLabel = doc.kind === 'draft' ? 'This draft' : `v${doc.version}, open`;
-        return hbox({
-            className: 'tb-viewbar__tools',
-            children: [
-                span('Compare'),
-                select({
-                    value: from,
-                    options: versions.map(it => ({value: it, label: `v${it}`})),
-                    width: 90,
-                    onChange: v => model.compareAsync(v, to === 'open' || to > v ? to : 'open')
-                }),
-                span('with'),
-                select({
-                    value: to,
-                    options: [
-                        ...versions
-                            .filter(it => it > from)
-                            .map(it => ({value: it, label: `v${it}`})),
-                        {value: 'open', label: openLabel}
-                    ],
-                    width: 140,
-                    onChange: v => model.compareAsync(from, v)
-                }),
-                button({
-                    text: 'Close',
-                    icon: Icon.close(),
-                    minimal: true,
-                    onClick: () => model.closeCompare()
-                })
-            ]
-        });
+        return fragment(
+            span('Compare'),
+            select({
+                value: from,
+                options: versions.map(it => ({value: it, label: `v${it}`})),
+                width: 90,
+                onChange: v => model.compareAsync(v, to === 'open' || to > v ? to : 'open')
+            }),
+            span('with'),
+            select({
+                value: to,
+                options: [
+                    ...versions.filter(it => it > from).map(it => ({value: it, label: `v${it}`})),
+                    {value: 'open', label: openLabel}
+                ],
+                width: 140,
+                onChange: v => model.compareAsync(from, v)
+            }),
+            button({
+                text: 'Close',
+                icon: Icon.close(),
+                minimal: true,
+                onClick: () => model.closeCompare()
+            })
+        );
     }
 });
 

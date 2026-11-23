@@ -904,33 +904,26 @@ body[class*='tb-blueprints-maximized--'] .tb-switcher {
   }
 }
 
-// The view bar: the views on the left, the view's own tools on the right.
-.tb-viewbar {
-  flex: none;
-  align-items: center;
-  gap: var(--xh-spacing-half);
+// The view bar: a toolbar, the views' tabs on the left and the view's own tools on the right.
+.tb-viewbar.xh-toolbar {
   height: 32px;
-  padding: 0 var(--xh-spacing-half);
+  min-height: 32px;
+  padding-top: 0;
+  padding-bottom: 0;
   background-color: var(--xh-bg);
-  border-bottom: var(--xh-border-solid);
 
-  &--preview {
+  &.tb-viewbar--preview {
     background-color: var(--xh-intent-success-trans1);
   }
 
-  &__tabs {
+  > .xh-tab-switcher {
     align-self: stretch;
   }
+}
 
-  &__tools {
-    align-items: center;
-    gap: var(--xh-spacing-half);
-  }
-
-  &__note {
-    color: var(--xh-intent-success-text-color);
-    font-size: var(--xh-font-size-small);
-  }
+.tb-viewbar__note {
+  color: var(--xh-intent-success-text-color);
+  font-size: var(--xh-font-size-small);
 }
 
 // Fixed slots, so Publish and the items beside it never move.
