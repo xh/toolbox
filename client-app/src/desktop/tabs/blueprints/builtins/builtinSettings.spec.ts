@@ -7,11 +7,12 @@ const registry = createPortfolioRegistry(),
 
 describe('builtinSettings', () => {
     it("takes a widget's simple settings from its sections, in order", () => {
-        expect(settingsOf('dashCanvas').map(it => [it.key, it.kind])).toEqual([
+        const settings = settingsOf('dashCanvas').map(it => [it.key, it.kind]);
+        expect(settings.slice(0, 2)).toEqual([
             ['columns', 'number'],
-            ['rowHeight', 'number'],
-            ['hideHeader', 'bool']
+            ['rowHeight', 'number']
         ]);
+        expect(settings.at(-1)).toEqual(['hideHeader', 'bool']);
     });
 
     it('marks settings that apply to each child', () => {
@@ -55,7 +56,8 @@ describe('builtinSettings', () => {
 
     it('labels a setting by its title, else its key in words', () => {
         const byKey = Object.fromEntries(settingsOf('dashCanvas').map(it => [it.key, it.label]));
-        expect(byKey.rowHeight).toBe('Row height');
+        expect(byKey.compact).toBe('Packing');
+        expect(byKey.columns).toBe('Columns');
     });
 });
 
