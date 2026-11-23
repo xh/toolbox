@@ -209,7 +209,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 }),
                                 demoFrame({
                                     label: 'Fixed items',
-                                    info: \"variant: 'spaced', removable - pinned columns neither move nor can be removed\",
+                                    info: "variant: 'spaced', removable - pinned columns neither move nor can be removed",
                                     children: div({
                                         className: 'tb-sortable-list-panel__pad',
                                         children: sortableList({
