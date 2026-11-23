@@ -1,8 +1,12 @@
-import type {BlueprintModel, BlueprintOp} from '@xh/hoist-chat-kit/blueprint';
+import type {BlueprintDesignModel, BlueprintModel, BlueprintOp} from '@xh/hoist-chat-kit/blueprint';
 import {architectPrompt} from '@xh/hoist-chat-kit/blueprint';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import type {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
-import {architectChatTools, blueprintContextProvider} from '@xh/hoist-chat-kit/genui/architect';
+import {
+    architectChatTools,
+    blueprintContextProvider,
+    uiContextProvider
+} from '@xh/hoist-chat-kit/genui/architect';
 import type {FeatureRequestSink} from '@xh/hoist-chat-kit/genui/architect';
 import {AnthropicCodec, HoistChatTransport} from '@xh/hoist-chat-kit/transport';
 import type {PlainObject} from '@xh/hoist/core';
@@ -13,6 +17,8 @@ import {withEditCards} from './editor/architectEditCard';
  * through chat kit's Architect tools, run in the browser against `blueprintModel`, and answers
  * questions with blueprints of their own through `show_ui`.
  *
+ * @param designModel - the designer beside the chat, whose selection, mode and active tabs each
+ *      step tells the Architect, so a request can name "the selected widget".
  * @param onSave - called as each turn ends or pauses, to store the conversation.
  * @param context - what each call is for, sent as `X-Llm-Context` for the server's tracking.
  * @param sendBlocker - why the user may not send now, or null.
@@ -21,6 +27,7 @@ import {withEditCards} from './editor/architectEditCard';
  */
 export function createArchitectChat(
     blueprintModel: BlueprintModel,
+    designModel: BlueprintDesignModel,
     catalog: ChatUiCatalog,
     onSave: () => void,
     context: () => PlainObject,
@@ -37,7 +44,8 @@ export function createArchitectChat(
                     catalogs: blueprintModel.catalogs,
                     registry: catalog.registry,
                     withAnswers: true,
-                    withFeatureRequests: true
+                    withFeatureRequests: true,
+                    withUiContext: true
                 }),
                 cacheControl: true
             })
@@ -48,7 +56,10 @@ export function createArchitectChat(
             blueprintModel,
             onShowEdit
         ),
-        contextProviders: [blueprintContextProvider(blueprintModel)],
+        contextProviders: [
+            blueprintContextProvider(blueprintModel),
+            uiContextProvider(designModel)
+        ],
         // Each step is a model call, and counts toward the server's per-user `llmRateLimit`.
         maxSteps: 12,
         sendBlocker,

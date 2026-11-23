@@ -451,6 +451,7 @@ export class BlueprintShellModel extends HoistModel {
             this.chatModel = this.markManaged(
                 createArchitectChat(
                     blueprintModel,
+                    this.designModel,
                     this.answerCatalog,
                     () => {
                         this.saveConversation();
