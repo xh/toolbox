@@ -4,7 +4,6 @@ import type {SortableListProps} from '@xh/hoist/cmp/sortablelist';
 import {sortableList} from '@xh/hoist/cmp/sortablelist';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observableRef} from '@xh/hoist/mobx';
@@ -142,36 +141,24 @@ export const sortableListPanel = hoistCmp.factory({
                         children: demoPlayground({
                             value: model.dims,
                             caption:
-                                'Drag a grip, or Tab to one and use the keyboard. Remove and Add are the app’s own buttons.',
+                                'Drag a grip, or Tab to one and use the keyboard. Delete or Backspace on a grip removes its item.',
                             config: fmtDemoConfig<SortableListProps>(
                                 'sortableList',
                                 model.listConfig
                             ),
-                            children: div({
-                                className: 'tb-sortable-list-panel__stack',
-                                children: [
-                                    sortableList({
-                                        model,
-                                        bind: 'dims',
-                                        variant: model.variant,
-                                        handle: model.handle,
-                                        compact: model.compact,
-                                        disabled: model.disabled,
-                                        getItemLabel: (it: Entry) => it.name,
-                                        renderItem: (it: Entry) =>
-                                            entryRow({
-                                                entry: it,
-                                                onRemove: () => model.removeDim(it.id)
-                                            })
-                                    }),
-                                    button({
-                                        className: 'tb-sortable-list-panel__add',
-                                        icon: Icon.add(),
-                                        text: 'Add dimension...',
-                                        minimal: true,
-                                        onClick: () => model.addDim()
-                                    })
-                                ]
+                            children: sortableList({
+                                model,
+                                bind: 'dims',
+                                flex: 1,
+                                variant: model.variant,
+                                handle: model.handle,
+                                compact: model.compact,
+                                disabled: model.disabled,
+                                getItemLabel: (it: Entry) => it.name,
+                                renderItem: (it: Entry) => entryRow({entry: it}),
+                                onRemove: () => {},
+                                onAdd: () => model.newDim(),
+                                addText: 'Add dimension...'
                             })
                         })
                     }),
@@ -244,25 +231,16 @@ export const sortableListPanel = hoistCmp.factory({
     }
 });
 
-const entryRow = hoistCmp.factory<HoistProps & {entry: Entry; onRemove?: () => void}>({
+const entryRow = hoistCmp.factory<HoistProps & {entry: Entry}>({
     displayName: 'SortableEntryRow',
     model: false,
-    render({entry, onRemove}) {
+    render({entry}) {
         return hbox({
             className: 'tb-sortable-list-panel__row',
             children: [
                 span({className: 'tb-sortable-list-panel__name', children: entry.name}),
                 filler(),
-                span({className: 'tb-sortable-list-panel__meta', children: entry.meta}),
-                button({
-                    icon: Icon.delete(),
-                    intent: 'danger',
-                    minimal: true,
-                    small: true,
-                    title: 'Remove',
-                    omit: !onRemove,
-                    onClick: onRemove
-                })
+                span({className: 'tb-sortable-list-panel__meta', children: entry.meta})
             ]
         });
     }
@@ -327,15 +305,10 @@ class SortableListPanelModel extends HoistModel {
         this.steps = v;
     }
 
-    @action
-    removeDim(id: string) {
-        this.dims = this.dims.filter(it => it.id !== id);
-    }
-
-    @action
-    addDim() {
+    /** The data for a new item - the list adds it through `bind`. */
+    newDim(): Entry {
         const n = this.dims.length + 1;
-        this.dims = [...this.dims, {id: `d${Date.now()}`, name: `Dimension ${n}`, meta: 'string'}];
+        return {id: `d${Date.now()}`, name: `Dimension ${n}`, meta: 'string'};
     }
 
     get listConfig() {
@@ -347,7 +320,10 @@ class SortableListPanelModel extends HoistModel {
             compact: compact || undefined,
             disabled: disabled || undefined,
             getItemLabel: raw('it => it.name'),
-            renderItem: raw('it => entryRow({entry: it, onRemove: () => model.removeDim(it.id)})')
+            renderItem: raw('it => entryRow({entry: it})'),
+            onRemove: raw('() => {}'),
+            onAdd: raw('() => model.newDim()'),
+            addText: 'Add dimension...'
         };
     }
 }

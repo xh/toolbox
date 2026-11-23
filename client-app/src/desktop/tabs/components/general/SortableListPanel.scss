@@ -11,14 +11,6 @@
   --xh-sortable-list-item-padding: 0;
 }
 
-.tb-sortable-list-panel__stack {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--xh-spacing-half);
-  min-width: 0;
-}
-
 .tb-sortable-list-panel__scroll {
   height: 180px;
   overflow-y: auto;
@@ -46,8 +38,4 @@
   padding: var(--xh-spacing);
   background-color: var(--xh-bg-alt);
   font-size: var(--xh-font-size-small);
-}
-
-.tb-sortable-list-panel__add {
-  align-self: flex-start;
 }
