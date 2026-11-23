@@ -7,16 +7,23 @@ import {
     widgetPalette
 } from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, hframe, placeholder, span, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, placeholder, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
-import type {HoistProps} from '@xh/hoist/core';
+import type {HoistProps, Intent} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {jsonInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    jsonInput,
+    segmentedControl,
+    select,
+    textArea,
+    textInput
+} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {dialog} from '@xh/hoist/kit/blueprint';
 import classNames from 'classnames';
 import {architectChat, architectHeaderItems} from '../ArchitectPanel';
+import {tag} from '../cards';
 import {documentBar} from '../documentBar/DocumentBar';
 import {EditorModel} from './EditorModel';
 import type {DockTab} from './EditorModel';
@@ -105,7 +112,7 @@ const dockContent = hoistCmp.factory<DockContentProps>({
             case 'add':
                 return widgetPalette({designModel});
             case 'history':
-                return grid({model: model.historyGridModel});
+                return vframe(grid({model: model.historyGridModel}), publishDetailsDialog());
             case 'values':
                 return grid({model: model.valuesGridModel});
             default:
@@ -198,22 +205,134 @@ const compareView = hoistCmp.factory<EditorModel>({
     model: uses(EditorModel),
     render: ({model}) => {
         const doc = model.shell.documentModel.document,
-            open = doc.kind === 'draft' ? 'this draft' : `v${doc.version}`;
+            versions = model.shell.publishes.map(it => it.version),
+            from = model.compareVersion,
+            later = versions.filter(it => it > from),
+            to = model.compareTo,
+            openLabel = doc.kind === 'draft' ? 'This draft' : `v${doc.version}, open`;
         return panel({
             className: 'tb-editor__compare',
             tbar: [
-                span({
-                    className: 'tb-editor__compare-title',
-                    children: `Changes from v${model.compareVersion} to ${open}`
+                span('Compare'),
+                select({
+                    value: from,
+                    options: versions.map(it => ({value: it, label: `v${it}`})),
+                    width: 90,
+                    onChange: v => model.compareAsync(v, to === 'open' || to > v ? to : 'open')
+                }),
+                span('with'),
+                select({
+                    value: to,
+                    options: [
+                        ...later.map(it => ({value: it, label: `v${it}`})),
+                        {value: 'open', label: openLabel}
+                    ],
+                    width: 140,
+                    onChange: v => model.compareAsync(from, v)
                 }),
                 filler(),
-                button({
-                    text: 'Close',
-                    icon: Icon.close(),
-                    onClick: () => model.closeCompare()
-                })
+                button({text: 'Close', icon: Icon.close(), onClick: () => model.closeCompare()})
             ],
-            children: grid({model: model.compareGridModel})
+            children: [diffSummary(), grid({model: model.compareGridModel})]
+        });
+    }
+});
+
+const diffSummary = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const {diff, canRevealDiff} = model;
+        return div({
+            className: 'tb-editor__diff',
+            children: diff.length
+                ? diff.map((row, idx) => {
+                      const revealable =
+                          canRevealDiff &&
+                          row.id &&
+                          row.change !== 'removed' &&
+                          row.kind !== 'other';
+                      return hbox({
+                          key: idx,
+                          className: classNames(
+                              'tb-editor__diff-row',
+                              revealable && 'tb-editor__diff-row--link'
+                          ),
+                          title: revealable ? `Show ${row.id}` : null,
+                          onClick: revealable ? () => model.revealDiff(row) : null,
+                          children: [
+                              tag(row.change, CHANGE_INTENTS[row.change]),
+                              tag(row.kind),
+                              span({className: 'tb-mono', children: row.text})
+                          ]
+                      });
+                  })
+                : span({className: 'tb-muted', children: 'Nothing differs.'})
+        });
+    }
+});
+
+const CHANGE_INTENTS: Record<string, Intent> = {
+    added: 'success',
+    removed: 'danger',
+    renamed: 'warning',
+    changed: 'primary'
+};
+
+/** A publish's note, label and pin, to change after the fact. */
+const publishDetailsDialog = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const publish = model.editingPublish;
+        return dialog({
+            isOpen: !!publish,
+            onClose: () => model.closePublishEditor(),
+            title: publish ? `v${publish.version} details` : null,
+            icon: publish ? Icon.edit() : null,
+            style: {width: 420},
+            children: publish
+                ? panel({
+                      className: 'tb-editor__publish-details',
+                      children: vbox({
+                          className: 'tb-editor__publish-fields',
+                          children: [
+                              span({className: 'tb-registry__label', children: 'Label'}),
+                              textInput({
+                                  bind: 'publishLabel',
+                                  placeholder: 'Shown beside it in History, 50 characters at most',
+                                  width: null
+                              }),
+                              span({className: 'tb-registry__label', children: 'Note'}),
+                              textArea({
+                                  bind: 'publishNote',
+                                  placeholder: 'For readers',
+                                  height: 72,
+                                  width: null
+                              }),
+                              span({className: 'tb-registry__label', children: 'In History'}),
+                              segmentedControl({
+                                  bind: 'publishPinned',
+                                  toggleOnClick: true,
+                                  intent: 'primary',
+                                  options: [
+                                      {value: true, label: 'Pinned'},
+                                      {value: false, label: 'Not pinned'}
+                                  ]
+                              })
+                          ]
+                      }),
+                      bbar: [
+                          filler(),
+                          button({text: 'Cancel', onClick: () => model.closePublishEditor()}),
+                          button({
+                              text: 'Save',
+                              icon: Icon.check(),
+                              intent: 'primary',
+                              minimal: false,
+                              onClick: () => model.savePublishEditAsync()
+                          })
+                      ]
+                  })
+                : null
         });
     }
 });

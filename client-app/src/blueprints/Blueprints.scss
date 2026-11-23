@@ -710,6 +710,63 @@
   background-color: var(--xh-intent-success-trans1);
 }
 
+.tb-history__pinned {
+  box-shadow: inset 3px 0 var(--xh-intent-primary);
+  font-weight: 600;
+}
+
+.tb-history__description {
+  align-items: center;
+  gap: var(--xh-spacing-half);
+  min-width: 0;
+}
+
+.tb-history__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .tb-markdown > * {
+    margin: 0;
+  }
+}
+
+.tb-history__note {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--xh-text-color-muted);
+  font-weight: normal;
+}
+
+.tb-editor__diff {
+  flex: none;
+  max-height: 40%;
+  overflow-y: auto;
+  padding: var(--xh-spacing-half) var(--xh-spacing);
+  border-bottom: var(--xh-border-solid);
+}
+
+.tb-editor__diff-row {
+  align-items: center;
+  gap: var(--xh-spacing-half);
+  padding: 2px 0;
+
+  &--link {
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--xh-bg-highlight);
+    }
+  }
+}
+
+.tb-editor__publish-fields {
+  gap: var(--xh-spacing-half);
+  padding: var(--xh-spacing);
+}
+
 .tb-library__hint {
   color: var(--xh-text-color-muted);
   font-style: italic;

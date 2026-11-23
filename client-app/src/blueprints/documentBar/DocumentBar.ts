@@ -52,6 +52,8 @@ export const documentBar = hoistCmp.factory({
                               children: chip({
                                   intent: status.intent,
                                   size: 'compact',
+                                  round: true,
+                                  minimal: true,
                                   icon: status.locked ? Icon.lock() : null,
                                   rightIcon: saveIcon(status.saveState),
                                   children: status.text
@@ -96,6 +98,13 @@ export const documentBar = hoistCmp.factory({
                               icon: Icon.edit(),
                               omit: !isPublish || doc.access !== 'write',
                               onClick: () => shell.openVersionAsync('draft')
+                          }),
+                          button({
+                              text: `Restore v${doc?.version}`,
+                              tooltip: 'Bring this version into the draft',
+                              icon: Icon.reset(),
+                              omit: !isPublish || doc.access !== 'write',
+                              onClick: () => shell.restoreVersionAsync(doc.version)
                           }),
                           button({
                               text: 'Make a copy',

@@ -5,6 +5,7 @@ import type {
     BlueprintIssue,
     BlueprintLinkParams,
     BlueprintPublish,
+    BlueprintPublishChanges,
     BlueprintRepository,
     BlueprintSummary
 } from '@xh/hoist-chat-kit/blueprint';
@@ -13,6 +14,7 @@ import {
     BlueprintDocumentModel,
     BlueprintModel,
     DataCatalog,
+    diffBlueprints,
     isGlobal
 } from '@xh/hoist-chat-kit/blueprint';
 import type {ChatModel} from '@xh/hoist-chat-kit/core';
@@ -29,6 +31,7 @@ import type {LoadSpec, PlainObject} from '@xh/hoist/core';
 import {required} from '@xh/hoist/data';
 import type {ActionFnData, RecordActionSpec, StoreRecord} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {radioInput} from '@xh/hoist/desktop/cmp/input';
 import {menu, menuDivider, menuItem, showContextMenu} from '@xh/hoist/kit/blueprint';
 import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -758,6 +761,116 @@ export class BlueprintShellModel extends HoistModel {
         runInAction(() => (this.openIssues = issues));
     }
 
+    /**
+     * Bring a publish into the draft as one edit, which undo takes back, opening the draft first if
+     * a publish is open. If the draft has changes not yet published, ask first, offering to keep a
+     * copy of it.
+     */
+    async restoreVersionAsync(version: number) {
+        if (this.documentModel.document?.kind !== 'draft') await this.openVersionAsync('draft');
+        if (this.documentModel.document?.kind !== 'draft') return;
+        if (!(await this.keepDraftAsync(version, `Restore v${version}`, 'Restore'))) return;
+        const error = (await this.documentModel.restoreAsync(version)).find(
+            it => it.severity === 'error'
+        );
+        if (error) {
+            XH.dangerToast(`v${version} was not restored: ${error.message}`);
+        } else {
+            XH.successToast(`Restored v${version} to the draft. Undo takes it back.`);
+        }
+    }
+
+    /** True if the user may republish an earlier version: they may publish, and the draft is current. */
+    get canRollback(): boolean {
+        const {documentModel} = this;
+        return (
+            documentModel.document?.kind === 'draft' &&
+            documentModel.canPublish &&
+            !documentModel.isStale &&
+            !documentModel.unfinishedElements.length
+        );
+    }
+
+    /** Roll readers back to a publish, by restoring it and publishing it as the next version. */
+    async rollbackAsync(version: number) {
+        const next = (this.documentModel.document?.publishedVersion ?? 0) + 1,
+            confirmed = await XH.confirm({
+                title: `Republish v${version}`,
+                icon: Icon.upload(),
+                message: `Publish v${version} again, as v${next}, noted "Rolled back to v${version}"? Readers move to it when they next open the blueprint. Your draft stays as it is.`,
+                confirmProps: {text: `Publish v${next}`, intent: 'primary'}
+            });
+        if (!confirmed) return;
+        const error = (await this.documentModel.rollbackAsync(version)).find(
+            it => it.severity === 'error'
+        );
+        await Promise.all([this.loadPublishesAsync(), this.refreshSummariesAsync()]);
+        if (error) {
+            XH.dangerToast(`v${version} was not republished: ${error.message}`);
+        } else {
+            XH.successToast(`Republished v${version} as v${next}.`);
+        }
+    }
+
+    /** Change a publish's note, label or pin. */
+    async updatePublishAsync(version: number, changes: BlueprintPublishChanges) {
+        try {
+            await this.documentModel.updatePublishAsync(version, changes);
+        } catch (e) {
+            XH.handleException(e);
+        }
+        await this.loadPublishesAsync();
+    }
+
+    /** Copy the draft open into a new blueprint of the user's own, staying on this one. */
+    async copyDraftAsync(name: string) {
+        await this.saveAsync();
+        await this.documentModel.copyAsync(name, {as: 'draft'});
+        await this.refreshSummariesAsync();
+    }
+
+    // Before a restore replaces the draft, ask whether to keep a copy of the draft's unpublished
+    // changes. False if the user cancels.
+    private async keepDraftAsync(
+        version: number,
+        title: string,
+        confirmText: string
+    ): Promise<boolean> {
+        if (!(await this.hasUnpublishedChangesAsync())) return true;
+        const choice = await XH.prompt<'copy' | 'replace'>({
+            title,
+            icon: Icon.reset(),
+            message: `The draft has changes not yet published, which v${version} replaces, as one edit that undo takes back.`,
+            input: {
+                item: radioInput({
+                    options: [
+                        {value: 'copy', label: 'Make a copy of the current draft first'},
+                        {value: 'replace', label: 'Replace it without a copy'}
+                    ]
+                }),
+                initialValue: 'copy'
+            },
+            confirmProps: {text: confirmText, intent: 'primary'}
+        });
+        if (!choice) return false;
+        if (choice === 'copy') {
+            await this.copyDraftAsync(`${this.selected.name} (before v${version})`);
+        }
+        return true;
+    }
+
+    // True if the draft differs from its latest publish, or nothing is published yet.
+    private async hasUnpublishedChangesAsync(): Promise<boolean> {
+        const doc = this.documentModel.document;
+        if (!doc.publishedVersion) return true;
+        const last = await this.repository.openAsync(doc.id, {as: 'publish'});
+        return !diffBlueprints(
+            last?.blueprint,
+            this.blueprintModel.blueprint,
+            this.documentModel.pendingRenames
+        ).isEmpty;
+    }
+
     async clearConversationAsync() {
         const confirmed = await XH.confirm({
             title: 'Clear conversation',
@@ -924,7 +1037,8 @@ export class BlueprintShellModel extends HoistModel {
         }
     }
 
-    private async loadPublishesAsync() {
+    /** Read the open blueprint's publishes again, as History lists them. */
+    async loadPublishesAsync() {
         const doc = this.documentModel.document,
             publishes =
                 doc?.access === 'write' ? await this.repository.listPublishesAsync(doc.id) : [];

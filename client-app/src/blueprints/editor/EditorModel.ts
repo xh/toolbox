@@ -1,4 +1,11 @@
-import type {BlueprintIssue, BlueprintVariable} from '@xh/hoist-chat-kit/blueprint';
+import type {
+    Blueprint,
+    BlueprintIssue,
+    BlueprintPublish,
+    BlueprintVariable
+} from '@xh/hoist-chat-kit/blueprint';
+import {diffBlueprints} from '@xh/hoist-chat-kit/blueprint';
+import {hbox, span} from '@xh/hoist/cmp/layout';
 import {badge} from '@xh/hoist/cmp/badge';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed, persist, XH} from '@xh/hoist/core';
@@ -10,8 +17,11 @@ import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {applyJsonEdit} from '../applyJsonEdit';
 import {BlueprintShellModel} from '../BlueprintShellModel';
-import {markdownCol} from '../markdown';
+import {tag} from '../cards';
+import {md} from '../markdown';
 import {compareRows} from './compareRows';
+import {diffRows, renamesBetween} from './publishCompare';
+import type {DiffRow} from './publishCompare';
 import {historyTimeline, revealEdit} from './historyTimeline';
 import type {TimelineRow} from './historyTimeline';
 
@@ -57,8 +67,20 @@ export class EditorModel extends HoistModel {
     /** The errors that refused the last JSON apply. */
     @observableRef accessor applyIssues: BlueprintIssue[] = [];
 
-    /** The publish the JSON view compares the blueprint open with, or null. */
+    /** The publish the JSON view compares from, or null when it isn't comparing. */
     @observable accessor compareVersion: number = null;
+
+    /** The version compared to: a later publish, or the blueprint open. */
+    @observable accessor compareTo: number | 'open' = 'open';
+
+    /** The comparison's changes, part by part. */
+    @observableRef accessor diff: DiffRow[] = [];
+
+    /** The publish whose note, label and pin the details dialog edits, or null. */
+    @observableRef accessor editingPublish: BlueprintPublish = null;
+    @bindable accessor publishNote = '';
+    @bindable accessor publishLabel = '';
+    @bindable accessor publishPinned = false;
 
     // When each edit since the open was made, by version.
     @observableRef private accessor stamps: Record<number, number> = {};
@@ -134,19 +156,22 @@ export class EditorModel extends HoistModel {
 
     @managed historyGridModel = new GridModel({
         store: {idSpec: 'id'},
+        sortBy: 'time|desc',
         hideHeaders: true,
         emptyText: 'No edits yet. Edits by you and the Architect show here, newest first.',
-        rowClassFn: rec =>
-            rec?.data.undone
-                ? 'tb-history__undone'
-                : rec?.data.kind === 'publish'
-                  ? 'tb-history__publish'
-                  : null,
+        // Rules, not a class function, so a row restyles when its pin or undo state changes.
+        rowClassRules: {
+            'tb-history__undone': ({data}) => !!data?.data.undone,
+            'tb-history__publish': ({data}) => data?.data.kind === 'publish',
+            'tb-history__pinned': ({data}) => data?.data.kind === 'publish' && !!data.data.pinned
+        },
         columns: [
             {field: 'kind', hidden: true},
             {field: 'version', hidden: true},
             {field: 'undone', hidden: true},
             {field: 'note', hidden: true},
+            {field: 'label', hidden: true},
+            {field: 'pinned', hidden: true},
             {field: 'ops', hidden: true},
             {
                 field: 'author',
@@ -160,7 +185,22 @@ export class EditorModel extends HoistModel {
                           : Icon.user({title: v})
             },
             {
-                ...markdownCol({field: 'description', flex: 1, minWidth: 140}),
+                field: 'description',
+                flex: 1,
+                minWidth: 140,
+                rendererIsComplex: true,
+                renderer: (v, {record}) =>
+                    hbox({
+                        className: 'tb-history__description',
+                        children: [
+                            record.data.pinned ? Icon.pin({className: 'xh-intent-primary'}) : null,
+                            span({className: 'tb-history__text', children: md(v as string)}),
+                            record.data.label ? tag(record.data.label, 'primary') : null,
+                            record.data.note
+                                ? span({className: 'tb-history__note', children: record.data.note})
+                                : null
+                        ]
+                    }),
                 tooltip: (v, {record}) => record.data.note ?? v
             },
             {
@@ -171,7 +211,7 @@ export class EditorModel extends HoistModel {
             },
             {
                 ...actionCol,
-                width: 80,
+                width: 140,
                 actionsShowOnHoverOnly: true,
                 actions: [
                     {
@@ -194,11 +234,45 @@ export class EditorModel extends HoistModel {
                         displayFn: ({record}) => ({hidden: record?.data.kind !== 'publish'}),
                         actionFn: ({record}) =>
                             this.shell.openVersionAsync(record.data.version as number)
+                    },
+                    {
+                        icon: Icon.reset(),
+                        tooltip: 'Restore this version to the draft',
+                        displayFn: ({record}) => ({
+                            hidden: record?.data.kind !== 'publish' || !this.canRestore
+                        }),
+                        actionFn: ({record}) =>
+                            this.shell.restoreVersionAsync(record.data.version as number)
+                    },
+                    {
+                        icon: Icon.upload(),
+                        tooltip: 'Republish this version, to roll readers back to it',
+                        displayFn: ({record}) => ({
+                            hidden: record?.data.kind !== 'publish' || !this.shell.canRollback
+                        }),
+                        actionFn: ({record}) =>
+                            this.shell.rollbackAsync(record.data.version as number)
+                    },
+                    {
+                        icon: Icon.edit(),
+                        tooltip: 'Edit its note, label and pin',
+                        displayFn: ({record}) => ({
+                            hidden:
+                                record?.data.kind !== 'publish' ||
+                                !this.shell.documentModel.canUpdatePublishes
+                        }),
+                        actionFn: ({record}) =>
+                            this.openPublishEditor(record.data.version as number)
                     }
                 ]
             }
         ]
     });
+
+    /** True if the user may restore a publish into the draft: they may write the blueprint. */
+    get canRestore(): boolean {
+        return this.shell.documentModel.document?.access === 'write';
+    }
 
     /** True while the open blueprint is a writable draft in design mode. */
     @computed
@@ -319,25 +393,87 @@ export class EditorModel extends HoistModel {
         }
     }
 
-    /** Show in the JSON view how a publish differs from the blueprint open. */
-    async compareAsync(version: number) {
+    /**
+     * Show in the JSON view how a publish differs from a later one, or from the blueprint open: a
+     * summary by part, then each changed value.
+     */
+    async compareAsync(from: number, to: number | 'open' = 'open') {
         const {shell} = this,
-            record = await shell.repository
-                .openAsync(shell.documentModel.document.id, {as: 'publish', version})
-                .catchDefault();
-        if (!record) return;
-        this.compareGridModel.loadData(
-            compareRows(record.blueprint, shell.blueprintModel.blueprint)
-        );
+            {documentModel} = shell,
+            doc = documentModel.document,
+            openPublish = (version: number) =>
+                shell.repository
+                    .openAsync(doc.id, {as: 'publish', version})
+                    .then(it => it?.blueprint),
+            [a, b] =
+                (await Promise.all([
+                    openPublish(from),
+                    to === 'open'
+                        ? Promise.resolve(shell.blueprintModel.blueprint)
+                        : openPublish(to)
+                ]).catchDefault()) ?? [];
+        if (!a || !b) return;
+        const target = to === 'open' ? (doc.kind === 'draft' ? 'draft' : doc.version) : to,
+            renames = renamesBetween(
+                shell.publishes,
+                from,
+                target,
+                target === 'draft' ? documentModel.pendingRenames : []
+            );
+        this.compareGridModel.loadData(compareRows(a, b as Blueprint));
         runInAction(() => {
-            this.compareVersion = version;
+            this.compareVersion = from;
+            this.compareTo = to;
+            this.diff = diffRows(diffBlueprints(a, b as Blueprint, renames));
             shell.editorView = 'json';
         });
+    }
+
+    /** True if a comparison's changes can be revealed: it compares to the draft, in design. */
+    get canRevealDiff(): boolean {
+        return this.compareTo === 'open' && this.isDesigning;
+    }
+
+    /** Select what a change names on the canvas. */
+    revealDiff(row: DiffRow) {
+        if (!row.id || row.kind === 'other' || row.kind === 'format' || row.change === 'removed') {
+            return;
+        }
+        this.shell.designModel.select({kind: row.kind, id: row.id});
+        this.shell.editorView = 'canvas';
     }
 
     @action
     closeCompare() {
         this.compareVersion = null;
+        this.compareTo = 'open';
+        this.diff = [];
+    }
+
+    @action
+    openPublishEditor(version: number) {
+        const publish = this.shell.publishes.find(it => it.version === version);
+        if (!publish) return;
+        this.editingPublish = publish;
+        this.publishNote = publish.note ?? '';
+        this.publishLabel = publish.label ?? '';
+        this.publishPinned = !!publish.pinned;
+    }
+
+    @action
+    closePublishEditor() {
+        this.editingPublish = null;
+    }
+
+    async savePublishEditAsync() {
+        const {editingPublish, publishNote, publishLabel, publishPinned} = this;
+        if (!editingPublish) return;
+        await this.shell.updatePublishAsync(editingPublish.version, {
+            note: publishNote,
+            label: publishLabel,
+            pinned: publishPinned
+        });
+        this.closePublishEditor();
     }
 
     /** Apply the JSON draft as one edit. With errors, nothing changes. */
@@ -396,6 +532,20 @@ export class EditorModel extends HoistModel {
                     this.stamps = stamps;
                 },
                 fireImmediately: true
+            },
+            {
+                // A row's actions show by these, which the grid does not observe.
+                track: () => {
+                    const {documentModel} = shell;
+                    return [
+                        documentModel.document?.kind,
+                        documentModel.document?.access,
+                        documentModel.canUpdatePublishes,
+                        shell.canRollback,
+                        this.isDesigning
+                    ];
+                },
+                run: () => this.historyGridModel.agApi?.refreshCells({force: true})
             },
             {
                 track: () => [blueprintModel.history, shell.publishes, this.stamps],

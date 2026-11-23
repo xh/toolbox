@@ -24,6 +24,31 @@ describe('historyTimeline', () => {
         });
     });
 
+    it("carries a publish's label and pin, and leaves edits without them", () => {
+        const rows = historyTimeline(
+            [edit(1)],
+            [
+                {
+                    version: 2,
+                    published: 150,
+                    label: 'Quarter end',
+                    pinned: true,
+                    note: 'Signed off',
+                    renames: []
+                }
+            ],
+            {1: 100}
+        );
+        expect(rows[0]).toMatchObject({
+            kind: 'publish',
+            label: 'Quarter end',
+            pinned: true,
+            note: 'Signed off'
+        });
+        expect(rows[1]).toMatchObject({kind: 'edit', pinned: false});
+        expect(rows[1].label).toBeUndefined();
+    });
+
     it('folds undo and redo into the original edit: struck while undone', () => {
         const rows = (history, stamps) => historyTimeline(history, [], stamps);
         const h = [edit(1), edit(2, {undoes: 1, description: 'Undo: Edit 1'})];

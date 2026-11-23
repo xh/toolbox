@@ -18,6 +18,10 @@ export interface TimelineRow {
     author: string;
     description: string;
     note?: string;
+    /** A publish's label, which History shows beside it. */
+    label?: string;
+    /** True for a publish pinned to stand out in History. */
+    pinned: boolean;
     /** True for an edit undone since, and not redone. */
     undone: boolean;
     ops?: BlueprintOp[];
@@ -49,6 +53,7 @@ export function historyTimeline(
                 time: stamps[it.version] ?? null,
                 author: it.author ?? 'user',
                 description: it.description ?? 'Edit',
+                pinned: false,
                 undone: undone.has(it.version),
                 ops: it.ops
             })),
@@ -60,6 +65,8 @@ export function historyTimeline(
             author: it.publishedBy ?? null,
             description: `Published v${it.version}`,
             note: it.note,
+            label: it.label,
+            pinned: !!it.pinned,
             undone: false
         }));
     return orderBy([...edits, ...pubs], [it => it.time ?? 0], ['desc']);
