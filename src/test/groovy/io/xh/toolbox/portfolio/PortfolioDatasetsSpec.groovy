@@ -102,6 +102,48 @@ class PortfolioDatasetsSpec extends Specification {
         ds.fundSummary(LocalDate.of(2020, 1, 1)) == []
     }
 
+    def 'pnlHistory has a row per day and holding, which sums to the positions\' and funds\' series'() {
+        given:
+        def ds = datasets()
+
+        when:
+        def rows = ds.pnlHistory(D4)
+        def positions = ds.positions(D4, null, ['pnlHistory'])
+        def funds = ds.fundSummary(D4, null, ['pnlHistory', 'cumPnlHistory'])
+
+        then: 'one row per day, fund, strategy and symbol, skipping days a holding neither had nor made P&L'
+        rows*.id.unique().size() == rows.size()
+        rows.every { it.id == [it.day, it.fund, it.strategy, it.symbol].join('|') && it.sector == 'Technology' }
+
+        and: 'each fund, by day, matches its series'
+        [F1, F2].every { f ->
+            List<String> days = [D1, D2, D3, D4]*.toString()
+            List daily = days.collect { d -> rows.findAll { it.fund == f && it.day == d }.sum(0L) { it.pnlDay } }
+            List cum = days.collect { d -> rows.findAll { it.fund == f && it.day == d }.sum(0L) { it.cumPnl } }
+            Map fs = funds.find { it.fund == f }
+            daily == fs.pnlHistory && cum == fs.cumPnlHistory
+        }
+
+        and: 'each holding, by day, matches the sum of its positions\' series'
+        rows.groupBy { [it.fund, it.strategy, it.symbol] }.every { k, hRows ->
+            List<List<Long>> series = positions.findAll { [it.fund, it.strategy, it.symbol] == k }*.pnlHistory
+            List<Long> expected = series.transpose().collect { it.sum() as long }
+            [D1, D2, D3, D4]*.toString().withIndex().every { d, i -> (hRows.find { it.day == d }?.pnlDay ?: 0L) == expected[i] }
+        }
+    }
+
+    def 'pnlHistory takes a start day and a fund, and is empty before history'() {
+        given:
+        def ds = datasets()
+
+        expect:
+        ds.pnlHistory(D4, D3)*.day.unique().sort() == [D3, D4]*.toString()
+        ds.pnlHistory(D4, null, F2)*.fund.unique() == [F2]
+        ds.pnlHistory(D3)*.day.every { it <= D3.toString() }
+        ds.pnlHistory(LocalDate.of(2020, 1, 1)) == []
+        ds.pnlHistory(D2, D4) == []
+    }
+
     def 'Greeks are set on options only, from underlying notional'() {
         when:
         def o = bySymbol(datasets().positions(D4), opt.symbol)

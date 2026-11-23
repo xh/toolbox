@@ -141,7 +141,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
 
     def 'prices without a symbol serve every symbol, filtered before the row cap'() {
         given:
-        service.maxPriceRows = 4
+        service.maxRows.prices = 4
         Map spec = [dataset: 'prices', params: [start: D3.toString(), end: D4.toString()], fields: ['symbol', 'close']]
 
         expect:
@@ -155,7 +155,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         e.message == 'prices would return 6 rows, over its limit of 4. Rows are symbols times trading days: name a symbol, filter by symbol, or shorten the window.'
 
         cleanup:
-        service.maxPriceRows = BlueprintDataService.MAX_PRICE_ROWS
+        service.maxRows.prices = BlueprintDataService.MAX_ROWS.prices
     }
 
     def 'a hypothetical portfolio takes {holdings: [{symbol, weight}]}'() {
@@ -250,10 +250,31 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         current == [[id: 'London', conditions: 'Clouds']]
     }
 
+    def 'pnlHistory serves its rows, and refuses more than its row cap'() {
+        given:
+        Map spec = [dataset: 'pnlHistory', params: [asOf: D4.toString()], fields: ['day', 'fund', 'sector', 'pnlDay', 'cumPnl']]
+
+        expect:
+        rows(spec).every { it.sector == 'Technology' }
+        rows(spec)*.fund.unique().sort() == [F2, F1].sort()
+
+        when:
+        service.maxRows.pnlHistory = 1
+        rows(spec)
+
+        then:
+        def e = thrown(BlueprintRequestException)
+        e.message.startsWith('pnlHistory would return')
+        e.message.endsWith('name a fund, filter by sector or symbol, or shorten the window.')
+
+        cleanup:
+        service.maxRows.pnlHistory = BlueprintDataService.MAX_ROWS.pnlHistory
+    }
+
     def 'the catalog merges the portfolio and weather catalogs'() {
         expect:
         service.catalogJson.label == 'Toolbox'
-        service.catalogJson.datasets.keySet() as List == ['positions', 'fundSummary', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
+        service.catalogJson.datasets.keySet() as List == ['positions', 'fundSummary', 'pnlHistory', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
     }
 
     def 'weather datasets serve seeded rows without an API key, never live'() {

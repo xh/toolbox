@@ -323,7 +323,7 @@
                     "type": "number[]",
                     "kind": "pnl",
                     "category": ["Trend"],
-                    "guidance": "The position's daily P&L for each of the last 30 business days through asOf, oldest first. The last point equals pnlDay, and is live when asOf is today. Large across all funds: request it with a fund parameter or a filter."
+                    "guidance": "The position's daily P&L for each of the last 30 business days through asOf, oldest first, for a sparkline. The last point equals pnlDay, and is live when asOf is today. Large across all funds: request it with a fund parameter or a filter. To chart P&L over time, use the pnlHistory dataset."
                 }
             ]
         },
@@ -371,7 +371,7 @@
                     "type": "number[]",
                     "kind": "pnl",
                     "category": ["Trend"],
-                    "guidance": "The fund's daily P&L for each of the last 60 business days through asOf, oldest first. The last point equals pnlDay."
+                    "guidance": "The fund's daily P&L for each of the last 60 business days through asOf, oldest first, for a sparkline. The last point equals pnlDay. To chart P&L over time, use the pnlHistory dataset."
                 },
                 {
                     "name": "cumPnlHistory",
@@ -379,7 +379,7 @@
                     "type": "number[]",
                     "kind": "pnl",
                     "category": ["Trend"],
-                    "guidance": "The fund's P&L accumulated over the last 60 business days, oldest first."
+                    "guidance": "The fund's P&L accumulated over the last 60 business days, oldest first, for a sparkline. To chart it, use the pnlHistory dataset's cumPnl by day."
                 },
                 {
                     "name": "drawdownHistory",
@@ -388,6 +388,40 @@
                     "kind": "currency:USD",
                     "category": ["Trend"],
                     "guidance": "How far the fund's cumulative P&L sits below its running peak over the last 60 business days, in USD. Always zero or less."
+                }
+            ]
+        },
+        "pnlHistory": {
+            "label": "P&L History",
+            "description": "One row per trading day, fund, strategy and symbol, with the day's P&L and the P&L accumulated since the window began.",
+            "guidance": "Use to chart P&L over time: a line, area or column chart by day, grouped or filtered by fund, strategy, sector or symbol. Always group by day, since cumPnl adds up across holdings on a day but not across days. The window defaults to the last 30 trading days through asOf. Set start for another, such as a month start. Rows are holdings times days: about 2,000 a day for one fund, and 10,000 for all funds. A request over 75,000 rows fails, so name a fund, and keep a window over all funds to a week. For a small trend inside a grid row or stat card, use the series fields on positions or fundSummary instead.",
+            "params": {
+                "asOf": {"type": "localDate", "required": true, "description": "The last day of the window."},
+                "start": {"type": "localDate", "description": "The first day of the window. Leave empty for the last 30 trading days."},
+                "fund": {"type": "toolbox.fund", "description": "One fund. Leave empty for all funds."}
+            },
+            "key": ["day", "fund", "strategy", "symbol"],
+            "fields": [
+                {"name": "day", "label": "Day", "type": "localDate", "isDimension": true, "format": {"date": "date"}},
+                "fund",
+                "strategy",
+                "sector",
+                "symbol",
+                {
+                    "name": "pnlDay",
+                    "label": "Day P&L",
+                    "type": "number",
+                    "kind": "pnl",
+                    "category": "P&L",
+                    "guidance": "The holding's P&L on the row's day."
+                },
+                {
+                    "name": "cumPnl",
+                    "label": "Cumulative P&L",
+                    "type": "number",
+                    "kind": "pnl",
+                    "category": "P&L",
+                    "guidance": "The holding's P&L from the window's first day through the row's day. Sums across holdings on one day. Never total it across days."
                 }
             ]
         },
