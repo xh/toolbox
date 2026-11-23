@@ -101,6 +101,19 @@ export const sortableListPanel = hoistCmp.factory({
                     intent: 'primary',
                     children: [
                         wrapperOption({
+                            label: 'Sizing',
+                            info: 'maxHeight fits the items, then scrolls. A fixed height keeps its size.',
+                            control: segmentedControl({
+                                bind: 'sizing',
+                                fill: false,
+                                compact: true,
+                                options: [
+                                    {value: 'max', label: 'maxHeight'},
+                                    {value: 'fixed', label: 'height'}
+                                ]
+                            })
+                        }),
+                        wrapperOption({
                             label: 'Variant',
                             propName: 'SortableListProps.variant',
                             control: segmentedControl({
@@ -175,6 +188,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 model,
                                 bind: 'dims',
                                 flex: 1,
+                                ...model.sizeProps,
                                 variant: model.variant,
                                 handle: model.handle,
                                 compact: model.compact,
@@ -305,6 +319,12 @@ class SortableListPanelModel extends HoistModel {
     @bindable accessor compact = false;
     @bindable accessor disabled = false;
     @bindable accessor scrollAcceleration = 15;
+    @bindable accessor sizing: 'max' | 'fixed' = 'max';
+
+    /** Height props for the Playground list - sized to fit the Playground band. */
+    get sizeProps() {
+        return this.sizing === 'max' ? {maxHeight: 230} : {height: 230};
+    }
 
     @observableRef accessor dims: Entry[] = DIMS;
     @observableRef accessor tabs: Entry[] = TABS;
@@ -342,6 +362,7 @@ class SortableListPanelModel extends HoistModel {
         const {variant, handle, compact, disabled, scrollAcceleration} = this;
         return {
             bind: 'dims',
+            ...this.sizeProps,
             variant: variant !== 'plain' ? variant : undefined,
             handle: handle !== 'start' ? handle : undefined,
             compact: compact || undefined,

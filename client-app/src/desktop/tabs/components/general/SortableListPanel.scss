@@ -6,8 +6,10 @@
     min-height: 0;
   }
 
+  // Not stretched to the band's height, so the list's own height props decide.
   .tbox-demo-playground__instance-body {
     flex: 1;
+    align-items: flex-start;
     min-height: 0;
   }
 
