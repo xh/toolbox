@@ -374,14 +374,15 @@ export class BlueprintShellModel extends HoistModel {
                         this.blueprintModel?.setMode(view === 'preview' ? 'run' : 'design');
                 }
             },
-            // The mode set any other way, such as the Architect's design-mode request, moves the view
-            // with it: design leaves Preview for the view last shown, and run shows Preview.
+            // The view follows the mode, however it is set, such as by the Architect's design-mode
+            // request: design leaves Preview for the view last shown, and run on a writer's draft
+            // shows Preview. A publish or a reader never shows Preview. Opening a publish sets run
+            // before the publish is in, so this settles again once it is.
             {
-                track: () => this.blueprintModel?.mode,
-                run: mode => {
-                    if (!this.canEdit) return;
-                    if (mode === 'design' && this.editorView === 'preview') {
-                        this.editorView = this.lastWorkView;
+                track: () => [this.blueprintModel?.mode, this.canEdit] as const,
+                run: ([mode, canEdit]) => {
+                    if (!canEdit || mode === 'design') {
+                        if (this.editorView === 'preview') this.editorView = this.lastWorkView;
                     } else if (mode === 'run' && this.editorView !== 'preview') {
                         this.editorView = 'preview';
                     }

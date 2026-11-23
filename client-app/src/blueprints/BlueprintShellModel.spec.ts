@@ -235,6 +235,21 @@ describe('Blueprints designer', () => {
         expect(model.publishes.at(-1).note).toBe('Grouped by sector');
     });
 
+    it('keeps a publish open, and the draft after it, out of Preview', async () => {
+        await model.selectAsync(byName(MINE_TOO).id);
+        await model.publishAsync('First');
+        model.editorView = 'map';
+
+        await model.openVersionAsync(1);
+        expect(model.documentModel.document.kind).toBe('publish');
+        expect(model.editorView).toBe('map');
+
+        await model.openVersionAsync('draft');
+        expect(model.editorView).toBe('map');
+        expect(model.blueprintModel.mode).toBe('design');
+        model.editorView = 'canvas';
+    });
+
     it('copies, renames and deletes from the library without opening the blueprint', async () => {
         await model.showLibraryAsync();
         const openId = model.documentModel.document?.id,
