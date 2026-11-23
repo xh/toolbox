@@ -167,6 +167,15 @@ class PortfolioDatasets {
      * series, so it sums to them. A day on which a holding had no P&L and none to date is left out.
      */
     List<Map> pnlHistory(LocalDate asOf, LocalDate start = null, String fund = null) {
+        pnlByDay(asOf, start, fund, true)
+    }
+
+    /** As {@link #pnlHistory}, one row per trading day, fund, strategy and sector. */
+    List<Map> pnlBySector(LocalDate asOf, LocalDate start = null, String fund = null) {
+        pnlByDay(asOf, start, fund, false)
+    }
+
+    private List<Map> pnlByDay(LocalDate asOf, LocalDate start, String fund, boolean bySymbol) {
         LocalDate day = resolveDay(asOf)
         if (!day) return []
         int end = dayIndex[day],
@@ -174,23 +183,25 @@ class PortfolioDatasets {
         if (first > end) return []
 
         List<LocalDate> days = baselineAndDays(day, end - first + 1)
-        Map<List<String>, long[]> byHolding = [:]
+        Map<List<String>, long[]> byGroup = [:]
         pnlOverDays(days, fund).each { String key, long[] totals ->
             List<String> parts = key.split('\\|') as List<String>
-            long[] sum = byHolding.computeIfAbsent([parts[0], parts[1], parts[5]]) { new long[totals.length] }
+            String symbol = parts[5], sector = portfolio.instruments[symbol]?.sector
+            long[] sum = byGroup.computeIfAbsent([parts[0], parts[1], sector, bySymbol ? symbol : null]) { new long[totals.length] }
             for (int i = 0; i < totals.length; i++) sum[i] += totals[i]
         }
 
         List<Map> ret = []
-        byHolding.each { List<String> holding, long[] totals ->
-            String f = holding[0], strategy = holding[1], symbol = holding[2],
-                   sector = portfolio.instruments[symbol]?.sector
+        byGroup.each { List<String> group, long[] totals ->
+            String f = group[0], strategy = group[1], sector = group[2], symbol = group[3]
             for (int i = 1; i < totals.length; i++) {
                 long pnlDay = totals[i] - totals[i - 1], cumPnl = totals[i] - totals[0]
                 if (!pnlDay && !cumPnl) continue
                 String d = days[i].toString()
-                ret << [id: [d, f, strategy, symbol].join('|'), day: d, fund: f, strategy: strategy, sector: sector,
-                        symbol: symbol, pnlDay: pnlDay, cumPnl: cumPnl]
+                Map row = [id: null, day: d, fund: f, strategy: strategy, sector: sector]
+                if (bySymbol) row.symbol = symbol
+                row.id = (bySymbol ? [d, f, strategy, symbol] : [d, f, strategy, sector]).join('|')
+                ret << row + [pnlDay: pnlDay, cumPnl: cumPnl]
             }
         }
         return ret
