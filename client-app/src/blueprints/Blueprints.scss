@@ -927,6 +927,18 @@ body[class*='tb-blueprints-maximized--'] .tb-switcher {
   }
 }
 
+// The dock's and the Inspector's headers take the view bar's height, ground and rule, so the
+// three read as one strip across the editor.
+.tb-dock,
+.tb-editor__inspector {
+  > * > .xh-panel__inner > .xh-panel-header:not(.xh-panel-header--collapsed) {
+    height: var(--xh-toolbar-min-size);
+    background-color: var(--xh-bg);
+    color: var(--xh-text-color);
+    border-bottom: var(--xh-border-solid);
+  }
+}
+
 .tb-viewbar__note {
   color: var(--xh-intent-success-text-color);
   font-size: var(--xh-font-size-small);

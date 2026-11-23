@@ -487,6 +487,7 @@ const inspector = hoistCmp.factory<EditorModel>({
     render: ({model}) =>
         panel({
             model: model.inspectorPanelModel,
+            className: 'tb-editor__inspector',
             title: 'Inspector',
             icon: Icon.search(),
             compactHeader: true,
