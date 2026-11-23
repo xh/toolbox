@@ -46,7 +46,7 @@ export const documentBar = hoistCmp.factory({
                               className: 'tb-docbar__status',
                               title: stale
                                   ? 'Saved elsewhere since you opened it, so your edits here are not saved. Reload to take the saved draft, or Save as new to keep yours.'
-                                  : null,
+                                  : status.text,
                               children: badge({
                                   intent: status.intent,
                                   icon: status.locked ? Icon.lock() : null,
@@ -63,7 +63,6 @@ export const documentBar = hoistCmp.factory({
                           segmentedControl({
                               value: shell.editorView,
                               onChange: v => (shell.editorView = v),
-                              compact: true,
                               options: [
                                   {value: 'canvas', label: 'Canvas', icon: Icon.gridLarge()},
                                   {value: 'map', label: 'Map', icon: Icon.treeList()},
@@ -75,10 +74,14 @@ export const documentBar = hoistCmp.factory({
                               omit: !canEdit,
                               value: blueprintModel.mode,
                               onChange: mode => blueprintModel.setMode(mode),
-                              compact: true,
                               options: [
-                                  {value: 'design', label: 'Design', icon: Icon.edit()},
-                                  {value: 'run', label: 'Run', icon: Icon.play()}
+                                  {
+                                      value: 'design',
+                                      label: 'Design',
+                                      icon: Icon.edit(),
+                                      intent: 'primary'
+                                  },
+                                  {value: 'run', label: 'Run', icon: Icon.play(), intent: 'success'}
                               ]
                           }),
                           publishButton({
@@ -227,22 +230,22 @@ const interactionControl = hoistCmp.factory<DocumentBarModel>({
         const {designModel} = model.shell;
         return designModel
             ? span({
-                  title: 'E: click to select. I: click to use the widgets.',
+                  title: 'Edit (E): click to select. Interact (I): click to use the widgets. ` switches between them.',
                   children: segmentedControl({
                       value: designModel.interaction,
                       onChange: mode => designModel.setInteraction(mode),
-                      compact: true,
-                      intent: 'primary',
                       options: [
                           {
                               value: 'edit',
                               label: 'Edit',
-                              icon: arrowPointerIcon()
+                              icon: arrowPointerIcon(),
+                              intent: 'primary'
                           },
                           {
                               value: 'interact',
                               label: 'Interact',
-                              icon: handPointerIcon()
+                              icon: handPointerIcon(),
+                              intent: 'warning'
                           }
                       ]
                   })
