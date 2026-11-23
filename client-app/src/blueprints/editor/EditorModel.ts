@@ -125,9 +125,6 @@ export class EditorModel extends HoistModel {
         ]
     });
 
-    /** True to show the Map's legend strip. */
-    @bindable @persist accessor showLegend = true;
-
     /** True while the dialog that makes a preset group shows. */
     @bindable accessor presetsDialogOpen = false;
 

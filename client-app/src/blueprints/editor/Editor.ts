@@ -144,7 +144,6 @@ const mainView = hoistCmp.factory<EditorModel>({
                     className: 'tb-editor__map',
                     children: blueprintMap({
                         designModel: shell.designModel,
-                        showLegend: model.showLegend,
                         onOpenElement: () => (shell.editorView = 'canvas')
                     })
                 });
@@ -332,15 +331,6 @@ const viewTools = hoistCmp.factory<EditorModel>({
         switch (shell.editorView) {
             case 'canvas':
                 return isDesigning ? interactionControl() : null;
-            case 'map':
-                return button({
-                    text: 'Legend',
-                    icon: Icon.list(),
-                    minimal: true,
-                    active: model.showLegend,
-                    tooltip: model.showLegend ? 'Hide the legend' : 'Show the legend',
-                    onClick: () => (model.showLegend = !model.showLegend)
-                });
             case 'json':
                 return model.compareVersion != null ? compareTools() : jsonTools();
             case 'preview':
