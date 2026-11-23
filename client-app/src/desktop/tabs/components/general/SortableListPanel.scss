@@ -1,3 +1,17 @@
+.tb-sortable-list-panel__playground {
+  // The config snippet is short; the bound value, one item per line, needs the room.
+  .tbox-demo-playground__config {
+    flex: none;
+    width: 340px;
+  }
+
+  .tbox-demo-playground__value {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+}
+
 .tb-sortable-list-panel__pad {
   display: flex;
   flex-direction: column;

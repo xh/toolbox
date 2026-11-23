@@ -139,6 +139,7 @@ export const sortableListPanel = hoistCmp.factory({
                         title: 'Playground',
                         intent: 'primary',
                         children: demoPlayground({
+                            className: 'tb-sortable-list-panel__playground',
                             value: model.dims,
                             caption:
                                 'Drag a grip, or Tab to one and use the keyboard. Delete or Backspace on a grip removes its item.',
@@ -156,7 +157,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 disabled: model.disabled,
                                 getItemLabel: (it: Entry) => it.name,
                                 renderItem: (it: Entry) => entryRow({entry: it}),
-                                onRemove: () => {},
+                                removable: true,
                                 onAdd: () => model.newDim(),
                                 addText: 'Add dimension...'
                             })
@@ -207,15 +208,17 @@ export const sortableListPanel = hoistCmp.factory({
                                     })
                                 }),
                                 demoFrame({
-                                    label: 'Disabled items',
-                                    info: "isItemDisabled, variant: 'spaced' - pinned columns stay put",
+                                    label: 'Fixed items',
+                                    info: \"variant: 'spaced', removable - pinned columns neither move nor can be removed\",
                                     children: div({
                                         className: 'tb-sortable-list-panel__pad',
                                         children: sortableList({
                                             model,
                                             bind: 'columns',
                                             variant: 'spaced',
-                                            isItemDisabled: (it: Entry) => it.pinned,
+                                            removable: true,
+                                            isItemMovable: (it: Entry) => !it.pinned,
+                                            isItemRemovable: (it: Entry) => !it.pinned,
                                             getItemLabel: (it: Entry) => it.name,
                                             renderItem: (it: Entry) => entryRow({entry: it})
                                         })
@@ -321,7 +324,7 @@ class SortableListPanelModel extends HoistModel {
             disabled: disabled || undefined,
             getItemLabel: raw('it => it.name'),
             renderItem: raw('it => entryRow({entry: it})'),
-            onRemove: raw('() => {}'),
+            removable: true,
             onAdd: raw('() => model.newDim()'),
             addText: 'Add dimension...'
         };
