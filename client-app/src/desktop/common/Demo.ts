@@ -6,7 +6,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {isLocalDate} from '@xh/hoist/utils/datetime';
 import classNames from 'classnames';
-import {isArray, isBoolean, isDate, isNil, isNumber, isString} from 'lodash';
+import {isArray, isBoolean, isDate, isNil, isNumber, isPlainObject, isString} from 'lodash';
 import type {ReactNode} from 'react';
 import './Demo.scss';
 
@@ -413,6 +413,10 @@ export function fmtDemoValue(v: unknown): string {
     if (isNumber(v) || isBoolean(v)) return String(v);
     if (isDate(v)) return `Date ${v.toISOString()}`;
     if (isLocalDate(v)) return `LocalDate ${v.isoString}`;
+    // Objects one per line, so a reorder reads at a glance.
+    if (isArray(v) && v.some(isPlainObject)) {
+        return `[\n${v.map(it => `    ${JSON.stringify(it)}`).join(',\n')}\n]`;
+    }
     if (isArray(v)) return `[${v.map(fmtDemoValue).join(', ')}]`;
     return JSON.stringify(v, null, 2);
 }

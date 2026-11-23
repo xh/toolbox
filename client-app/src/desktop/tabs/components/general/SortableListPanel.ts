@@ -1,6 +1,6 @@
 import {chip} from '@xh/hoist/cmp/chip';
-import {div, filler, hbox, pre, span} from '@xh/hoist/cmp/layout';
-import type {SortableListProps, SortableReorderEvent} from '@xh/hoist/cmp/sortablelist';
+import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
+import type {SortableListProps} from '@xh/hoist/cmp/sortablelist';
 import {sortableList} from '@xh/hoist/cmp/sortablelist';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
@@ -140,90 +140,103 @@ export const sortableListPanel = hoistCmp.factory({
                         title: 'Playground',
                         intent: 'primary',
                         children: demoPlayground({
-                            value: model.lastEvent,
-                            caption: 'Drag a grip, or Tab to one and use the keyboard.',
+                            value: model.dims,
+                            caption:
+                                'Drag a grip, or Tab to one and use the keyboard. Remove and Add are the app’s own buttons.',
                             config: fmtDemoConfig<SortableListProps>(
                                 'sortableList',
                                 model.listConfig
                             ),
-                            children: sortableList({
-                                model,
-                                bind: 'dims',
-                                flex: 1,
-                                variant: model.variant,
-                                handle: model.handle,
-                                compact: model.compact,
-                                disabled: model.disabled,
-                                getItemLabel: (it: Entry) => it.name,
-                                onReorder: e => model.logReorder(e),
-                                renderItem: (it: Entry) => entryRow({entry: it})
+                            children: div({
+                                className: 'tb-sortable-list-panel__stack',
+                                children: [
+                                    sortableList({
+                                        model,
+                                        bind: 'dims',
+                                        variant: model.variant,
+                                        handle: model.handle,
+                                        compact: model.compact,
+                                        disabled: model.disabled,
+                                        getItemLabel: (it: Entry) => it.name,
+                                        renderItem: (it: Entry) =>
+                                            entryRow({
+                                                entry: it,
+                                                onRemove: () => model.removeDim(it.id)
+                                            })
+                                    }),
+                                    button({
+                                        className: 'tb-sortable-list-panel__add',
+                                        icon: Icon.add(),
+                                        text: 'Add dimension...',
+                                        minimal: true,
+                                        onClick: () => model.addDim()
+                                    })
+                                ]
                             })
                         })
                     }),
                     demoSection({
                         title: 'Variants',
-                        children: [
-                            demoGrid({
-                                columns: 3,
-                                children: [
-                                    demoFrame({
-                                        label: 'Horizontal',
-                                        info: "orientation: 'horizontal', wrap, handle: 'item', chips as items",
-                                        children: div({
-                                            className:
-                                                'tb-sortable-list-panel__pad tb-sortable-list-panel__chips',
-                                            children: sortableList({
-                                                model,
-                                                bind: 'tabs',
-                                                orientation: 'horizontal',
-                                                wrap: true,
-                                                handle: 'item',
-                                                getItemLabel: (it: Entry) => it.name,
-                                                renderItem: (it: Entry) =>
-                                                    chip({
-                                                        outlined: true,
-                                                        size: 'large',
-                                                        children: it.name
-                                                    })
-                                            })
-                                        })
-                                    }),
-                                    demoFrame({
-                                        label: 'Nested scroll',
-                                        info: "variant: 'divided' - drag to an edge to auto-scroll the box",
-                                        children: div({
-                                            className: 'tb-sortable-list-panel__pad',
-                                            children: div({
-                                                className: 'tb-sortable-list-panel__scroll',
-                                                children: sortableList({
-                                                    model,
-                                                    bind: 'widgets',
-                                                    variant: 'divided',
-                                                    getItemLabel: (it: Entry) => it.name,
-                                                    renderItem: (it: Entry) => entryRow({entry: it})
+                        children: demoGrid({
+                            columns: 2,
+                            children: [
+                                demoFrame({
+                                    label: 'Horizontal',
+                                    info: "orientation: 'horizontal', wrap, handle: 'item', chips as items",
+                                    children: div({
+                                        className:
+                                            'tb-sortable-list-panel__pad tb-sortable-list-panel__chips',
+                                        children: sortableList({
+                                            model,
+                                            bind: 'tabs',
+                                            orientation: 'horizontal',
+                                            wrap: true,
+                                            handle: 'item',
+                                            getItemLabel: (it: Entry) => it.name,
+                                            renderItem: (it: Entry) =>
+                                                chip({
+                                                    outlined: true,
+                                                    size: 'large',
+                                                    children: it.name
                                                 })
-                                            })
                                         })
-                                    }),
-                                    demoFrame({
-                                        label: 'Disabled items',
-                                        info: "isItemDisabled, variant: 'spaced' - pinned columns stay put",
+                                    })
+                                }),
+                                demoFrame({
+                                    label: 'Nested scroll',
+                                    info: "variant: 'divided' - drag to an edge to auto-scroll the box",
+                                    children: div({
+                                        className: 'tb-sortable-list-panel__pad',
                                         children: div({
-                                            className: 'tb-sortable-list-panel__pad',
+                                            className: 'tb-sortable-list-panel__scroll',
                                             children: sortableList({
                                                 model,
-                                                bind: 'columns',
-                                                variant: 'spaced',
-                                                isItemDisabled: (it: Entry) => it.pinned,
+                                                bind: 'widgets',
+                                                variant: 'divided',
                                                 getItemLabel: (it: Entry) => it.name,
                                                 renderItem: (it: Entry) => entryRow({entry: it})
                                             })
                                         })
                                     })
-                                ]
-                            }),
-                            stepsEditor()
-                        ]
+                                }),
+                                demoFrame({
+                                    label: 'Disabled items',
+                                    info: "isItemDisabled, variant: 'spaced' - pinned columns stay put",
+                                    children: div({
+                                        className: 'tb-sortable-list-panel__pad',
+                                        children: sortableList({
+                                            model,
+                                            bind: 'columns',
+                                            variant: 'spaced',
+                                            isItemDisabled: (it: Entry) => it.pinned,
+                                            getItemLabel: (it: Entry) => it.name,
+                                            renderItem: (it: Entry) => entryRow({entry: it})
+                                        })
+                                    })
+                                }),
+                                stepsEditor()
+                            ]
+                        })
                     })
                 ]
             })
@@ -231,110 +244,62 @@ export const sortableListPanel = hoistCmp.factory({
     }
 });
 
-const entryRow = hoistCmp.factory<HoistProps & {entry: Entry}>({
+const entryRow = hoistCmp.factory<HoistProps & {entry: Entry; onRemove?: () => void}>({
     displayName: 'SortableEntryRow',
     model: false,
-    render({entry}) {
+    render({entry, onRemove}) {
         return hbox({
             className: 'tb-sortable-list-panel__row',
             children: [
                 span({className: 'tb-sortable-list-panel__name', children: entry.name}),
                 filler(),
-                span({className: 'tb-sortable-list-panel__meta', children: entry.meta})
+                span({className: 'tb-sortable-list-panel__meta', children: entry.meta}),
+                button({
+                    icon: Icon.delete(),
+                    intent: 'danger',
+                    minimal: true,
+                    small: true,
+                    title: 'Remove',
+                    omit: !onRemove,
+                    onClick: onRemove
+                })
             ]
         });
     }
 });
 
-/** The Blueprints Inspector pattern: compact rows, trailing actions, one detail, an Add row. */
 const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
     displayName: 'SortableStepsEditor',
     render({model}) {
         return demoFrame({
             label: 'Detail rows',
-            info: "variant: 'divided', compact, handle at end, expandable rows - click a row or its chevron - and an Add row",
-            children: hbox({
-                className: 'tb-sortable-list-panel__split',
-                children: [
-                    div({
-                        className: 'tb-sortable-list-panel__pad tb-sortable-list-panel__main',
-                        children: [
-                            sortableList({
-                                model,
-                                bind: 'steps',
-                                variant: 'divided',
-                                compact: true,
-                                handle: 'end',
-                                getItemLabel: (it: Entry) => it.name,
-                                renderItem: (it: Entry) =>
-                                    hbox({
-                                        className: 'tb-sortable-list-panel__row',
-                                        children: [
-                                            span({
-                                                className: 'tb-sortable-list-panel__name',
-                                                children: it.name
-                                            }),
-                                            span({
-                                                className: 'tb-sortable-list-panel__meta',
-                                                children: it.meta
-                                            }),
-                                            filler(),
-                                            button({
-                                                icon: Icon.delete(),
-                                                intent: 'danger',
-                                                minimal: true,
-                                                small: true,
-                                                title: 'Remove',
-                                                onClick: () => model.removeStep(it.id)
-                                            })
-                                        ]
-                                    }),
-                                renderDetail: (it: Entry) =>
-                                    div({
-                                        className: 'tb-sortable-list-panel__detail',
-                                        children: `Settings for "${it.name}" - this slot spans the list's width.`
-                                    })
-                            }),
-                            button({
-                                className: 'tb-sortable-list-panel__add',
-                                icon: Icon.add(),
-                                text: 'Add step...',
-                                minimal: true,
-                                onClick: () => model.addStep()
-                            })
-                        ]
-                    }),
-                    // Same label and code styles as the Playground's value readout.
-                    div({
-                        className: 'tb-sortable-list-panel__value',
-                        children: [
-                            span({
-                                className: 'tbox-demo-playground__config-label',
-                                children: 'Current value'
-                            }),
-                            pre({
-                                className: 'tbox-demo-playground__code',
-                                children: fmtEntries(model.steps)
-                            })
-                        ]
-                    })
-                ]
+            info: "renderDetail, variant: 'divided', compact, handle at end - click a row or its chevron",
+            children: div({
+                className: 'tb-sortable-list-panel__pad',
+                children: sortableList({
+                    model,
+                    bind: 'steps',
+                    variant: 'divided',
+                    compact: true,
+                    handle: 'end',
+                    getItemLabel: (it: Entry) => it.name,
+                    renderItem: (it: Entry) => entryRow({entry: it}),
+                    renderDetail: (it: Entry) =>
+                        div({
+                            className: 'tb-sortable-list-panel__detail',
+                            children: `Settings for "${it.name}" - this slot spans the list's width.`
+                        })
+                })
             })
         });
     }
 });
-
-/** One entry per line, so a reorder reads at a glance. */
-function fmtEntries(entries: Entry[]): string {
-    return `[\n${entries.map(it => `    ${JSON.stringify(it)}`).join(',\n')}\n]`;
-}
 
 class SortableListPanelModel extends HoistModel {
     @bindable accessor variant: SortableListProps['variant'] = 'divided';
     @bindable accessor handle: SortableListProps['handle'] = 'start';
     @bindable accessor compact = false;
     @bindable accessor disabled = false;
-    @bindable accessor lastEvent: object = null;
 
     @observableRef accessor dims: Entry[] = DIMS;
     @observableRef accessor tabs: Entry[] = TABS;
@@ -363,25 +328,14 @@ class SortableListPanelModel extends HoistModel {
     }
 
     @action
-    logReorder(e: SortableReorderEvent<Entry>) {
-        this.lastEvent = {
-            item: e.item.id,
-            fromIndex: e.fromIndex,
-            toIndex: e.toIndex,
-            source: e.source,
-            items: e.items.map(it => it.id)
-        };
+    removeDim(id: string) {
+        this.dims = this.dims.filter(it => it.id !== id);
     }
 
     @action
-    removeStep(id: string) {
-        this.steps = this.steps.filter(it => it.id !== id);
-    }
-
-    @action
-    addStep() {
-        const n = this.steps.length + 1;
-        this.steps = [...this.steps, {id: `s${Date.now()}`, name: `Step ${n}`, meta: 'new'}];
+    addDim() {
+        const n = this.dims.length + 1;
+        this.dims = [...this.dims, {id: `d${Date.now()}`, name: `Dimension ${n}`, meta: 'string'}];
     }
 
     get listConfig() {
@@ -393,8 +347,7 @@ class SortableListPanelModel extends HoistModel {
             compact: compact || undefined,
             disabled: disabled || undefined,
             getItemLabel: raw('it => it.name'),
-            onReorder: raw('e => model.logReorder(e)'),
-            renderItem: raw('it => entryRow({entry: it})')
+            renderItem: raw('it => entryRow({entry: it, onRemove: () => model.removeDim(it.id)})')
         };
     }
 }
