@@ -144,6 +144,14 @@ export const sortableListPanel = hoistCmp.factory({
                             control: switchInput({bind: 'removable'})
                         }),
                         wrapperOption({
+                            label: 'Remove on hover',
+                            propName: 'SortableListProps.showRemoveOnHover',
+                            control: switchInput({
+                                bind: 'showRemoveOnHover',
+                                disabled: !model.removable
+                            })
+                        }),
+                        wrapperOption({
                             label: 'Add row',
                             propName: 'SortableListProps.onAdd',
                             control: switchInput({bind: 'addable'})
@@ -207,6 +215,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 getItemLabel: (it: Entry) => it.name,
                                 renderItem: (it: Entry) => entryRow({entry: it}),
                                 removable: model.removable,
+                                showRemoveOnHover: model.showRemoveOnHover,
                                 onAdd: model.addable ? () => model.newDim() : null,
                                 addText: 'Add dimension...'
                             })
@@ -332,6 +341,7 @@ class SortableListPanelModel extends HoistModel {
     @bindable accessor sizing: 'max' | 'fixed' = 'max';
     @bindable accessor removable = true;
     @bindable accessor addable = true;
+    @bindable accessor showRemoveOnHover = false;
 
     /** Height props for the Playground list - sized to fit the Playground band. */
     get sizeProps() {
@@ -371,7 +381,8 @@ class SortableListPanelModel extends HoistModel {
     }
 
     get listConfig() {
-        const {variant, handle, compact, disabled, scrollAcceleration, removable, addable} = this;
+        const {variant, handle, compact, disabled, scrollAcceleration, removable, addable} = this,
+            {showRemoveOnHover} = this;
         return {
             bind: 'dims',
             ...this.sizeProps,
@@ -383,6 +394,7 @@ class SortableListPanelModel extends HoistModel {
             getItemLabel: raw('it => it.name'),
             renderItem: raw('it => entryRow({entry: it})'),
             removable: removable || undefined,
+            showRemoveOnHover: (removable && showRemoveOnHover) || undefined,
             onAdd: addable ? raw('() => model.newDim()') : undefined,
             addText: addable ? 'Add dimension...' : undefined
         };
