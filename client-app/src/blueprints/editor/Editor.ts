@@ -10,6 +10,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, placeholder, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import type {HoistProps, Intent} from '@xh/hoist/core';
+import type {ReactElement} from 'react';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     jsonInput,
@@ -23,6 +24,8 @@ import {Icon} from '@xh/hoist/icon';
 import {dialog} from '@xh/hoist/kit/blueprint';
 import classNames from 'classnames';
 import {architectChat, architectHeaderItems} from '../ArchitectPanel';
+import {arrowPointerIcon, handPointerIcon} from '../../core/Icons';
+import type {EditorView} from '../BlueprintShellModel';
 import {tag} from '../cards';
 import {documentBar} from '../documentBar/DocumentBar';
 import {EditorModel} from './EditorModel';
@@ -37,15 +40,23 @@ export const editor = hoistCmp.factory({
     model: creates(EditorModel),
 
     render({model}) {
-        return vframe(
-            documentBar(),
-            hframe(
-                dockRail(),
-                model.dockOpen ? dock() : null,
-                mainView(),
-                model.isDesigning && model.shown ? inspector() : null
-            )
-        );
+        const stale = model.shell.documentModel.isStale;
+        return vframe({
+            className: classNames('tb-editor', stale && 'tb-editor--stale'),
+            children: [
+                documentBar(),
+                stale ? staleBand() : null,
+                hframe(
+                    dockRail(),
+                    model.dockOpen ? dock() : null,
+                    vframe({
+                        className: 'tb-editor__content',
+                        children: [viewBar(), mainView()]
+                    }),
+                    model.isDesigning && model.shown ? inspector() : null
+                )
+            ]
+        });
     }
 });
 
@@ -134,6 +145,7 @@ const mainView = hoistCmp.factory<EditorModel>({
                     className: 'tb-editor__map',
                     children: blueprintMap({
                         designModel: shell.designModel,
+                        showLegend: model.showLegend,
                         onOpenElement: () => (shell.editorView = 'canvas')
                     })
                 });
@@ -165,77 +177,26 @@ const jsonView = hoistCmp.factory<EditorModel>({
     model: uses(EditorModel),
     render: ({model}) => {
         if (model.compareVersion != null) return compareView();
-        const {applyError, isJsonDirty, isDesigning} = model;
         return panel({
             className: 'tb-editor__json',
             children: jsonInput({
                 bind: 'draft',
                 commitOnChange: true,
-                readonly: !isDesigning,
+                readonly: !model.isDesigning,
                 flex: 1,
                 width: '100%'
-            }),
-            bbar: isDesigning
-                ? [
-                      applyError
-                          ? span({className: 'xh-intent-danger', children: applyError})
-                          : null,
-                      filler(),
-                      button({
-                          text: 'Revert',
-                          icon: Icon.reset(),
-                          disabled: !isJsonDirty,
-                          onClick: () => model.revertDraft()
-                      }),
-                      button({
-                          text: 'Apply',
-                          icon: Icon.check(),
-                          intent: 'primary',
-                          minimal: false,
-                          disabled: !isJsonDirty,
-                          onClick: () => model.applyDraft()
-                      })
-                  ]
-                : null
+            })
         });
     }
 });
 
 const compareView = hoistCmp.factory<EditorModel>({
     model: uses(EditorModel),
-    render: ({model}) => {
-        const doc = model.shell.documentModel.document,
-            versions = model.shell.publishes.map(it => it.version),
-            from = model.compareVersion,
-            later = versions.filter(it => it > from),
-            to = model.compareTo,
-            openLabel = doc.kind === 'draft' ? 'This draft' : `v${doc.version}, open`;
-        return panel({
+    render: ({model}) =>
+        panel({
             className: 'tb-editor__compare',
-            tbar: [
-                span('Compare'),
-                select({
-                    value: from,
-                    options: versions.map(it => ({value: it, label: `v${it}`})),
-                    width: 90,
-                    onChange: v => model.compareAsync(v, to === 'open' || to > v ? to : 'open')
-                }),
-                span('with'),
-                select({
-                    value: to,
-                    options: [
-                        ...later.map(it => ({value: it, label: `v${it}`})),
-                        {value: 'open', label: openLabel}
-                    ],
-                    width: 140,
-                    onChange: v => model.compareAsync(from, v)
-                }),
-                filler(),
-                button({text: 'Close', icon: Icon.close(), onClick: () => model.closeCompare()})
-            ],
             children: [diffSummary(), grid({model: model.compareGridModel})]
-        });
-    }
+        })
 });
 
 const diffSummary = hoistCmp.factory<EditorModel>({
@@ -333,6 +294,240 @@ const publishDetailsDialog = hoistCmp.factory<EditorModel>({
                       ]
                   })
                 : null
+        });
+    }
+});
+
+//------------------
+// View bar
+//------------------
+const VIEWS: {id: EditorView; label: string; icon: () => ReactElement}[] = [
+    {id: 'canvas', label: 'Canvas', icon: () => Icon.gridLarge()},
+    {id: 'map', label: 'Map', icon: () => Icon.treeList()},
+    {id: 'json', label: 'JSON', icon: () => Icon.code()}
+];
+
+/**
+ * The view bar, over the content for a writer: Canvas, Map and JSON, then Preview for a draft,
+ * with the tools of the view shown at the right. A reader has none.
+ */
+const viewBar = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const {shell} = model,
+            doc = shell.documentModel.document,
+            view = shell.editorView,
+            preview = view === 'preview';
+        if (!model.shown || doc?.access !== 'write') return null;
+        return hbox({
+            className: classNames('tb-viewbar', preview && 'tb-viewbar--preview'),
+            children: [
+                ...VIEWS.map(it => viewTab({key: it.id, ...it, active: view === it.id})),
+                ...(shell.canEdit
+                    ? [
+                          div({className: 'tb-viewbar__divider'}),
+                          viewTab({
+                              key: 'preview',
+                              id: 'preview',
+                              label: 'Preview',
+                              icon: Icon.eye,
+                              active: preview,
+                              title: "The reader's view (P)"
+                          })
+                      ]
+                    : []),
+                filler(),
+                viewTools()
+            ]
+        });
+    }
+});
+
+interface ViewTabProps extends HoistProps<EditorModel> {
+    id: EditorView;
+    label: string;
+    icon: () => ReactElement;
+    active: boolean;
+    title?: string;
+}
+
+const viewTab = hoistCmp.factory<ViewTabProps>({
+    model: uses(EditorModel),
+    render: ({model, id, label, icon, active, title}) =>
+        button({
+            className: classNames(
+                'tb-viewbar__tab',
+                active && 'tb-viewbar__tab--active',
+                id === 'preview' && 'tb-viewbar__tab--preview'
+            ),
+            text: label,
+            icon: icon(),
+            minimal: true,
+            title,
+            onClick: () => (model.shell.editorView = id)
+        })
+});
+
+/** The tools of the view shown. */
+const viewTools = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const {shell, isDesigning} = model;
+        switch (shell.editorView) {
+            case 'canvas':
+                return isDesigning ? interactionControl() : null;
+            case 'map':
+                return button({
+                    text: 'Legend',
+                    icon: Icon.list(),
+                    minimal: true,
+                    active: model.showLegend,
+                    tooltip: model.showLegend ? 'Hide the legend' : 'Show the legend',
+                    onClick: () => (model.showLegend = !model.showLegend)
+                });
+            case 'json':
+                return model.compareVersion != null ? compareTools() : jsonTools();
+            case 'preview':
+                return span({
+                    className: 'tb-viewbar__note',
+                    children: 'As readers see it: no design chrome, layouts locked as set'
+                });
+            default:
+                return null;
+        }
+    }
+});
+
+/** Edit, where a click on the canvas selects, or Interact, where it reaches the widget. */
+const interactionControl = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const {designModel} = model.shell,
+            mode = designModel.interaction;
+        return span({
+            title: 'Edit (E): click to select. Interact (I): click to use the widgets. ` switches between them.',
+            children: segmentedControl({
+                value: mode,
+                onChange: v => designModel.setInteraction(v),
+                options: [
+                    {
+                        value: 'edit',
+                        label: 'Edit',
+                        icon: arrowPointerIcon(),
+                        intent: mode === 'edit' ? 'primary' : null
+                    },
+                    {
+                        value: 'interact',
+                        label: 'Interact',
+                        icon: handPointerIcon(),
+                        intent: mode === 'interact' ? 'warning' : null
+                    }
+                ]
+            })
+        });
+    }
+});
+
+/** JSON's Revert and Apply, with why the last apply failed. */
+const jsonTools = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const {applyError, isJsonDirty, isDesigning} = model;
+        if (!isDesigning) return null;
+        return hbox({
+            className: 'tb-viewbar__tools',
+            children: [
+                applyError ? span({className: 'xh-intent-danger', children: applyError}) : null,
+                button({
+                    text: 'Revert',
+                    icon: Icon.reset(),
+                    minimal: true,
+                    disabled: !isJsonDirty,
+                    onClick: () => model.revertDraft()
+                }),
+                button({
+                    text: 'Apply',
+                    icon: Icon.check(),
+                    intent: 'primary',
+                    minimal: false,
+                    disabled: !isJsonDirty,
+                    onClick: () => model.applyDraft()
+                })
+            ]
+        });
+    }
+});
+
+/** A comparison's pickers: from a publish, to a later one or the blueprint open. */
+const compareTools = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const doc = model.shell.documentModel.document,
+            versions = model.shell.publishes.map(it => it.version),
+            from = model.compareVersion,
+            to = model.compareTo,
+            openLabel = doc.kind === 'draft' ? 'This draft' : `v${doc.version}, open`;
+        return hbox({
+            className: 'tb-viewbar__tools',
+            children: [
+                span('Compare'),
+                select({
+                    value: from,
+                    options: versions.map(it => ({value: it, label: `v${it}`})),
+                    width: 90,
+                    onChange: v => model.compareAsync(v, to === 'open' || to > v ? to : 'open')
+                }),
+                span('with'),
+                select({
+                    value: to,
+                    options: [
+                        ...versions
+                            .filter(it => it > from)
+                            .map(it => ({value: it, label: `v${it}`})),
+                        {value: 'open', label: openLabel}
+                    ],
+                    width: 140,
+                    onChange: v => model.compareAsync(from, v)
+                }),
+                button({
+                    text: 'Close',
+                    icon: Icon.close(),
+                    minimal: true,
+                    onClick: () => model.closeCompare()
+                })
+            ]
+        });
+    }
+});
+
+/** Why a stale draft's edits aren't saved, and the two ways on. */
+const staleBand = hoistCmp.factory<EditorModel>({
+    model: uses(EditorModel),
+    render: ({model}) => {
+        const {shell} = model;
+        return hbox({
+            className: 'tb-staleband',
+            children: [
+                Icon.warning(),
+                span(
+                    "This draft was saved in another tab since you opened it, so your edits here aren't saved."
+                ),
+                filler(),
+                button({
+                    text: 'Reload',
+                    icon: Icon.refresh(),
+                    tooltip: 'Open the draft as it was saved elsewhere, discarding your edits here',
+                    onClick: () => shell.reloadDraftAsync()
+                }),
+                button({
+                    text: 'Save as new',
+                    icon: Icon.copy(),
+                    intent: 'primary',
+                    minimal: false,
+                    tooltip: 'Keep your edits here as a new blueprint',
+                    onClick: () => shell.saveAsNewSelectedAsync()
+                })
+            ]
         });
     }
 });

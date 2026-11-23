@@ -57,3 +57,15 @@ export function isIncomplete(issue: {code?: string}): boolean {
 export function plural(n: number, noun: string): string {
     return `${n} ${noun}${n === 1 ? '' : 's'}`;
 }
+
+/**
+ * The confirmation for republishing a version. A draft with unpublished changes keeps them, while
+ * one with none follows the rollback to the version.
+ */
+export function rollbackMessage(version: number, next: number, draftHasChanges: boolean): string {
+    return [
+        `Publish v${version} again, as v${next}, noted "Rolled back to v${version}"?`,
+        'Readers move to it when they next open the blueprint.',
+        draftHasChanges ? 'Your draft stays as it is.' : `Your draft will match v${version}.`
+    ].join(' ');
+}

@@ -104,6 +104,9 @@ export class EditorModel extends HoistModel {
         persistWith: {localStorageKey: 'blueprintsInspector'}
     });
 
+    /** True to show the Map's legend strip. */
+    @bindable @persist accessor showLegend = true;
+
     /** True while the dialog that makes a preset group shows. */
     @bindable accessor presetsDialogOpen = false;
 
@@ -501,16 +504,23 @@ export class EditorModel extends HoistModel {
     override destroy() {
         const {designModel} = this.shell ?? {};
         if (designModel?.onRequestAdd === this.requestAdd) designModel.onRequestAdd = null;
+        if (designModel?.onPreview === this.preview) designModel.onPreview = null;
         super.destroy();
     }
 
     // Opens the dock on Add, for the design keys' `/`.
     private readonly requestAdd = () => this.showTab('add');
 
+    // Goes to Preview and back, for the design keys' P. Only a writer's draft has a Preview.
+    private readonly preview = () => {
+        if (this.shell.canEdit) this.shell.togglePreview();
+    };
+
     override onLinked() {
         const {shell} = this,
             {blueprintModel} = shell;
         shell.designModel.onRequestAdd = this.requestAdd;
+        shell.designModel.onPreview = this.preview;
         if (shell.askArchitectOnOpen) {
             shell.askArchitectOnOpen = false;
             this.askArchitect();

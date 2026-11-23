@@ -1,10 +1,11 @@
-import type {BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
+import type {Blueprint, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
-import {bindable, compareStructural, observableRef, runInAction} from '@xh/hoist/mobx';
+import {bindable, compareStructural, computed, observableRef, runInAction} from '@xh/hoist/mobx';
 import {BlueprintShellModel} from '../BlueprintShellModel';
+import {EditorModel} from '../editor/EditorModel';
 import {libraryStatus} from '../libraryColumns';
-import {changeSummary} from './changeSummary';
+import {changeCount, changeSummary} from './changeSummary';
 import {documentStatus} from './documentStatus';
 import type {DocumentStatus} from './documentStatus';
 import {publishState} from './publishState';
@@ -20,8 +21,10 @@ export class DocumentBarModel extends HoistModel {
     @bindable accessor publishOpen = false;
     @bindable accessor note = '';
 
-    /** What changed since the last publish, as lines, or null while it loads. */
-    @observableRef accessor changes: string[] = null;
+    @lookup(EditorModel) editorModel: EditorModel;
+
+    /** The live publish's blueprint, which the draft's changes count against, or null. */
+    @observableRef accessor liveBlueprint: Blueprint = null;
 
     @managed switcherGridModel = new GridModel({
         store: {idSpec: 'id'},
@@ -48,6 +51,37 @@ export class DocumentBarModel extends HoistModel {
             {field: 'readOnly', hidden: true}
         ]
     });
+
+    /** What changed since the live publish, as lines, or null before a publish or while it loads. */
+    @computed
+    get changes(): string[] {
+        const {documentModel, blueprintModel} = this.shell,
+            doc = documentModel.document;
+        if (!doc?.publishedVersion) return doc ? [] : null;
+        if (!this.liveBlueprint) return null;
+        return changeSummary(
+            this.liveBlueprint,
+            blueprintModel.blueprint,
+            documentModel.pendingRenames
+        );
+    }
+
+    /** How many changes the draft holds since the live publish, as the popover counts them. */
+    @computed
+    get changeCount(): number {
+        const {documentModel, blueprintModel} = this.shell;
+        if (!documentModel.document?.publishedVersion || !this.liveBlueprint) return 0;
+        return changeCount(
+            this.liveBlueprint,
+            blueprintModel.blueprint,
+            documentModel.pendingRenames
+        );
+    }
+
+    /** Open History in the dock. */
+    openHistory() {
+        this.editorModel?.showTab('history');
+    }
 
     get status(): DocumentStatus {
         const {documentModel, isSaving, saveIssues, chatModel} = this.shell,
@@ -93,6 +127,14 @@ export class DocumentBarModel extends HoistModel {
     override onLinked() {
         const {shell} = this;
         this.addReaction({
+            track: () => {
+                const doc = shell.documentModel.document;
+                return [doc?.id, doc?.kind, doc?.publishedVersion];
+            },
+            run: () => this.loadLiveAsync(),
+            fireImmediately: true
+        });
+        this.addReaction({
             track: () => ({
                 rows: shell.summaries.map(it => {
                     const recent = shell.recentIds.indexOf(it.id);
@@ -130,31 +172,23 @@ export class DocumentBarModel extends HoistModel {
         this.shell.showLibraryAsync();
     }
 
-    /** Open the Publish popover, and read what changed since the last publish. */
-    async openPublishAsync() {
-        const {shell} = this,
-            {documentModel, blueprintModel, repository} = shell,
+    /** Open the Publish popover, with what changed since the last publish. */
+    openPublish() {
+        this.note = '';
+        this.publishOpen = true;
+    }
+
+    // Read the live publish, which the draft's changes count against.
+    private async loadLiveAsync() {
+        const {documentModel, repository} = this.shell,
             doc = documentModel.document;
-        runInAction(() => {
-            this.note = '';
-            this.changes = null;
-            this.publishOpen = true;
-        });
+        runInAction(() => (this.liveBlueprint = null));
+        if (doc?.kind !== 'draft' || !doc.publishedVersion) return;
         try {
-            const last = doc.publishedVersion
-                ? await repository.openAsync(doc.id, {as: 'publish'})
-                : null;
-            runInAction(
-                () =>
-                    (this.changes = changeSummary(
-                        last?.blueprint,
-                        blueprintModel.blueprint,
-                        documentModel.pendingRenames
-                    ))
-            );
+            const live = await repository.openAsync(doc.id, {as: 'publish'});
+            runInAction(() => (this.liveBlueprint = live?.blueprint ?? null));
         } catch (e) {
             XH.handleException(e, {showAlert: false});
-            runInAction(() => (this.changes = []));
         }
     }
 

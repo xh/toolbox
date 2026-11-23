@@ -1,6 +1,6 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import {describe, expect, it} from 'vitest';
-import {changeSummary} from './changeSummary';
+import {changeCount, changeSummary} from './changeSummary';
 
 const base: Blueprint = {
     root: 'dash',
@@ -69,5 +69,24 @@ describe('changeSummary', () => {
             '2 variables added',
             '1 source added'
         ]);
+    });
+});
+
+describe('changeCount', () => {
+    it('counts each change, as the summary lists them, not its lines', () => {
+        const to = edit(bp => {
+            bp.elements.grid.config.title = 'Grid';
+            bp.elements.chart.config.title = 'Chart';
+            bp.root = 'grid';
+        });
+        expect(changeSummary(base, to)).toEqual([
+            '2 elements changed',
+            'Blueprint settings changed'
+        ]);
+        expect(changeCount(base, to)).toBe(3);
+    });
+
+    it('counts nothing for equal blueprints', () => {
+        expect(changeCount(base, structuredClone(base))).toBe(0);
     });
 });

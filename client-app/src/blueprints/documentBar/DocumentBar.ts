@@ -5,20 +5,22 @@ import {spinner} from '@xh/hoist/cmp/spinner';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {segmentedControl, textArea} from '@xh/hoist/desktop/cmp/input';
+import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {useEffect} from 'react';
-import {arrowPointerIcon, handPointerIcon} from '../../core/Icons';
+import type {ReactNode} from 'react';
 import {blueprintMenu} from '../BlueprintMenu';
 import {DocumentBarModel} from './DocumentBarModel';
 import type {DocumentStatus} from './documentStatus';
 import {plural} from './publishState';
 
 /**
- * The open blueprint's bar: the way back to the library, the quick switcher, its status, undo and
- * redo, its issues, Design and Run, and Publish or the actions a publish allows.
+ * The open blueprint's bar. On the left, the document: Library, the quick switcher, its status and,
+ * for a writer's draft, undo and redo. On the right, publishing: issues, the live version, Publish,
+ * More, Expand and Fill. A publish open offers its restore, the draft and a copy instead, and a
+ * reader's version offers a copy. A writer's draft keeps each item in its place in every view.
  */
 export const documentBar = hoistCmp.factory({
     displayName: 'DocumentBar',
@@ -29,8 +31,56 @@ export const documentBar = hoistCmp.factory({
             {documentModel, blueprintModel, canEdit} = shell,
             doc = documentModel.document,
             shown = !!blueprintModel.blueprint && !shell.openIssues.some(isError),
-            isPublish = doc?.kind === 'publish',
             stale = documentModel.isStale;
+        let items: ReactNode[] = [filler()];
+        if (shown && status) {
+            if (canEdit) {
+                items = [
+                    statusChip(),
+                    ...(stale ? [] : undoRedo(model)),
+                    filler(),
+                    ...(stale
+                        ? []
+                        : [
+                              issuesChip(),
+                              liveLine(),
+                              publishButton({omit: !documentModel.canPublish})
+                          ])
+                ];
+            } else if (doc.access === 'write') {
+                items = [
+                    statusChip(),
+                    filler(),
+                    button({
+                        text: `Restore v${doc.version}`,
+                        tooltip: 'Bring this version into the draft',
+                        icon: Icon.reset(),
+                        onClick: () => shell.restoreVersionAsync(doc.version)
+                    }),
+                    button({
+                        text: 'Back to draft',
+                        icon: Icon.edit(),
+                        intent: 'primary',
+                        minimal: false,
+                        onClick: () => shell.openVersionAsync('draft')
+                    }),
+                    copyButton()
+                ];
+            } else {
+                items = [
+                    readerChip(),
+                    filler(),
+                    button({
+                        text: 'Back to the blueprint',
+                        icon: Icon.chevronLeft(),
+                        omit: shell.editorView === 'canvas',
+                        onClick: () => (shell.editorView = 'canvas')
+                    }),
+                    copyButton()
+                ];
+            }
+            items = [...items, blueprintMenu(), toolbarSep(), maximizeButtons()];
+        }
         return toolbar({
             className: 'tb-docbar',
             children: [
@@ -42,84 +92,80 @@ export const documentBar = hoistCmp.factory({
                 }),
                 toolbarSep(),
                 quickSwitcher(),
-                ...(shown && status
-                    ? [
-                          span({
-                              className: 'tb-docbar__status',
-                              title: stale
-                                  ? 'Saved elsewhere since you opened it, so your edits here are not saved. Reload to take the saved draft, or Save as new to keep yours.'
-                                  : status.tooltip,
-                              children: chip({
-                                  intent: status.intent,
-                                  size: 'compact',
-                                  round: true,
-                                  minimal: true,
-                                  icon: status.locked ? Icon.lock() : null,
-                                  rightIcon: saveIcon(status.saveState),
-                                  children: status.text
-                              })
-                          }),
-                          ...(stale ? staleActions(model) : []),
-                          interactionControl({
-                              omit: !canEdit || stale || blueprintModel.mode !== 'design'
-                          }),
-                          ...(canEdit && !stale ? undoRedo(model) : []),
-                          issuesChip(),
-                          filler(),
-                          segmentedControl({
-                              value: shell.editorView,
-                              onChange: v => (shell.editorView = v),
-                              options: [
-                                  {value: 'canvas', label: 'Canvas', icon: Icon.gridLarge()},
-                                  {value: 'map', label: 'Map', icon: Icon.treeList()},
-                                  {value: 'json', label: 'JSON', icon: Icon.code()}
-                              ]
-                          }),
-                          toolbarSep({omit: !canEdit}),
-                          segmentedControl({
-                              omit: !canEdit,
-                              value: blueprintModel.mode,
-                              onChange: mode => blueprintModel.setMode(mode),
-                              options: [
-                                  {
-                                      value: 'design',
-                                      label: 'Design',
-                                      icon: Icon.edit(),
-                                      intent: 'primary'
-                                  },
-                                  {value: 'run', label: 'Run', icon: Icon.play(), intent: 'success'}
-                              ]
-                          }),
-                          publishButton({
-                              omit: !canEdit || !documentModel.canPublish || stale
-                          }),
-                          button({
-                              text: 'Back to draft',
-                              icon: Icon.edit(),
-                              omit: !isPublish || doc.access !== 'write',
-                              onClick: () => shell.openVersionAsync('draft')
-                          }),
-                          button({
-                              text: `Restore v${doc?.version}`,
-                              tooltip: 'Bring this version into the draft',
-                              icon: Icon.reset(),
-                              omit: !isPublish || doc.access !== 'write',
-                              onClick: () => shell.restoreVersionAsync(doc.version)
-                          }),
-                          button({
-                              text: 'Make a copy',
-                              icon: Icon.copy(),
-                              omit: !isPublish,
-                              onClick: () => shell.copySelectedAsync()
-                          }),
-                          blueprintMenu(),
-                          toolbarSep(),
-                          maximizeButtons()
-                      ]
-                    : [filler()])
+                ...items
             ]
         });
     }
+});
+
+/** The status: the version, with a check when saved, a spinner while saving, or its state in words. */
+const statusChip = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) => {
+        const {status, shell} = model;
+        return span({
+            className: 'tb-docbar__status',
+            title: shell.documentModel.isStale
+                ? 'Saved elsewhere since you opened it, so your edits here are not saved.'
+                : status.tooltip,
+            children: chip({
+                intent: status.intent,
+                size: 'compact',
+                round: true,
+                minimal: true,
+                icon: status.locked ? Icon.lock() : null,
+                rightIcon: saveIcon(status.saveState),
+                children: status.text
+            })
+        });
+    }
+});
+
+/** A reader's version: neutral, as it is only read. */
+const readerChip = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) =>
+        span({
+            className: 'tb-docbar__status',
+            title: 'The published version you read',
+            children: chip({
+                size: 'compact',
+                round: true,
+                outlined: true,
+                children: `v${model.shell.documentModel.document.version} · published`
+            })
+        })
+});
+
+/** The live version, and how many changes the draft holds since it. A click opens History. */
+const liveLine = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) => {
+        const doc = model.shell.documentModel.document,
+            count = model.changeCount,
+            text = !doc.publishedVersion
+                ? 'Not published yet'
+                : `v${doc.publishedVersion} live${count ? ` · ${plural(count, 'change')}` : ''}`;
+        return div({
+            className: 'tb-docbar__live',
+            title: 'Show History',
+            onClick: () => model.openHistory(),
+            children: [
+                count ? span({className: 'tb-docbar__live-dot'}) : null,
+                span({className: 'tb-docbar__live-text', children: text})
+            ]
+        });
+    }
+});
+
+const copyButton = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) =>
+        button({
+            text: 'Make a copy',
+            icon: Icon.copy(),
+            onClick: () => model.shell.copySelectedAsync()
+        })
 });
 
 /**
@@ -216,57 +262,6 @@ const quickSwitcher = hoistCmp.factory<DocumentBarModel>({
         })
 });
 
-function staleActions(model: DocumentBarModel) {
-    const {shell} = model;
-    return [
-        button({
-            text: 'Reload',
-            icon: Icon.refresh(),
-            tooltip: 'Open the draft as it was saved elsewhere, discarding your edits here',
-            onClick: () => shell.reloadDraftAsync()
-        }),
-        button({
-            text: 'Save as new',
-            icon: Icon.copy(),
-            intent: 'primary',
-            minimal: false,
-            tooltip: 'Keep your edits here as a new blueprint',
-            onClick: () => shell.saveAsNewSelectedAsync()
-        })
-    ];
-}
-
-/** Edit, where a click on the canvas selects, or Interact, where it reaches the widget. */
-const interactionControl = hoistCmp.factory<DocumentBarModel>({
-    model: uses(DocumentBarModel),
-    render: ({model}) => {
-        const {designModel} = model.shell;
-        return designModel
-            ? span({
-                  title: 'Edit (E): click to select. Interact (I): click to use the widgets. ` switches between them.',
-                  children: segmentedControl({
-                      value: designModel.interaction,
-                      onChange: mode => designModel.setInteraction(mode),
-                      options: [
-                          {
-                              value: 'edit',
-                              label: 'Edit',
-                              icon: arrowPointerIcon(),
-                              intent: 'primary'
-                          },
-                          {
-                              value: 'interact',
-                              label: 'Interact',
-                              icon: handPointerIcon(),
-                              intent: 'warning'
-                          }
-                      ]
-                  })
-              })
-            : null;
-    }
-});
-
 // The saved check and the saving spinner take the same slot, so the chip keeps its width.
 function saveIcon(state: DocumentStatus['saveState']) {
     switch (state) {
@@ -308,23 +303,28 @@ function undoRedo(model: DocumentBarModel) {
     ];
 }
 
-/** A count of the blueprint's errors or warnings, opening the list. Each selects its target. */
+/** A count of the blueprint's errors, or else its warnings, opening the list. Each selects its target. */
 const issuesChip = hoistCmp.factory<DocumentBarModel>({
     model: uses(DocumentBarModel),
     render: ({model}) => {
         const {issues, errorCount} = model;
-        if (!issues.length) return null;
+        if (!issues.length) return div({className: 'tb-docbar__issues'});
         const warnings = issues.length - errorCount,
             text = errorCount ? plural(errorCount, 'error') : plural(warnings, 'warning');
         return popover({
-            position: 'bottom-left',
-            children: button({
-                className: 'tb-docbar__issues',
-                text,
-                icon: Icon.warning(),
-                intent: errorCount ? 'danger' : 'warning',
-                minimal: true,
-                tooltip: 'Show issues'
+            className: 'tb-docbar__issues',
+            position: 'bottom-right',
+            children: span({
+                title: `${text}: show them`,
+                children: chip({
+                    intent: errorCount ? 'danger' : 'warning',
+                    size: 'compact',
+                    round: true,
+                    minimal: true,
+                    icon: Icon.warning(),
+                    onClick: () => {},
+                    children: String(errorCount || warnings)
+                })
             }),
             content: menu({
                 className: 'tb-docbar__issue-list',
@@ -361,7 +361,7 @@ const publishButton = hoistCmp.factory<DocumentBarModel>({
                 minimal: false,
                 disabled,
                 tooltip,
-                onClick: () => model.openPublishAsync()
+                onClick: () => model.openPublish()
             }),
             content: publishPanel()
         });

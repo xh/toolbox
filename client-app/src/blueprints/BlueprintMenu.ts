@@ -12,14 +12,16 @@ import {showBlueprintsHelp} from './blueprintsHelp';
 import {libraryGroup} from './libraryColumns';
 import {copyLinkAsync} from './copyLink';
 
-/** The open blueprint's other actions: copy its link, share, copy, delete, and help. */
+/** The open blueprint's other actions: copy its link, share, copy, delete, a reader's views, and help. */
 export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
     model: uses(BlueprintShellModel),
     render: ({model}) => {
         const doc = model.documentModel,
             link = model.route ? blueprintLinkUrl(doc, model.route) : null,
             canShare = model.canEdit && doc.canShare,
-            isOwn = model.selected && libraryGroup(model.selected) === 'Yours';
+            isOwn = model.selected && libraryGroup(model.selected) === 'Yours',
+            // A reader has no view bar, so the views are here.
+            isReader = doc.document?.access === 'read';
 
         return popover({
             isOpen: model.shareOpen,
@@ -63,6 +65,19 @@ export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
                         intent: 'danger',
                         omit: !isOwn,
                         onClick: () => model.deleteSelectedAsync()
+                    }),
+                    menuDivider({omit: !isReader}),
+                    menuItem({
+                        text: 'Show the map',
+                        icon: Icon.treeList(),
+                        omit: !isReader,
+                        onClick: () => (model.editorView = 'map')
+                    }),
+                    menuItem({
+                        text: 'Show the JSON',
+                        icon: Icon.code(),
+                        omit: !isReader,
+                        onClick: () => (model.editorView = 'json')
                     }),
                     menuDivider(),
                     menuItem({

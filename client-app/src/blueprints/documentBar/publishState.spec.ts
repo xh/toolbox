@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {publishState} from './publishState';
+import {publishState, rollbackMessage} from './publishState';
 
 const incomplete = {
         code: 'config.incomplete',
@@ -56,5 +56,19 @@ describe('publishState', () => {
             finish: null,
             warning: null
         });
+    });
+});
+
+describe('rollbackMessage', () => {
+    it('says the draft stays as it is when it holds unpublished changes', () => {
+        expect(rollbackMessage(2, 5, true)).toBe(
+            'Publish v2 again, as v5, noted "Rolled back to v2"? Readers move to it when they next open the blueprint. Your draft stays as it is.'
+        );
+    });
+
+    it('says the draft will match the version when it holds none', () => {
+        expect(rollbackMessage(2, 5, false)).toBe(
+            'Publish v2 again, as v5, noted "Rolled back to v2"? Readers move to it when they next open the blueprint. Your draft will match v2.'
+        );
     });
 });

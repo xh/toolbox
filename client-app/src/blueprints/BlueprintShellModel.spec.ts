@@ -100,6 +100,21 @@ describe('Blueprints designer', () => {
         expect(model.blueprintModel.mode).toBe('design');
     });
 
+    it('previews a draft in run mode, and returns to the view it came from', async () => {
+        await model.selectAsync(byName(MINE).id);
+        model.editorView = 'map';
+        expect(model.blueprintModel.mode).toBe('design');
+
+        model.togglePreview();
+        expect(model.editorView).toBe('preview');
+        expect(model.blueprintModel.mode).toBe('run');
+
+        model.togglePreview();
+        expect(model.editorView).toBe('map');
+        expect(model.blueprintModel.mode).toBe('design');
+        model.editorView = 'canvas';
+    });
+
     it('saves edits to the draft as its next version', async () => {
         await model.selectAsync(byName(MINE).id);
         const {version} = model.documentModel.document;

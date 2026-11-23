@@ -8,6 +8,12 @@ const SECTIONS = [
     {key: 'presets', noun: 'preset group', renameKind: null}
 ] as const;
 
+interface Tally {
+    noun: string;
+    verb: string;
+    n: number;
+}
+
 /**
  * What changed from one blueprint to another, as lines such as "2 elements added", by section:
  * elements, variables, sources, preset groups, then anything else. A rename the draft records
@@ -18,7 +24,32 @@ export function changeSummary(
     to: Blueprint,
     renames: BlueprintRename[] = []
 ): string[] {
-    const ret: string[] = [];
+    const {tallies, settings} = tally(from, to, renames);
+    return [
+        ...tallies.map(({noun, verb, n}) => `${n} ${noun}${n === 1 ? '' : 's'} ${verb}`),
+        ...(settings ? ['Blueprint settings changed'] : [])
+    ];
+}
+
+/** How many changes {@link changeSummary} lists, each element, variable or source once. */
+export function changeCount(
+    from: Blueprint,
+    to: Blueprint,
+    renames: BlueprintRename[] = []
+): number {
+    const {tallies, settings} = tally(from, to, renames);
+    return tallies.reduce((sum, it) => sum + it.n, 0) + (settings ? 1 : 0);
+}
+
+//------------------
+// Implementation
+//------------------
+function tally(
+    from: Blueprint,
+    to: Blueprint,
+    renames: BlueprintRename[]
+): {tallies: Tally[]; settings: boolean} {
+    const tallies: Tally[] = [];
     SECTIONS.forEach(({key, noun, renameKind}) => {
         const a = from?.[key] ?? {},
             b = to?.[key] ?? {},
@@ -32,15 +63,14 @@ export function changeSummary(
             changed =
                 Object.keys(b).filter(it => it in a && !isEqual(a[it], b[it])).length +
                 pairs.filter(it => !isEqual(a[it.from], b[it.to])).length;
-        const line = (n: number, verb: string) => {
-            if (n) ret.push(`${n} ${noun}${n === 1 ? '' : 's'} ${verb}`);
+        const add = (n: number, verb: string) => {
+            if (n) tallies.push({noun, verb, n});
         };
-        line(added, 'added');
-        line(removed, 'removed');
-        line(pairs.length, 'renamed');
-        line(changed, 'changed');
+        add(added, 'added');
+        add(removed, 'removed');
+        add(pairs.length, 'renamed');
+        add(changed, 'changed');
     });
     const keys = SECTIONS.map(it => it.key);
-    if (from && !isEqual(omit(from, keys), omit(to, keys))) ret.push('Blueprint settings changed');
-    return ret;
+    return {tallies, settings: !!from && !isEqual(omit(from, keys), omit(to, keys))};
 }

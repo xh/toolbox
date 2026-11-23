@@ -14,7 +14,6 @@ import {
     BlueprintDocumentModel,
     BlueprintModel,
     DataCatalog,
-    diffBlueprints,
     isGlobal
 } from '@xh/hoist-chat-kit/blueprint';
 import type {ChatModel} from '@xh/hoist-chat-kit/core';
@@ -57,6 +56,7 @@ import type {LlmUsage} from './llmUsage';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import type {BlueprintTypeSpec} from './blueprintTypes';
+import {rollbackMessage} from './documentBar/publishState';
 import {maximizedOn} from './maximizedOn';
 
 /** The routes of a shell's library and reference pages. */
@@ -82,6 +82,9 @@ export const NONE_OF_YOURS = '__noneOfYours';
 
 // The local library this designer kept before blueprints moved to the server. Dropped on load.
 const OLD_LIBRARY_KEY = 'blueprints.designer.library';
+
+/** The editor's view: the canvas, the Map, the JSON, or Preview, the reader's view. */
+export type EditorView = 'canvas' | 'map' | 'json' | 'preview';
 
 export interface BlueprintShellConfig {
     /**
@@ -142,8 +145,11 @@ export class BlueprintShellModel extends HoistModel {
     /** True to open the next editor on the Architect, its composer focused. */
     @bindable accessor askArchitectOnOpen = false;
 
-    /** How the open blueprint shows: as its canvas, its wiring map, or JSON. */
-    @bindable accessor editorView: 'canvas' | 'map' | 'json' = 'canvas';
+    /** How the open blueprint shows: its canvas, its wiring map, its JSON, or Preview. */
+    @bindable accessor editorView: EditorView = 'canvas';
+
+    // The work view Preview returns to.
+    private lastWorkView: Exclude<EditorView, 'preview'> = 'canvas';
 
     /** The blueprints opened lately, latest first, for the quick switcher. */
     @bindable accessor recentIds: string[] = [];
@@ -359,6 +365,15 @@ export class BlueprintShellModel extends HoistModel {
         this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
         this.repository = config.repository ?? createRepository(config.type.name);
         this.addReaction(
+            // Preview is run mode, for a writer's draft. Leaving it returns to design.
+            {
+                track: () => this.editorView,
+                run: view => {
+                    if (view !== 'preview') this.lastWorkView = view;
+                    if (this.canEdit)
+                        this.blueprintModel?.setMode(view === 'preview' ? 'run' : 'design');
+                }
+            },
             // The page's root carries the class that hides the app's nav only while one of this
             // type's blueprints is open, so other pages, deep links and reloads always keep it.
             {
@@ -780,6 +795,12 @@ export class BlueprintShellModel extends HoistModel {
         }
     }
 
+    /** Go to Preview, or from it back to the view it came from. */
+    @action
+    togglePreview() {
+        this.editorView = this.editorView === 'preview' ? this.lastWorkView : 'preview';
+    }
+
     /** True if the user may republish an earlier version: they may publish, and the draft is current. */
     get canRollback(): boolean {
         const {documentModel} = this;
@@ -794,10 +815,11 @@ export class BlueprintShellModel extends HoistModel {
     /** Roll readers back to a publish, by restoring it and publishing it as the next version. */
     async rollbackAsync(version: number) {
         const next = (this.documentModel.document?.publishedVersion ?? 0) + 1,
+            draftHasChanges = await this.documentModel.hasUnpublishedChangesAsync(),
             confirmed = await XH.confirm({
                 title: `Republish v${version}`,
                 icon: Icon.upload(),
-                message: `Publish v${version} again, as v${next}, noted "Rolled back to v${version}"? Readers move to it when they next open the blueprint. Your draft stays as it is.`,
+                message: rollbackMessage(version, next, draftHasChanges),
                 confirmProps: {text: `Publish v${next}`, intent: 'primary'}
             });
         if (!confirmed) return;
@@ -836,7 +858,7 @@ export class BlueprintShellModel extends HoistModel {
         title: string,
         confirmText: string
     ): Promise<boolean> {
-        if (!(await this.hasUnpublishedChangesAsync())) return true;
+        if (!(await this.documentModel.hasUnpublishedChangesAsync())) return true;
         const choice = await XH.prompt<'copy' | 'replace'>({
             title,
             icon: Icon.reset(),
@@ -857,18 +879,6 @@ export class BlueprintShellModel extends HoistModel {
             await this.copyDraftAsync(`${this.selected.name} (before v${version})`);
         }
         return true;
-    }
-
-    // True if the draft differs from its latest publish, or nothing is published yet.
-    private async hasUnpublishedChangesAsync(): Promise<boolean> {
-        const doc = this.documentModel.document;
-        if (!doc.publishedVersion) return true;
-        const last = await this.repository.openAsync(doc.id, {as: 'publish'});
-        return !diffBlueprints(
-            last?.blueprint,
-            this.blueprintModel.blueprint,
-            this.documentModel.pendingRenames
-        ).isEmpty;
     }
 
     async clearConversationAsync() {
