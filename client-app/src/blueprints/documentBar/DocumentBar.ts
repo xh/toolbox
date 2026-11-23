@@ -1,6 +1,7 @@
-import {badge} from '@xh/hoist/cmp/badge';
+import {chip} from '@xh/hoist/cmp/chip';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
+import {spinner} from '@xh/hoist/cmp/spinner';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -12,6 +13,7 @@ import {useEffect} from 'react';
 import {arrowPointerIcon, handPointerIcon} from '../../core/Icons';
 import {blueprintMenu} from '../BlueprintMenu';
 import {DocumentBarModel} from './DocumentBarModel';
+import type {DocumentStatus} from './documentStatus';
 import {plural} from './publishState';
 
 /**
@@ -46,10 +48,12 @@ export const documentBar = hoistCmp.factory({
                               className: 'tb-docbar__status',
                               title: stale
                                   ? 'Saved elsewhere since you opened it, so your edits here are not saved. Reload to take the saved draft, or Save as new to keep yours.'
-                                  : status.text,
-                              children: badge({
+                                  : status.tooltip,
+                              children: chip({
                                   intent: status.intent,
+                                  size: 'compact',
                                   icon: status.locked ? Icon.lock() : null,
+                                  rightIcon: saveIcon(status.saveState),
                                   children: status.text
                               })
                           }),
@@ -253,6 +257,18 @@ const interactionControl = hoistCmp.factory<DocumentBarModel>({
             : null;
     }
 });
+
+// The saved check and the saving spinner take the same slot, so the chip keeps its width.
+function saveIcon(state: DocumentStatus['saveState']) {
+    switch (state) {
+        case 'saved':
+            return Icon.check();
+        case 'saving':
+            return spinner({compact: true});
+        default:
+            return null;
+    }
+}
 
 function undoRedo(model: DocumentBarModel) {
     const {blueprintModel, chatModel} = model.shell,

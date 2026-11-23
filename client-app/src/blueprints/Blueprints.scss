@@ -598,12 +598,16 @@
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
 
-    .xh-badge {
-      display: inline-block;
+    .xh-chip {
       max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
       vertical-align: middle;
+    }
+
+    // The spinner and the check share one slot.
+    .xh-chip .xh-spinner,
+    .xh-chip .svg-inline--fa:last-child {
+      width: 14px;
+      height: 14px;
     }
   }
 
