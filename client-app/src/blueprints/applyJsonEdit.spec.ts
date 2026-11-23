@@ -34,6 +34,20 @@ const edited = (fn: (bp: PlainObject) => void) => {
 };
 
 describe('applying edited JSON to a blueprint', () => {
+    it('changes nothing, and returns the refusal, while edits are blocked', () => {
+        const {version} = model;
+        model.setEditBlocker('Saved elsewhere.');
+        const result = applyJsonEdit(
+            model,
+            edited(bp => (bp.elements.posGrid.config.title = 'Blocked'))
+        );
+        expect(model.version).toBe(version);
+        expect(result.issues).toEqual([
+            expect.objectContaining({code: 'edit.blocked', message: 'Saved elsewhere.'})
+        ]);
+        model.setEditBlocker(null);
+    });
+
     it('applies the change as one edit, "Edit JSON", in history', () => {
         const {version} = model,
             result = applyJsonEdit(
