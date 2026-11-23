@@ -5,7 +5,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import type {FilterMatchMode} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import type {GridFindFieldProps} from '@xh/hoist/desktop/cmp/grid';
-import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
+import {gridCellFindField, gridFindField} from '@xh/hoist/desktop/cmp/grid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -117,6 +117,22 @@ export const gridFindFieldPanel = hoistCmp.factory({
                             children: gridFindField({
                                 gridModel: model.gridModel,
                                 includeFields: ['company'],
+                                width: 260
+                            })
+                        })
+                    }),
+                    demoSection({
+                        title: 'Find in Headers and Cells',
+                        note: 'Requires ag-Grid FindModule (Enterprise).',
+                        children: demoRow({
+                            label: 'gridCellFindField',
+                            info:
+                                'Like Excel Find - matching headers first, then cells, starting ' +
+                                'from the focused cell. Row selection is not changed. Esc focuses ' +
+                                'the match. enableHotkey: Ctrl+F focuses it.',
+                            children: gridCellFindField({
+                                gridModel: model.gridModel,
+                                enableHotkey: true,
                                 width: 260
                             })
                         })
