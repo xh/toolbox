@@ -5,30 +5,24 @@ import {
     architectPrompt,
     BlueprintModel,
     exampleBlueprintOf,
-    registryUsages
+    registryUsages,
+    variableLabel
 } from '@xh/hoist-chat-kit/blueprint';
-import type {ArchitectTarget} from '@xh/hoist-chat-kit/blueprint';
+import type {ArchitectTarget, BlueprintSelection} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import type {PlainObject} from '@xh/hoist/core';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
-import {isEmpty, isString, sortBy} from 'lodash';
+import {castArray, isEmpty, isString, sortBy} from 'lodash';
 import type {ReactNode} from 'react';
 import {BlueprintShellModel} from '../BlueprintShellModel';
-import type {ShownJson} from '../jsonDialog';
 import {formatOf} from '../catalog/CatalogModel';
 import type {RegistryEntry, RegistryKind, RegistryOrigin} from './registryEntries';
-import {registryEntries, sampleParams, schemaRows} from './registryEntries';
-import {
-    entryArchitect,
-    entryConfig,
-    entryExample,
-    entryJsonText,
-    entryName,
-    entryOutputs,
-    usedBadge
-} from './RegistryViews';
+import {registryEntries, sampleParams} from './registryEntries';
+import {schemaSections} from './registrySchema';
+import type {SchemaSection} from './registrySchema';
+import {entryName, usedBadge} from './RegistryViews';
 
 export type RegistryContext = 'dashboard' | 'answer';
 
@@ -60,11 +54,6 @@ export class RegistryModel extends HoistModel {
 
     /** The entry the detail shows. */
     @bindable accessor selectedId: string = null;
-
-    // The detail tab the user last picked, which entries keep showing while they have it.
-    private pickedTab: string = null;
-    // The tab last shown for a new entry, which is not a pick.
-    private autoTab: string = null;
 
     /** The selected widget's example, rendered live. */
     @observableRef accessor exampleModel: BlueprintModel = null;
@@ -113,29 +102,23 @@ export class RegistryModel extends HoistModel {
         ]
     });
 
-    @managed detailTabsModel = new TabContainerModel({
-        tabs: [
-            {id: 'example', title: 'Example', content: () => entryExample()},
-            {id: 'config', title: 'Config', content: () => entryConfig()},
-            {id: 'outputs', title: 'Outputs and presets', content: () => entryOutputs()},
-            {id: 'architect', title: 'What the Architect sees', content: () => entryArchitect()}
-        ]
+    /** "What the Architect sees", beside the entry. Closed by default, and kept per user. */
+    @managed architectPanelModel = new PanelModel({
+        side: 'right',
+        defaultSize: 400,
+        minSize: 260,
+        defaultCollapsed: true,
+        persistWith: {localStorageKey: 'tbBlueprintsRegistryArchitect'}
     });
 
-    @managed schemaGridModel = new GridModel({
-        treeMode: true,
-        expandLevel: 1,
-        store: {idSpec: 'id'},
-        emptyText: 'No schema',
-        columns: [
-            {field: 'name', isTreeColumn: true, width: 170},
-            {field: 'type', width: 130, tooltip: true},
-            {field: 'required', headerName: 'Req', width: 50, align: 'center'},
-            {field: 'default', width: 90, tooltip: true},
-            {field: 'annotations', width: 170, tooltip: true},
-            {field: 'description', flex: 1, minWidth: 200, tooltip: true}
-        ]
-    });
+    /** The section of the entry's page the index marks: the one at the top of the scroll. */
+    @bindable accessor activeAnchor: string = null;
+
+    /** A section to bring into view once it renders. */
+    @observableRef accessor scrollTarget: string = null;
+
+    /** The paths of the property cards shown open. */
+    @observableRef accessor expanded: Set<string> = new Set();
 
     get blueprintModel() {
         return this.panelModel.blueprintModel;
@@ -188,9 +171,6 @@ export class RegistryModel extends HoistModel {
         });
     }
 
-    /** The JSON the dialog shows, or null. */
-    @observableRef accessor shownJson: ShownJson = null;
-
     /** How many entries each origin has in the registry shown. */
     @computed
     get originCounts(): Record<RegistryOrigin, number> {
@@ -207,16 +187,53 @@ export class RegistryModel extends HoistModel {
             : [...origins, origin];
     }
 
-    @action
-    showEntryJson() {
+    /** The sections of the selected entry's page, in order, each one it has. */
+    get pageSections(): {id: string; title: string}[] {
+        const entry = this.selected,
+            spec = entry?.spec ?? {},
+            widget = entry?.kind === 'widget';
+        return [
+            {id: 'config', title: entry?.kind === 'action' ? 'Parameters' : 'Config'},
+            widget && !isEmpty(spec.children?.slots) ? {id: 'slots', title: 'Slots'} : null,
+            widget && !isEmpty(spec.outputs) ? {id: 'outputs', title: 'Outputs'} : null,
+            widget ? {id: 'presets', title: 'Presets and sizes'} : null,
+            {id: 'usage', title: 'Usage'}
+        ].filter(Boolean);
+    }
+
+    /** The selected entry's config, or an action's parameters, under its Inspector sections. */
+    @computed
+    get schemaSections(): SchemaSection[] {
         const entry = this.selected;
-        if (entry)
-            this.shownJson = {title: `${entry.name} (${entry.kind})`, json: entryJsonText(entry)};
+        if (!entry) return [];
+        const {spec} = entry;
+        return entry.kind === 'action'
+            ? schemaSections(spec.params)
+            : schemaSections(spec.config, spec.sections, spec.presetPaths);
     }
 
     @action
-    closeJson() {
-        this.shownJson = null;
+    toggleExpanded(path: string) {
+        const next = new Set(this.expanded);
+        next.has(path) ? next.delete(path) : next.add(path);
+        this.expanded = next;
+    }
+
+    /** Select an element or source of the draft open, in the editor. */
+    reveal(selection: BlueprintSelection) {
+        this.panelModel.designModel.select(selection);
+        this.panelModel.showEditor();
+    }
+
+    @action
+    goTo(section: string) {
+        this.activeAnchor = section;
+        this.scrollTarget = section;
+    }
+
+    @action
+    clearScrollTarget() {
+        this.scrollTarget = null;
     }
 
     /** True if the selected entry can be added to the draft open: a dashboard widget. */
@@ -314,10 +331,12 @@ export class RegistryModel extends HoistModel {
             const d = v.decl as PlainObject;
             return d.default?.resolver === entry.name || d.compute?.resolver === entry.name;
         });
-        if (vars.length) return vars.map(v => `${v.name} = ${JSON.stringify(v.value)}`).join(', ');
-        if (!isEmpty(entry.spec.args)) return 'Needs args - not used by this blueprint';
+        if (vars.length) return vars.map(v => `${v.name} = ${valueText(v.value)}`).join(', ');
+        if (!isEmpty(entry.spec.args)) {
+            return 'Takes arguments, so it has no value of its own. Use it in a variable to see one.';
+        }
         try {
-            return JSON.stringify(entry.spec.resolve({}));
+            return valueText(entry.spec.resolve({}));
         } catch (e) {
             return e.message;
         }
@@ -344,18 +363,29 @@ export class RegistryModel extends HoistModel {
         return {kinds, fields, sampleField};
     }
 
-    /** The selected renderer drawing the sample value, as for its first field. */
-    get rendererSample(): ReactNode {
+    // The field a renderer's sample is drawn as, and that field's renderer config.
+    private get rendererSetup(): {field: FieldDef; config: PlainObject} {
         const users = this.rendererUsers,
             spec = this.selected?.spec;
-        if (!users || !spec?.render) return null;
+        if (!users) return null;
         const field: FieldDef = users.sampleField ?? {
-                name: 'sample',
-                type: spec.appliesTo?.types?.[0] ?? 'string'
-            },
-            config = (
-                field.renderer && !isString(field.renderer) ? field.renderer : {}
-            ) as PlainObject,
+            name: 'sample',
+            type: spec.appliesTo?.types?.[0] ?? 'string'
+        };
+        return {
+            field,
+            config: (field.renderer && !isString(field.renderer)
+                ? field.renderer
+                : {}) as PlainObject
+        };
+    }
+
+    /** The selected renderer drawing the sample value, as for its first field. */
+    get rendererSample(): ReactNode {
+        const spec = this.selected?.spec,
+            setup = this.rendererSetup;
+        if (!setup || !spec?.render) return null;
+        const {field, config} = setup,
             raw = this.sampleValue ?? defaultSample(field, config),
             value = field.type === 'number' || field.type === 'int' ? Number(raw) : raw;
         try {
@@ -395,12 +425,11 @@ export class RegistryModel extends HoistModel {
             {
                 track: () => this.selected,
                 run: entry => {
-                    this.sampleValue = null;
+                    const setup = this.rendererSetup;
+                    this.sampleValue = setup ? defaultSample(setup.field, setup.config) : null;
                     this.showExample(entry);
-                    const schema =
-                        entry?.kind === 'action' ? entry.spec.params : entry?.spec.config;
-                    this.schemaGridModel.loadData(schemaRows(schema));
-                    this.enableTabs(entry);
+                    this.expanded = new Set();
+                    this.goTo('config');
                 },
                 fireImmediately: true
             },
@@ -408,12 +437,6 @@ export class RegistryModel extends HoistModel {
                 track: () => this.sections,
                 run: sections => this.loadList(sections),
                 fireImmediately: true
-            },
-            {
-                track: () => this.detailTabsModel.activeTabId,
-                run: id => {
-                    if (id !== this.autoTab) this.pickedTab = id;
-                }
             },
             {
                 track: () => this.listModel.selectedRecord,
@@ -452,31 +475,26 @@ export class RegistryModel extends HoistModel {
         listModel.selModel.select(keep ? this.selectedId : (rows[0]?.id ?? null));
     }
 
-    // Disable the tabs an entry has nothing for. Show the tab the user picked while the entry has
-    // it, else its example, else its config.
-    @action
-    private enableTabs(entry: RegistryEntry) {
-        const {detailTabsModel: tabs, pickedTab} = this,
-            kind = entry?.kind,
-            has = {
-                example:
-                    (kind === 'widget' && !!entry.spec.example) ||
-                    ['renderer', 'action', 'resolver'].includes(kind),
-                outputs: kind === 'widget'
-            };
-        tabs.findTab('example').setDisabled(!has.example);
-        tabs.findTab('outputs').setDisabled(!has.outputs);
-        const want =
-            pickedTab && !tabs.findTab(pickedTab).disabled
-                ? pickedTab
-                : has.example
-                  ? 'example'
-                  : 'config';
-        this.autoTab = want;
-        tabs.activateTab(want);
+    /** Why a variable type has no example: it has no prompt input, so a widget must set it. */
+    get noInputReason(): string {
+        const entry = this.selected;
+        if (
+            entry?.kind !== 'variableType' ||
+            entry.spec.input ||
+            entry.spec.matches !== entry.name
+        ) {
+            return null;
+        }
+        const setters = Object.entries(this.registry.widgets)
+            .filter(([, w]) => castArray(w.value?.type ?? []).includes(entry.name))
+            .map(([name]) => name);
+        return `It has no prompt input${setters.length ? `. Set it from a ${setters.join(' or ')}.` : '.'}`;
     }
 
     private exampleBlueprint(entry: RegistryEntry): Blueprint {
+        if (entry?.kind === 'variableType') {
+            return this.noInputReason ? null : variableTypeExample(entry);
+        }
         if (entry?.kind !== 'widget') return null;
         return exampleBlueprintOf({...entry.spec, name: entry.name}, this.blueprintModel.catalog)
             .blueprint;
@@ -489,9 +507,10 @@ export class RegistryModel extends HoistModel {
         this.exampleError = null;
         this.exampleNeedsBlueprint =
             entry?.kind === 'widget' && !!entry.spec.example && !this.exampleBlueprint(entry);
-        const blueprint = this.context === 'dashboard' ? this.exampleBlueprint(entry) : null;
+        const blueprint = this.exampleBlueprint(entry);
         if (!blueprint) return;
-        const {catalog, registry, dataProvider} = this.blueprintModel;
+        const {catalog, dataProvider} = this.blueprintModel,
+            {registry} = this;
         try {
             this.exampleModel = new BlueprintModel({blueprint, catalog, registry, dataProvider});
         } catch (e) {
@@ -522,5 +541,28 @@ function defaultSample(field: FieldDef, config: PlainObject): string {
     const intents = config.intents as PlainObject;
     if (intents) return Object.keys(intents)[0];
     if (field.type === 'number' || field.type === 'int') return '0.05';
-    return field.label ?? field.name;
+    return SAMPLES_BY_KIND[field.kind] ?? field.label ?? field.name;
+}
+
+// Sample values that read as real ones, by catalog kind.
+const SAMPLES_BY_KIND: Record<string, string> = {ticker: 'NVDA', identifier: 'US67066G1040'};
+
+// A variable of the type set by its prompt, which draws the type's input, over its value.
+function variableTypeExample(entry: RegistryEntry): Blueprint {
+    return {
+        variables: {
+            value: {
+                type: entry.name,
+                label: entry.spec.label ?? variableLabel(entry.name.split('.').pop()),
+                setBy: 'prompt'
+            }
+        },
+        root: 'value',
+        elements: {value: {component: 'markdown', config: {text: '`value` = {value}'}}}
+    } as Blueprint;
+}
+
+// A value as one reads it: a string as is, anything else as JSON.
+function valueText(value: unknown): string {
+    return isString(value) ? value : JSON.stringify(value);
 }

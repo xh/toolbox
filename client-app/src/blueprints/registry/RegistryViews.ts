@@ -1,17 +1,13 @@
 import {blueprintView} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {badge} from '@xh/hoist/cmp/badge';
-import {grid} from '@xh/hoist/cmp/grid';
-import {div, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
+import {div, hbox, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import type {PlainObject} from '@xh/hoist/core';
-import {jsonInput, segmentedControl, textInput} from '@xh/hoist/desktop/cmp/input';
+import {jsonInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {isEmpty} from 'lodash';
 import type {ReactNode} from 'react';
 import {md} from '../markdown';
 import {RegistryModel} from './RegistryModel';
-import type {RegistryEntry} from './registryEntries';
 
 /** A list row's name, with its label when it differs. */
 export function entryName(
@@ -39,34 +35,14 @@ export function usedBadge(count: number, usedAt: string[]): ReactNode {
 }
 
 /** The entry at work: a widget's example, live; a renderer's sample; an action's or resolver's output. */
-export const entryExample = hoistCmp.factory<RegistryModel>({
-    model: uses(() => RegistryModel),
-    render: ({model}) =>
-        panel({
-            tbar: [
-                span({className: 'tb-muted', children: 'Show as'}),
-                segmentedControl({
-                    bind: 'context',
-                    compact: true,
-                    options: [
-                        {value: 'dashboard', label: 'Dashboard'},
-                        {value: 'answer', label: 'Chat answer'}
-                    ]
-                }),
-                span({
-                    className: 'tb-muted',
-                    children: 'changes the example and where it is allowed'
-                })
-            ],
-            children: exampleBody()
-        })
-});
-
-const exampleBody = hoistCmp.factory<RegistryModel>({
+export const exampleBody = hoistCmp.factory<RegistryModel>({
     model: uses(() => RegistryModel),
     render: ({model}) => {
         const entry = model.selected;
         switch (entry?.kind) {
+            case 'variableType':
+                if (model.noInputReason) return placeholder(model.noInputReason);
+            // falls through
             case 'widget':
                 return model.exampleModel
                     ? panel({
@@ -83,26 +59,26 @@ const exampleBody = hoistCmp.factory<RegistryModel>({
                                   : 'Examples render in the Dashboard registry only.'
                       );
             case 'renderer': {
-                const users = model.rendererUsers;
-                return panel({
+                const field = model.rendererUsers.sampleField;
+                return hbox({
                     className: 'tb-registry__sample',
-                    tbar: [
-                        span(
-                            users.sampleField
-                                ? `As for ${users.sampleField.name}:`
-                                : 'Sample value:'
-                        ),
+                    children: [
+                        span({
+                            className: 'tb-registry__label',
+                            children: field?.label ?? field?.name ?? 'Value'
+                        }),
                         textInput({
                             bind: 'sampleValue',
                             placeholder: 'Sample value',
                             commitOnChange: true,
-                            width: 200
+                            width: 160
+                        }),
+                        span({className: 'tb-muted', children: '→'}),
+                        div({
+                            className: 'tb-registry__sample-body',
+                            children: model.rendererSample
                         })
-                    ],
-                    children: div({
-                        className: 'tb-registry__sample-body',
-                        children: model.rendererSample
-                    })
+                    ]
                 });
             }
             case 'action':
@@ -115,14 +91,13 @@ const exampleBody = hoistCmp.factory<RegistryModel>({
     }
 });
 
-/** What the entry is, and its config or parameter schema. */
-export const entryConfig = hoistCmp.factory<RegistryModel>({
+/** What the entry is: the facts of its kind, and its guidance. */
+export const entryFacts = hoistCmp.factory<RegistryModel>({
     model: uses(() => RegistryModel),
     render: ({model}) => {
         const entry = model.selected;
         if (!entry) return null;
         const {spec, kind} = entry,
-            usedAt = model.selectedUsedAt,
             guidance: Row = ['Guidance', md(spec.guidance)];
         let rows: Row[] = [];
         switch (kind) {
@@ -182,68 +157,12 @@ export const entryConfig = hoistCmp.factory<RegistryModel>({
                 rows = [['Widget', entry.widget], guidance];
                 break;
         }
-        const schema = kind === 'action' ? spec.params : spec.config;
-        return vbox({
-            className: 'tb-registry__config',
-            children: [
-                props([
-                    ...rows,
-                    ['Used by this blueprint', usedAt.length ? usedAt.join('\n') : 'No'],
-                    ['Allowed in', allowedIn(model)]
-                ]),
-                schema
-                    ? panel({
-                          title: kind === 'action' ? 'Parameters' : 'Config schema',
-                          icon: Icon.code(),
-                          compactHeader: true,
-                          flex: 1,
-                          minHeight: 200,
-                          children: grid({model: model.schemaGridModel})
-                      })
-                    : null
-            ]
-        });
+        return props(rows);
     }
 });
-
-/** A widget's outputs, preset paths, sizes, children and presentations. */
-export const entryOutputs = hoistCmp.factory<RegistryModel>({
-    model: uses(() => RegistryModel),
-    render: ({model}) => {
-        const spec = model.selected?.spec;
-        if (model.selected?.kind !== 'widget') return null;
-        return props([
-            [
-                'Outputs',
-                md(
-                    spec.outputs
-                        ?.map(
-                            (o: PlainObject) =>
-                                `- \`${o.name}\`: ${o.type}${o.description ? ` - ${o.description}` : ''}`
-                        )
-                        .join('\n')
-                ) ?? 'None'
-            ],
-            ['Preset paths', spec.presetPaths?.join(', ') || 'None'],
-            ['Sizes', describeSizes(spec.size)],
-            ['Terms', spec.terms?.join(', ')],
-            ['Children', spec.children ? (spec.children.accepts?.join(', ') ?? 'any') : null],
-            [
-                'Presentations',
-                ['panel', ...(spec.presentations ?? []).map((p: PlainObject) => p.name)].join(', ')
-            ]
-        ]);
-    }
-});
-
-/** A widget's example as JSON, or else the entry's spec, for the JSON dialog. */
-export function entryJsonText(entry: RegistryEntry): string {
-    const value = entry.kind === 'widget' && entry.spec.example ? entry.spec.example : entry.spec;
-    return safeJson(value);
-}
 
 /** What `describe_registry` gives the Architect for the entry, over the prompt's index. */
-export const entryArchitect = hoistCmp.factory<RegistryModel>({
+export const architectView = hoistCmp.factory<RegistryModel>({
     model: uses(() => RegistryModel),
     render: ({model}) =>
         vbox({
@@ -293,34 +212,4 @@ function props(rows: Row[]) {
                 span({className: 'tb-registry__value', children: value})
             ])
     });
-}
-
-function allowedIn(model: RegistryModel): string {
-    const entry = model.selected;
-    return [
-        model.isIn('dashboard', entry) ? 'dashboards' : null,
-        model.isIn('answer', entry) ? 'answers' : null
-    ]
-        .filter(Boolean)
-        .join(' and ');
-}
-
-function describeSizes(size: PlainObject): string {
-    if (!size) return null;
-    const fmt = (s: PlainObject) => (s ? `${s.w}×${s.h}` : null);
-    return [
-        `default ${fmt(size.default)}`,
-        size.min ? `min ${fmt(size.min)}` : null,
-        size.max ? `max ${fmt(size.max)}` : null
-    ]
-        .filter(Boolean)
-        .join(', ');
-}
-
-function safeJson(value: unknown): string {
-    try {
-        return JSON.stringify(value, (k, v) => (typeof v === 'function' ? '[function]' : v), 2);
-    } catch (e) {
-        return `Cannot show as JSON: ${e.message}`;
-    }
 }

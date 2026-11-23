@@ -1,4 +1,3 @@
-import {chip} from '@xh/hoist/cmp/chip';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div, filler, hbox, hframe, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
@@ -11,6 +10,7 @@ import classNames from 'classnames';
 import type {FieldDef} from '@xh/hoist-chat-kit/blueprint';
 import type {ReactNode} from 'react';
 import {useRef} from 'react';
+import {band, chips, tag} from '../cards';
 import {copyTextAsync} from '../copyLink';
 import {anchorProps, topAnchor, useScrollTarget} from '../scrollSpy';
 import {md} from '../markdown';
@@ -111,11 +111,11 @@ const datasetDetail = hoistCmp.factory<DatasetCardModel>(({model}) => {
             ...model.groups.map(group =>
                 div({
                     key: group.title,
-                    className: 'tb-catalog-detail__group',
+                    className: 'tb-card-group',
                     children: [
                         band(group.title, group.fields.length),
                         div({
-                            className: 'tb-catalog-detail__cards',
+                            className: 'tb-cards',
                             children: group.fields.map(f =>
                                 fieldCard({key: f.name, model, field: f})
                             )
@@ -248,13 +248,13 @@ const fieldCard = hoistCmp.factory<FieldCardProps>(({model, field}) => {
         props = fieldProps(field);
     return div({
         ...anchorProps(ANCHORS, `field:${model.ds.name}.${field.name}`),
-        className: classNames('tb-field-card', selected && 'tb-field-card--selected'),
+        className: classNames('tb-card', selected && 'tb-card--selected'),
         onClick: () => catalog.selectItem(item),
         children: [
             hbox({
-                className: 'tb-field-card__line',
+                className: 'tb-card__line',
                 children: [
-                    span({className: 'tb-field-card__name', children: field.name}),
+                    span({className: 'tb-card__name', children: field.name}),
                     field.label && field.label !== field.name
                         ? span({children: field.label})
                         : null,
@@ -265,10 +265,10 @@ const fieldCard = hoistCmp.factory<FieldCardProps>(({model, field}) => {
                     jsonButton(catalog, item)
                 ]
             }),
-            guidance ? div({className: 'tb-field-card__guidance', children: md(guidance)}) : null,
+            guidance ? div({className: 'tb-card__prose', children: md(guidance)}) : null,
             props.length
                 ? hbox({
-                      className: 'tb-field-card__props',
+                      className: 'tb-card__props',
                       children: props.map(([k, v]) =>
                           span({
                               key: k,
@@ -307,12 +307,12 @@ const kindsAndFormats = hoistCmp.factory<CatalogModel>({
                     children: [
                         band('Kinds', kinds.length),
                         div({
-                            className: 'tb-catalog-detail__cards',
+                            className: 'tb-cards',
                             children: kinds.map(name => kindCard({key: name, name}))
                         }),
                         band('Formats', formats.length),
                         div({
-                            className: 'tb-catalog-detail__cards',
+                            className: 'tb-cards',
                             children: formats.map(name => formatCard({key: name, name}))
                         })
                     ]
@@ -473,28 +473,6 @@ function samplesTable(samples: {value: number; text: ReactNode}[]) {
 //------------------
 // Implementation
 //------------------
-// A div, not a box, whose inline position would undo the sticky one.
-function band(title: string, count: number) {
-    return div({
-        className: 'tb-catalog-detail__band',
-        children: [span(title), span({className: 'tb-catalog-detail__band-count', children: count})]
-    });
-}
-
-function tag(text: string, intent?: Intent, title?: string) {
-    return span({
-        key: `tag-${text}`,
-        title,
-        children: chip({
-            className: 'xh-font-family-mono',
-            minimal: true,
-            size: 'compact',
-            intent,
-            children: text
-        })
-    });
-}
-
 function jsonButton(model: CatalogModel, item: CatalogItem) {
     return button({
         key: 'json',
@@ -527,40 +505,6 @@ function facts(rows: Fact[]) {
                     children: value
                 })
             ])
-    });
-}
-
-interface ChipSpec {
-    text: string;
-    title?: string;
-    /** As for the kind of thing it names: `success` for a dataset or source, none for an element. */
-    intent?: Intent;
-    onClick?: () => void;
-}
-
-function chips(specs: ChipSpec[]) {
-    return hbox({
-        className: 'tb-catalog-detail__chips',
-        children: specs.map((it, idx) => factChip({...it, key: `${idx}-${it.text}`}))
-    });
-}
-
-/** A chip for a fact, clickable when given an `onClick`, with its title as a tooltip. */
-function factChip({key, text, title, intent, onClick}: ChipSpec & {key?: string}) {
-    return span({
-        key,
-        className: 'tb-catalog-detail__chip',
-        title,
-        // Keeps a card behind the chip from taking the click.
-        onClick: onClick ? e => e.stopPropagation() : undefined,
-        children: chip({
-            className: 'xh-font-family-mono',
-            minimal: true,
-            size: 'compact',
-            intent,
-            onClick: onClick ? () => onClick() : undefined,
-            children: text
-        })
     });
 }
 
