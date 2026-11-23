@@ -191,19 +191,17 @@ export const sortableListPanel = hoistCmp.factory({
                                     })
                                 }),
                                 demoFrame({
-                                    label: 'Nested scroll',
-                                    info: "variant: 'divided' - drag to an edge to auto-scroll the box",
+                                    label: 'Scrolling',
+                                    info: "height: 180, variant: 'divided' - the items scroll inside the list; drag to an edge to auto-scroll",
                                     children: div({
                                         className: 'tb-sortable-list-panel__pad',
-                                        children: div({
-                                            className: 'tb-sortable-list-panel__scroll',
-                                            children: sortableList({
-                                                model,
-                                                bind: 'widgets',
-                                                variant: 'divided',
-                                                getItemLabel: (it: Entry) => it.name,
-                                                renderItem: (it: Entry) => entryRow({entry: it})
-                                            })
+                                        children: sortableList({
+                                            model,
+                                            bind: 'widgets',
+                                            variant: 'divided',
+                                            height: 180,
+                                            getItemLabel: (it: Entry) => it.name,
+                                            renderItem: (it: Entry) => entryRow({entry: it})
                                         })
                                     })
                                 }),
