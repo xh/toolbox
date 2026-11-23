@@ -11,6 +11,25 @@
   --xh-sortable-list-item-padding: 0;
 }
 
+.tb-sortable-list-panel__split {
+  align-items: stretch;
+}
+
+.tb-sortable-list-panel__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.tb-sortable-list-panel__value {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  gap: var(--xh-spacing-half);
+  width: 320px;
+  padding: var(--xh-spacing);
+  border-left: 1px solid var(--xh-border-color);
+}
+
 .tb-sortable-list-panel__scroll {
   height: 180px;
   overflow-y: auto;

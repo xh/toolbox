@@ -1,5 +1,5 @@
 import {chip} from '@xh/hoist/cmp/chip';
-import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, pre, span} from '@xh/hoist/cmp/layout';
 import type {SortableListProps, SortableReorderEvent} from '@xh/hoist/cmp/sortablelist';
 import {sortableList} from '@xh/hoist/cmp/sortablelist';
 import type {HoistProps} from '@xh/hoist/core';
@@ -162,65 +162,68 @@ export const sortableListPanel = hoistCmp.factory({
                     }),
                     demoSection({
                         title: 'Variants',
-                        children: demoGrid({
-                            columns: 2,
-                            children: [
-                                demoFrame({
-                                    label: 'Horizontal',
-                                    info: "orientation: 'horizontal', handle: 'item', chips as items",
-                                    children: div({
-                                        className:
-                                            'tb-sortable-list-panel__pad tb-sortable-list-panel__chips',
-                                        children: sortableList({
-                                            model,
-                                            bind: 'tabs',
-                                            orientation: 'horizontal',
-                                            handle: 'item',
-                                            getItemLabel: (it: Entry) => it.name,
-                                            renderItem: (it: Entry) =>
-                                                chip({
-                                                    outlined: true,
-                                                    size: 'large',
-                                                    children: it.name
-                                                })
-                                        })
-                                    })
-                                }),
-                                demoFrame({
-                                    label: 'Nested scroll',
-                                    info: "variant: 'divided' - drag to an edge to auto-scroll the box",
-                                    children: div({
-                                        className: 'tb-sortable-list-panel__pad',
+                        children: [
+                            demoGrid({
+                                columns: 3,
+                                children: [
+                                    demoFrame({
+                                        label: 'Horizontal',
+                                        info: "orientation: 'horizontal', wrap, handle: 'item', chips as items",
                                         children: div({
-                                            className: 'tb-sortable-list-panel__scroll',
+                                            className:
+                                                'tb-sortable-list-panel__pad tb-sortable-list-panel__chips',
                                             children: sortableList({
                                                 model,
-                                                bind: 'widgets',
-                                                variant: 'divided',
+                                                bind: 'tabs',
+                                                orientation: 'horizontal',
+                                                wrap: true,
+                                                handle: 'item',
+                                                getItemLabel: (it: Entry) => it.name,
+                                                renderItem: (it: Entry) =>
+                                                    chip({
+                                                        outlined: true,
+                                                        size: 'large',
+                                                        children: it.name
+                                                    })
+                                            })
+                                        })
+                                    }),
+                                    demoFrame({
+                                        label: 'Nested scroll',
+                                        info: "variant: 'divided' - drag to an edge to auto-scroll the box",
+                                        children: div({
+                                            className: 'tb-sortable-list-panel__pad',
+                                            children: div({
+                                                className: 'tb-sortable-list-panel__scroll',
+                                                children: sortableList({
+                                                    model,
+                                                    bind: 'widgets',
+                                                    variant: 'divided',
+                                                    getItemLabel: (it: Entry) => it.name,
+                                                    renderItem: (it: Entry) => entryRow({entry: it})
+                                                })
+                                            })
+                                        })
+                                    }),
+                                    demoFrame({
+                                        label: 'Disabled items',
+                                        info: "isItemDisabled, variant: 'spaced' - pinned columns stay put",
+                                        children: div({
+                                            className: 'tb-sortable-list-panel__pad',
+                                            children: sortableList({
+                                                model,
+                                                bind: 'columns',
+                                                variant: 'spaced',
+                                                isItemDisabled: (it: Entry) => it.pinned,
                                                 getItemLabel: (it: Entry) => it.name,
                                                 renderItem: (it: Entry) => entryRow({entry: it})
                                             })
                                         })
                                     })
-                                }),
-                                demoFrame({
-                                    label: 'Disabled items',
-                                    info: "isItemDisabled, variant: 'spaced' - pinned columns stay put",
-                                    children: div({
-                                        className: 'tb-sortable-list-panel__pad',
-                                        children: sortableList({
-                                            model,
-                                            bind: 'columns',
-                                            variant: 'spaced',
-                                            isItemDisabled: (it: Entry) => it.pinned,
-                                            getItemLabel: (it: Entry) => it.name,
-                                            renderItem: (it: Entry) => entryRow({entry: it})
-                                        })
-                                    })
-                                }),
-                                stepsEditor()
-                            ]
-                        })
+                                ]
+                            }),
+                            stepsEditor()
+                        ]
                     })
                 ]
             })
@@ -250,57 +253,81 @@ const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
         return demoFrame({
             label: 'Detail rows',
             info: "variant: 'divided', compact, handle at end, expandable rows - click a row or its chevron - and an Add row",
-            children: div({
-                className: 'tb-sortable-list-panel__pad',
+            children: hbox({
+                className: 'tb-sortable-list-panel__split',
                 children: [
-                    sortableList({
-                        model,
-                        bind: 'steps',
-                        variant: 'divided',
-                        compact: true,
-                        handle: 'end',
-                        getItemLabel: (it: Entry) => it.name,
-                        renderItem: (it: Entry) =>
-                            hbox({
-                                className: 'tb-sortable-list-panel__row',
-                                children: [
-                                    span({
-                                        className: 'tb-sortable-list-panel__name',
-                                        children: it.name
+                    div({
+                        className: 'tb-sortable-list-panel__pad tb-sortable-list-panel__main',
+                        children: [
+                            sortableList({
+                                model,
+                                bind: 'steps',
+                                variant: 'divided',
+                                compact: true,
+                                handle: 'end',
+                                getItemLabel: (it: Entry) => it.name,
+                                renderItem: (it: Entry) =>
+                                    hbox({
+                                        className: 'tb-sortable-list-panel__row',
+                                        children: [
+                                            span({
+                                                className: 'tb-sortable-list-panel__name',
+                                                children: it.name
+                                            }),
+                                            span({
+                                                className: 'tb-sortable-list-panel__meta',
+                                                children: it.meta
+                                            }),
+                                            filler(),
+                                            button({
+                                                icon: Icon.delete(),
+                                                intent: 'danger',
+                                                minimal: true,
+                                                small: true,
+                                                title: 'Remove',
+                                                onClick: () => model.removeStep(it.id)
+                                            })
+                                        ]
                                     }),
-                                    span({
-                                        className: 'tb-sortable-list-panel__meta',
-                                        children: it.meta
-                                    }),
-                                    filler(),
-                                    button({
-                                        icon: Icon.delete(),
-                                        intent: 'danger',
-                                        minimal: true,
-                                        small: true,
-                                        title: 'Remove',
-                                        onClick: () => model.removeStep(it.id)
+                                renderDetail: (it: Entry) =>
+                                    div({
+                                        className: 'tb-sortable-list-panel__detail',
+                                        children: `Settings for "${it.name}" - this slot spans the list's width.`
                                     })
-                                ]
                             }),
-                        renderDetail: (it: Entry) =>
-                            div({
-                                className: 'tb-sortable-list-panel__detail',
-                                children: `Settings for "${it.name}" - this slot spans the list's width.`
+                            button({
+                                className: 'tb-sortable-list-panel__add',
+                                icon: Icon.add(),
+                                text: 'Add step...',
+                                minimal: true,
+                                onClick: () => model.addStep()
                             })
+                        ]
                     }),
-                    button({
-                        className: 'tb-sortable-list-panel__add',
-                        icon: Icon.add(),
-                        text: 'Add step...',
-                        minimal: true,
-                        onClick: () => model.addStep()
+                    // Same label and code styles as the Playground's value readout.
+                    div({
+                        className: 'tb-sortable-list-panel__value',
+                        children: [
+                            span({
+                                className: 'tbox-demo-playground__config-label',
+                                children: 'Current value'
+                            }),
+                            pre({
+                                className: 'tbox-demo-playground__code',
+                                children: fmtEntries(model.steps)
+                            })
+                        ]
                     })
                 ]
             })
         });
     }
 });
+
+/** One entry per line, so a reorder reads at a glance. */
+function fmtEntries(entries: Entry[]): string {
+    return `[\n${entries.map(it => `    ${JSON.stringify(it)}`).join(',\n')}\n]`;
+}
 
 class SortableListPanelModel extends HoistModel {
     @bindable accessor variant: SortableListProps['variant'] = 'divided';
