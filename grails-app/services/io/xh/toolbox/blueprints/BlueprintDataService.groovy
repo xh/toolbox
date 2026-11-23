@@ -31,10 +31,11 @@ class BlueprintDataService extends BaseService {
     private static final List<String> WEATHER_DATASETS = ['weather', 'currentWeather']
 
     // The most rows a wide request may return, by dataset, with what to do past the cap.
-    static final Map<String, Integer> MAX_ROWS = [prices: 25_000, pnlHistory: 75_000]
+    static final Map<String, Integer> MAX_ROWS = [prices: 25_000, pnlHistory: 75_000, pnlBySector: 75_000]
     private static final Map<String, String> CAP_ADVICE = [
         prices    : 'Rows are symbols times trading days: name a symbol, filter by symbol, or shorten the window.',
-        pnlHistory: 'Rows are holdings times trading days: name a fund, filter by sector or symbol, or shorten the window.'
+        pnlHistory: 'Rows are holdings times trading days: name a fund, filter by sector or symbol, or shorten the window.',
+        pnlBySector: 'Rows are sectors times trading days: name a fund, or shorten the window.'
     ]
     Map<String, Integer> maxRows = new HashMap(MAX_ROWS)
 
@@ -48,7 +49,8 @@ class BlueprintDataService extends BaseService {
             ds.prices(p.symbol, p.start, p.end)
         },
         hypotheticalPortfolio: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.hypotheticalPortfolio(parseHoldings(ds, p.portfolio), p.asOf) },
-        pnlHistory : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.pnlHistory(p.asOf, p.start, p.fund) }
+        pnlHistory : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.pnlHistory(p.asOf, p.start, p.fund) },
+        pnlBySector: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.pnlBySector(p.asOf, p.start, p.fund) }
     ]
 
     private static final Map<String, Closure<Boolean>> LIVE = [
@@ -57,7 +59,8 @@ class BlueprintDataService extends BaseService {
         orders     : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) },
         prices   : { PortfolioDatasets ds, Map p -> ds.isLivePrices(p.start, p.end) },
         hypotheticalPortfolio: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
-        pnlHistory : { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) }
+        pnlHistory : { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
+        pnlBySector: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) }
     ]
 
     private static final Map<String, Closure> PARAM_FIELDS = [

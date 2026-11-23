@@ -62,7 +62,7 @@ class BlueprintCatalogSpec extends Specification {
 
         then:
         merged.json.label == 'Toolbox'
-        merged.datasets.keySet() as List == ['positions', 'fundSummary', 'pnlHistory', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
+        merged.datasets.keySet() as List == ['positions', 'fundSummary', 'pnlHistory', 'pnlBySector', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
         merged.fieldsFor('weather').temp.kind == 'temperature'
         merged.fieldsFor('positions').mktVal.kind == 'marketValue'
         merged.json.kinds.keySet().containsAll(['pnl', 'temperature'])
@@ -178,7 +178,7 @@ class BlueprintCatalogSpec extends Specification {
 
         where:
         problem                     | spec                                                                              || message
-        'unknown dataset'           | [dataset: 'trades']                                                               || "Unknown dataset 'trades'. Datasets: positions, fundSummary, pnlHistory, orders, prices, hypotheticalPortfolio"
+        'unknown dataset'           | [dataset: 'trades']                                                               || "Unknown dataset 'trades'. Datasets: positions, fundSummary, pnlHistory, pnlBySector, orders, prices, hypotheticalPortfolio"
         'missing required param'    | [dataset: 'positions', params: [:]]                                               || "Dataset 'positions' requires parameter 'asOf'"
         'unknown param'             | [dataset: 'positions', params: [asOf: '2026-11-18', book: 'x']]                   || "Unknown parameter 'book' for dataset 'positions'"
         'bad date'                  | [dataset: 'positions', params: [asOf: '11/18/2026']]                              || "Parameter 'asOf' of dataset 'positions' must be a localDate as YYYY-MM-DD, got '11/18/2026'"

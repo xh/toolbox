@@ -257,6 +257,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         expect:
         rows(spec).every { it.sector == 'Technology' }
         rows(spec)*.fund.unique().sort() == [F2, F1].sort()
+        rows(spec + [dataset: 'pnlBySector']).every { it.sector == 'Technology' && it.pnlDay != null }
 
         when:
         service.maxRows.pnlHistory = 1
@@ -274,7 +275,7 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
     def 'the catalog merges the portfolio and weather catalogs'() {
         expect:
         service.catalogJson.label == 'Toolbox'
-        service.catalogJson.datasets.keySet() as List == ['positions', 'fundSummary', 'pnlHistory', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
+        service.catalogJson.datasets.keySet() as List == ['positions', 'fundSummary', 'pnlHistory', 'pnlBySector', 'orders', 'prices', 'hypotheticalPortfolio', 'weather', 'currentWeather']
     }
 
     def 'weather datasets serve seeded rows without an API key, never live'() {

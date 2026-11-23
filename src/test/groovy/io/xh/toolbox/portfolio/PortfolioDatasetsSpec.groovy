@@ -144,6 +144,26 @@ class PortfolioDatasetsSpec extends Specification {
         ds.pnlHistory(D2, D4) == []
     }
 
+    def 'pnlBySector has a row per day, fund, strategy and sector, which sums pnlHistory'() {
+        given:
+        def ds = datasets()
+
+        when:
+        def bySector = ds.pnlBySector(D4)
+        def bySymbol = ds.pnlHistory(D4)
+        def grain = { Map r -> [r.day, r.fund, r.strategy, r.sector] }
+
+        then:
+        bySector*.id.unique().size() == bySector.size()
+        bySector.every { it.id == grain(it).join('|') && !it.containsKey('symbol') }
+        bySector.collectEntries { [grain(it), [it.pnlDay, it.cumPnl]] } ==
+            bySymbol.groupBy(grain).collectEntries { k, rs -> [k, [rs.sum { it.pnlDay }, rs.sum { it.cumPnl }]] }
+
+        and:
+        ds.pnlBySector(D4, D3, F1)*.day.unique().sort() == [D3, D4]*.toString()
+        ds.pnlBySector(D4, D3, F1)*.fund.unique() == [F1]
+    }
+
     def 'Greeks are set on options only, from underlying notional'() {
         when:
         def o = bySymbol(datasets().positions(D4), opt.symbol)
