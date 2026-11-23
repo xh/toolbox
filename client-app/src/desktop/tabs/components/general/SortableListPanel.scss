@@ -1,19 +1,47 @@
-// Rows draw their own box - SortableList adds only the drag chrome.
-.tb-sortable-list-panel__box {
-  width: 100%;
-  border: 1px solid var(--xh-border-color);
-  border-radius: var(--xh-border-radius);
-  overflow: hidden;
-}
+.tb-sortable-list-panel__playground {
+  // A fixed height, so adding items shows how the list behaves once it overflows.
+  height: 300px;
 
-.tb-sortable-list-panel__scroll {
-  height: 180px;
-  overflow-y: auto;
-  border: 1px solid var(--xh-border-color);
+  .tbox-demo-playground__instance {
+    min-height: 0;
+  }
+
+  // Not stretched to the band's height, so the list's own height props decide.
+  .tbox-demo-playground__instance-body {
+    flex: 1;
+    align-items: flex-start;
+    min-height: 0;
+  }
+
+  // The bound value fills the band's height, rather than the readout's usual 200px cap.
+  .tbox-demo-playground__value .tbox-demo-playground__code {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+  }
+
+  // The config snippet is short; the bound value, one item per line, needs the room.
+  .tbox-demo-playground__config {
+    flex: none;
+    width: 340px;
+  }
+
+  .tbox-demo-playground__value {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
 }
 
 .tb-sortable-list-panel__pad {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-spacing-half);
   padding: var(--xh-spacing);
+}
+
+// Chips draw their own frame - no row padding, and room between them.
+.tb-sortable-list-panel__chips {
   --xh-sortable-list-gap: 6px;
   --xh-sortable-list-item-padding: 0;
 }
@@ -23,12 +51,6 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
-}
-
-.tb-sortable-list-panel__box .xh-sortable-list__item,
-.tb-sortable-list-panel__scroll .xh-sortable-list__item {
-  background-color: var(--xh-bg);
-  border-bottom: 1px solid var(--xh-border-color);
 }
 
 .tb-sortable-list-panel__name {
@@ -46,9 +68,4 @@
   padding: var(--xh-spacing);
   background-color: var(--xh-bg-alt);
   font-size: var(--xh-font-size-small);
-}
-
-.tb-sortable-list-panel__add {
-  width: 100%;
-  justify-content: flex-start;
 }

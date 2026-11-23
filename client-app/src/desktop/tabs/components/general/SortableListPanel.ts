@@ -1,11 +1,10 @@
 import {chip} from '@xh/hoist/cmp/chip';
-import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
-import type {SortableListProps, SortableReorderEvent} from '@xh/hoist/cmp/sortablelist';
+import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
+import type {SortableListProps} from '@xh/hoist/cmp/sortablelist';
 import {sortableList} from '@xh/hoist/cmp/sortablelist';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, segmentedControl, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import {
@@ -102,6 +101,29 @@ export const sortableListPanel = hoistCmp.factory({
                     intent: 'primary',
                     children: [
                         wrapperOption({
+                            label: 'Sizing',
+                            info: 'maxHeight fits the items, then scrolls. A fixed height keeps its size.',
+                            control: segmentedControl({
+                                bind: 'sizing',
+                                fill: false,
+                                compact: true,
+                                options: [
+                                    {value: 'max', label: 'maxHeight'},
+                                    {value: 'fixed', label: 'height'}
+                                ]
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Variant',
+                            propName: 'SortableListProps.variant',
+                            control: segmentedControl({
+                                bind: 'variant',
+                                fill: false,
+                                compact: true,
+                                options: ['plain', 'divided', 'spaced']
+                            })
+                        }),
+                        wrapperOption({
                             label: 'Handle',
                             propName: 'SortableListProps.handle',
                             control: segmentedControl({
@@ -117,9 +139,51 @@ export const sortableListPanel = hoistCmp.factory({
                             control: switchInput({bind: 'compact'})
                         }),
                         wrapperOption({
+                            label: 'Removable',
+                            propName: 'SortableListProps.removable',
+                            control: switchInput({bind: 'removable'})
+                        }),
+                        wrapperOption({
+                            label: 'Remove on hover',
+                            propName: 'SortableListProps.showRemoveOnHover',
+                            control: switchInput({
+                                bind: 'showRemoveOnHover',
+                                disabled: !model.removable
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Add row',
+                            propName: 'SortableListProps.onAdd',
+                            control: switchInput({bind: 'addable'})
+                        }),
+                        wrapperOption({
                             label: 'Disabled',
                             propName: 'SortableListProps.disabled',
                             control: switchInput({bind: 'disabled'})
+                        }),
+                        wrapperOption({
+                            label: 'Scroll acceleration',
+                            propName: 'SortableListProps.scrollAcceleration',
+                            info: 'Auto-scroll speed while dragging near an edge. Add items to make the list scroll.',
+                            alignTop: true,
+                            control: vbox({
+                                width: 160,
+                                children: [
+                                    slider({
+                                        bind: 'scrollAcceleration',
+                                        min: 5,
+                                        max: 40,
+                                        stepSize: 5,
+                                        labelRenderer: false
+                                    }),
+                                    numberInput({
+                                        bind: 'scrollAcceleration',
+                                        width: 80,
+                                        min: 1,
+                                        max: 100
+                                    })
+                                ]
+                            })
                         })
                     ]
                 })
@@ -130,24 +194,30 @@ export const sortableListPanel = hoistCmp.factory({
                         title: 'Playground',
                         intent: 'primary',
                         children: demoPlayground({
-                            value: model.lastEvent,
-                            caption: 'Drag a grip, or Tab to one and use the keyboard.',
+                            className: 'tb-sortable-list-panel__playground',
+                            value: model.dims,
+                            caption:
+                                'Drag a grip, or Tab to one and use the keyboard. Delete or Backspace on a grip removes its item.',
                             config: fmtDemoConfig<SortableListProps>(
                                 'sortableList',
                                 model.listConfig
                             ),
-                            children: div({
-                                className: 'tb-sortable-list-panel__box',
-                                children: sortableList({
-                                    model,
-                                    bind: 'dims',
-                                    handle: model.handle,
-                                    compact: model.compact,
-                                    disabled: model.disabled,
-                                    getItemLabel: (it: Entry) => it.name,
-                                    onReorder: e => model.logReorder(e),
-                                    renderItem: (it: Entry) => entryRow({entry: it})
-                                })
+                            children: sortableList({
+                                model,
+                                bind: 'dims',
+                                flex: 1,
+                                ...model.sizeProps,
+                                variant: model.variant,
+                                handle: model.handle,
+                                compact: model.compact,
+                                disabled: model.disabled,
+                                scrollAcceleration: model.scrollAcceleration,
+                                getItemLabel: (it: Entry) => it.name,
+                                renderItem: (it: Entry) => entryRow({entry: it}),
+                                removable: model.removable,
+                                showRemoveOnHover: model.showRemoveOnHover,
+                                onAdd: model.addable ? () => model.newDim() : null,
+                                addText: 'Add dimension...'
                             })
                         })
                     }),
@@ -158,13 +228,15 @@ export const sortableListPanel = hoistCmp.factory({
                             children: [
                                 demoFrame({
                                     label: 'Horizontal',
-                                    info: "orientation: 'horizontal', handle: 'item', chips as items",
+                                    info: "orientation: 'horizontal', wrap, handle: 'item', chips as items",
                                     children: div({
-                                        className: 'tb-sortable-list-panel__pad',
+                                        className:
+                                            'tb-sortable-list-panel__pad tb-sortable-list-panel__chips',
                                         children: sortableList({
                                             model,
                                             bind: 'tabs',
                                             orientation: 'horizontal',
+                                            wrap: true,
                                             handle: 'item',
                                             getItemLabel: (it: Entry) => it.name,
                                             renderItem: (it: Entry) =>
@@ -177,27 +249,32 @@ export const sortableListPanel = hoistCmp.factory({
                                     })
                                 }),
                                 demoFrame({
-                                    label: 'Nested scroll',
-                                    info: 'Drag to an edge to auto-scroll the box',
+                                    label: 'Scrolling',
+                                    info: "height: 180, variant: 'divided' - the items scroll inside the list; drag to an edge to auto-scroll",
                                     children: div({
-                                        className: 'tb-sortable-list-panel__scroll',
+                                        className: 'tb-sortable-list-panel__pad',
                                         children: sortableList({
                                             model,
                                             bind: 'widgets',
+                                            variant: 'divided',
+                                            height: 180,
                                             getItemLabel: (it: Entry) => it.name,
                                             renderItem: (it: Entry) => entryRow({entry: it})
                                         })
                                     })
                                 }),
                                 demoFrame({
-                                    label: 'Disabled items',
-                                    info: 'isItemDisabled - pinned columns stay put',
+                                    label: 'Fixed items',
+                                    info: "variant: 'spaced', removable - pinned columns neither move nor can be removed",
                                     children: div({
-                                        className: 'tb-sortable-list-panel__box',
+                                        className: 'tb-sortable-list-panel__pad',
                                         children: sortableList({
                                             model,
                                             bind: 'columns',
-                                            isItemDisabled: (it: Entry) => it.pinned,
+                                            variant: 'spaced',
+                                            removable: true,
+                                            isItemMovable: (it: Entry) => !it.pinned,
+                                            isItemRemovable: (it: Entry) => !it.pinned,
                                             getItemLabel: (it: Entry) => it.name,
                                             renderItem: (it: Entry) => entryRow({entry: it})
                                         })
@@ -228,69 +305,48 @@ const entryRow = hoistCmp.factory<HoistProps & {entry: Entry}>({
     }
 });
 
-/** The Blueprints Inspector pattern: compact rows, trailing actions, one detail, an Add row. */
 const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
     displayName: 'SortableStepsEditor',
     render({model}) {
         return demoFrame({
             label: 'Detail rows',
-            info: 'compact, handle at end, expandable rows - click a row or its chevron - and an Add row',
+            info: "renderDetail, variant: 'divided', compact, handle at end - click a row or its chevron",
             children: div({
-                className: 'tb-sortable-list-panel__box',
-                children: [
-                    sortableList({
-                        model,
-                        bind: 'steps',
-                        compact: true,
-                        handle: 'end',
-                        getItemLabel: (it: Entry) => it.name,
-                        renderItem: (it: Entry) =>
-                            hbox({
-                                className: 'tb-sortable-list-panel__row',
-                                children: [
-                                    span({
-                                        className: 'tb-sortable-list-panel__name',
-                                        children: it.name
-                                    }),
-                                    span({
-                                        className: 'tb-sortable-list-panel__meta',
-                                        children: it.meta
-                                    }),
-                                    filler(),
-                                    button({
-                                        icon: Icon.delete(),
-                                        intent: 'danger',
-                                        minimal: true,
-                                        small: true,
-                                        title: 'Remove',
-                                        onClick: () => model.removeStep(it.id)
-                                    })
-                                ]
-                            }),
-                        renderDetail: (it: Entry) =>
-                            div({
-                                className: 'tb-sortable-list-panel__detail',
-                                children: `Settings for "${it.name}" - this slot spans the list's width.`
-                            })
-                    }),
-                    button({
-                        className: 'tb-sortable-list-panel__add',
-                        icon: Icon.add(),
-                        text: 'Add step...',
-                        minimal: true,
-                        onClick: () => model.addStep()
-                    })
-                ]
+                className: 'tb-sortable-list-panel__pad',
+                children: sortableList({
+                    model,
+                    bind: 'steps',
+                    variant: 'divided',
+                    compact: true,
+                    handle: 'end',
+                    getItemLabel: (it: Entry) => it.name,
+                    renderItem: (it: Entry) => entryRow({entry: it}),
+                    renderDetail: (it: Entry) =>
+                        div({
+                            className: 'tb-sortable-list-panel__detail',
+                            children: `Settings for "${it.name}" - this slot spans the list's width.`
+                        })
+                })
             })
         });
     }
 });
 
 class SortableListPanelModel extends HoistModel {
+    @bindable accessor variant: SortableListProps['variant'] = 'divided';
     @bindable accessor handle: SortableListProps['handle'] = 'start';
     @bindable accessor compact = false;
     @bindable accessor disabled = false;
-    @bindable accessor lastEvent: object = null;
+    @bindable accessor scrollAcceleration = 15;
+    @bindable accessor sizing: 'max' | 'fixed' = 'max';
+    @bindable accessor removable = true;
+    @bindable accessor addable = true;
+    @bindable accessor showRemoveOnHover = false;
+
+    /** Height props for the Playground list - sized to fit the Playground band. */
+    get sizeProps() {
+        return this.sizing === 'max' ? {maxHeight: 230} : {height: 230};
+    }
 
     @observableRef accessor dims: Entry[] = DIMS;
     @observableRef accessor tabs: Entry[] = TABS;
@@ -318,38 +374,29 @@ class SortableListPanelModel extends HoistModel {
         this.steps = v;
     }
 
-    @action
-    logReorder(e: SortableReorderEvent<Entry>) {
-        this.lastEvent = {
-            item: e.item.id,
-            fromIndex: e.fromIndex,
-            toIndex: e.toIndex,
-            source: e.source,
-            items: e.items.map(it => it.id)
-        };
-    }
-
-    @action
-    removeStep(id: string) {
-        this.steps = this.steps.filter(it => it.id !== id);
-    }
-
-    @action
-    addStep() {
-        const n = this.steps.length + 1;
-        this.steps = [...this.steps, {id: `s${Date.now()}`, name: `Step ${n}`, meta: 'new'}];
+    /** The data for a new item - the list adds it through `bind`. */
+    newDim(): Entry {
+        const n = this.dims.length + 1;
+        return {id: `d${Date.now()}`, name: `Dimension ${n}`, meta: 'string'};
     }
 
     get listConfig() {
-        const {handle, compact, disabled} = this;
+        const {variant, handle, compact, disabled, scrollAcceleration, removable, addable} = this,
+            {showRemoveOnHover} = this;
         return {
             bind: 'dims',
+            ...this.sizeProps,
+            variant: variant !== 'plain' ? variant : undefined,
             handle: handle !== 'start' ? handle : undefined,
             compact: compact || undefined,
             disabled: disabled || undefined,
+            scrollAcceleration: scrollAcceleration !== 15 ? scrollAcceleration : undefined,
             getItemLabel: raw('it => it.name'),
-            onReorder: raw('e => model.logReorder(e)'),
-            renderItem: raw('it => entryRow({entry: it})')
+            renderItem: raw('it => entryRow({entry: it})'),
+            removable: removable || undefined,
+            showRemoveOnHover: (removable && showRemoveOnHover) || undefined,
+            onAdd: addable ? raw('() => model.newDim()') : undefined,
+            addText: addable ? 'Add dimension...' : undefined
         };
     }
 }
