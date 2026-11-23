@@ -588,11 +588,9 @@
     font-size: var(--xh-font-size-large);
   }
 
-  // A fixed width, so saving and saved never move the controls after it. Longer states ellipsize,
-  // with the full text in the title.
+  // Sized to its chip, which keeps one width while saving: its check and spinner share a slot.
   &__status {
     flex: none;
-    width: 180px;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
 

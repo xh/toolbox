@@ -4,7 +4,7 @@ import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import {spinner} from '@xh/hoist/cmp/spinner';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -37,7 +37,7 @@ export const documentBar = hoistCmp.factory({
             if (canEdit) {
                 items = [
                     statusChip(),
-                    ...(stale ? [] : undoRedo(model)),
+                    ...(stale ? [] : [toolbarSep(), undoRedo(model)]),
                     filler(),
                     ...(stale
                         ? []
@@ -274,12 +274,13 @@ function saveIcon(state: DocumentStatus['saveState']) {
     }
 }
 
+// Undo and Redo, as one pair.
 function undoRedo(model: DocumentBarModel) {
     const {blueprintModel, chatModel} = model.shell,
         busy = chatModel?.isBusy,
         canUndo = blueprintModel.canUndo && !busy,
         canRedo = blueprintModel.canRedo && !busy;
-    return [
+    return buttonGroup(
         button({
             icon: Icon.undo(),
             minimal: true,
@@ -300,7 +301,7 @@ function undoRedo(model: DocumentBarModel) {
                 : 'Nothing to redo',
             onClick: () => model.redo()
         })
-    ];
+    );
 }
 
 /** A count of the blueprint's errors, or else its warnings, opening the list. Each selects its target. */
