@@ -662,7 +662,6 @@
 .xh-app
   .tb-dock__rail
   .xh-button.bp6-button.xh-button--minimal.xh-button--intent-none.tb-dock__rail-button {
-  position: relative;
   width: 32px;
   height: 32px;
   color: var(--xh-text-color-muted);
@@ -676,21 +675,9 @@
     background-color: var(--xh-bg-highlight);
   }
 
-  // The bar sits on the rail's outer edge, 4px out from the centred 32px button.
   &.tb-dock__rail-button--on {
     color: var(--xh-intent-primary-text-color);
     background-color: var(--xh-intent-primary-trans1);
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 5px;
-      bottom: 5px;
-      left: -4px;
-      width: 3px;
-      border-radius: 0 2px 2px 0;
-      background-color: var(--xh-intent-primary-text-color);
-    }
   }
 }
 
