@@ -119,18 +119,13 @@ const maximizeButtons = hoistCmp.factory<DocumentBarModel>({
             set = (v: typeof maximize) => (shell.maximize = maximize === v ? 'off' : v);
         useEffect(() => {
             if (maximize === 'off') return;
-            const cls = 'tb-blueprints-maximized',
-                onKeyDown = (e: KeyboardEvent) => {
-                    if (e.key === 'Escape' && !e.defaultPrevented && !shell.designModel.selection) {
-                        shell.maximize = 'off';
-                    }
-                };
-            document.body.classList.add(cls);
-            window.addEventListener('keydown', onKeyDown);
-            return () => {
-                document.body.classList.remove(cls);
-                window.removeEventListener('keydown', onKeyDown);
+            const onKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'Escape' && !e.defaultPrevented && !shell.designModel.selection) {
+                    shell.maximize = 'off';
+                }
             };
+            window.addEventListener('keydown', onKeyDown);
+            return () => window.removeEventListener('keydown', onKeyDown);
         }, [maximize, shell]);
         return hbox({
             className: 'tb-docbar__maximize',

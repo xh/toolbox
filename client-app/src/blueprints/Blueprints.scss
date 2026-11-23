@@ -735,8 +735,8 @@
   font-weight: 600;
 }
 
-// The switcher's box sets its display inline.
-body.tb-blueprints-maximized .tb-switcher {
+// The switcher's box sets its display inline. Each blueprint type's shell sets its own class.
+body[class*='tb-blueprints-maximized--'] .tb-switcher {
   display: none !important;
 }
 

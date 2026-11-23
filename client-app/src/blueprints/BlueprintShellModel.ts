@@ -54,6 +54,7 @@ import type {LlmUsage} from './llmUsage';
 import {createRepository} from './repository/createRepository';
 import {ServerDataProvider} from './ServerDataProvider';
 import type {BlueprintTypeSpec} from './blueprintTypes';
+import {maximizedOn} from './maximizedOn';
 
 /** The routes of a shell's library and reference pages. */
 export interface PageRoutes {
@@ -120,6 +121,11 @@ export class BlueprintShellModel extends HoistModel {
      * the page bar, leaving the editor the whole area under the app bar.
      */
     @bindable accessor maximize: 'off' | 'expand' | 'fill' = 'off';
+
+    /** The root class that hides the app's nav while this type's editor is maximized. */
+    get maximizedClass(): string {
+        return `tb-blueprints-maximized--${this.type.name.replace(/\W/g, '-')}`;
+    }
 
     /** How the library shows its blueprints: as a list, or as cards with schematics. */
     @bindable accessor libraryView: 'list' | 'cards' = 'list';
@@ -350,6 +356,14 @@ export class BlueprintShellModel extends HoistModel {
         this.createProvider = config.createProvider ?? (() => new ServerDataProvider());
         this.repository = config.repository ?? createRepository(config.type.name);
         this.addReaction(
+            // The page's root carries the class that hides the app's nav only while one of this
+            // type's blueprints is open, so other pages, deep links and reloads always keep it.
+            {
+                track: () =>
+                    maximizedOn(this.maximize, XH.routerState?.name, this.pageRoutes?.library),
+                run: on => document.body.classList.toggle(this.maximizedClass, on),
+                fireImmediately: true
+            },
             // Keeps the choice however it changes: the docbar's control, or E and I on the canvas.
             {
                 track: () => this.designModel?.interaction,
