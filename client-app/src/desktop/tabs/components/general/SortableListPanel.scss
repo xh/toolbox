@@ -1,21 +1,19 @@
-// Rows draw their own box - SortableList adds only the drag chrome.
-.tb-sortable-list-panel__box {
-  width: 100%;
-  border: 1px solid var(--xh-border-color);
-  border-radius: var(--xh-border-radius);
-  overflow: hidden;
+.tb-sortable-list-panel__pad {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xh-spacing-half);
+  padding: var(--xh-spacing);
+}
+
+// Chips draw their own frame - no row padding, and room between them.
+.tb-sortable-list-panel__chips {
+  --xh-sortable-list-gap: 6px;
+  --xh-sortable-list-item-padding: 0;
 }
 
 .tb-sortable-list-panel__scroll {
   height: 180px;
   overflow-y: auto;
-  border: 1px solid var(--xh-border-color);
-}
-
-.tb-sortable-list-panel__pad {
-  padding: var(--xh-spacing);
-  --xh-sortable-list-gap: 6px;
-  --xh-sortable-list-item-padding: 0;
 }
 
 .tb-sortable-list-panel__row {
@@ -23,12 +21,6 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
-}
-
-.tb-sortable-list-panel__box .xh-sortable-list__item,
-.tb-sortable-list-panel__scroll .xh-sortable-list__item {
-  background-color: var(--xh-bg);
-  border-bottom: 1px solid var(--xh-border-color);
 }
 
 .tb-sortable-list-panel__name {
@@ -49,6 +41,5 @@
 }
 
 .tb-sortable-list-panel__add {
-  width: 100%;
-  justify-content: flex-start;
+  align-self: flex-start;
 }
