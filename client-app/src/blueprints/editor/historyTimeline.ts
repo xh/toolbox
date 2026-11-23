@@ -5,6 +5,7 @@ import type {
     BlueprintPublish,
     BlueprintSelection
 } from '@xh/hoist-chat-kit/blueprint';
+import {ROLLBACK_AUTHOR} from '@xh/hoist-chat-kit/blueprint';
 import {orderBy} from 'lodash';
 
 /** A row of the History tab: an edit, or a publish. */
@@ -35,7 +36,8 @@ const KINDS: Record<string, BlueprintSelection['kind']> = {
 };
 
 /**
- * The edits since the blueprint opened and its publishes, newest first. Edits carry no time of
+ * The edits since the blueprint opened and its publishes, newest first, leaving out a rollback's
+ * own edits, which its publish row stands for. Edits carry no time of
  * their own, so `stamps` gives each edit's time by version.
  */
 export function historyTimeline(
@@ -45,7 +47,7 @@ export function historyTimeline(
 ): TimelineRow[] {
     const undone = undoneVersions(history),
         edits: TimelineRow[] = history
-            .filter(it => it.undoes == null && it.redoes == null)
+            .filter(it => it.undoes == null && it.redoes == null && it.author !== ROLLBACK_AUTHOR)
             .map(it => ({
                 id: `edit-${it.version}`,
                 kind: 'edit',

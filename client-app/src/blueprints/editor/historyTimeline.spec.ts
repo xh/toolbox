@@ -1,3 +1,4 @@
+import {ROLLBACK_AUTHOR} from '@xh/hoist-chat-kit/blueprint';
 import {describe, expect, it} from 'vitest';
 import {editTarget, historyTimeline} from './historyTimeline';
 
@@ -47,6 +48,19 @@ describe('historyTimeline', () => {
         });
         expect(rows[1]).toMatchObject({kind: 'edit', pinned: false});
         expect(rows[1].label).toBeUndefined();
+    });
+
+    it("leaves out a rollback's own edits, keeping the user's restore", () => {
+        const rows = historyTimeline(
+            [
+                edit(1, {description: 'Restore v1'}),
+                edit(2, {author: ROLLBACK_AUTHOR, description: 'Restore v2'}),
+                edit(3, {author: ROLLBACK_AUTHOR, description: 'Reapply unpublished changes'})
+            ],
+            [],
+            {1: 100, 2: 200, 3: 300}
+        );
+        expect(rows.map(it => it.description)).toEqual(['Restore v1']);
     });
 
     it('folds undo and redo into the original edit: struck while undone', () => {
