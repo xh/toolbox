@@ -923,25 +923,8 @@ body[class*='tb-blueprints-maximized--'] .tb-switcher {
     background-color: var(--xh-intent-success-trans1);
   }
 
-  &__tab.xh-button {
-    height: 100%;
-    border-radius: 0;
-    box-shadow: inset 0 -2px transparent;
-
-    &.tb-viewbar__tab--active {
-      box-shadow: inset 0 -2px var(--xh-intent-primary);
-    }
-
-    &.tb-viewbar__tab--preview.tb-viewbar__tab--active {
-      box-shadow: inset 0 -2px var(--xh-intent-success);
-    }
-  }
-
-  &__divider {
-    width: 1px;
-    height: 18px;
-    margin: 0 var(--xh-spacing-half);
-    background-color: var(--xh-border-color);
+  &__tabs {
+    align-self: stretch;
   }
 
   &__tools {

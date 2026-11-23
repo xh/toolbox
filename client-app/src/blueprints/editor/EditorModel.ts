@@ -8,6 +8,7 @@ import {diffBlueprints} from '@xh/hoist-chat-kit/blueprint';
 import {hbox, span} from '@xh/hoist/cmp/layout';
 import {badge} from '@xh/hoist/cmp/badge';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistModel, lookup, managed, persist, XH} from '@xh/hoist/core';
 import type {PersistOptions} from '@xh/hoist/core';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
@@ -17,6 +18,7 @@ import {Icon} from '@xh/hoist/icon';
 import {action, bindable, computed, observable, observableRef, runInAction} from '@xh/hoist/mobx';
 import {applyJsonEdit} from '../applyJsonEdit';
 import {BlueprintShellModel} from '../BlueprintShellModel';
+import type {EditorView} from '../BlueprintShellModel';
 import {tag} from '../cards';
 import {md} from '../markdown';
 import {compareRows} from './compareRows';
@@ -102,6 +104,25 @@ export class EditorModel extends HoistModel {
         minSize: 280,
         collapsible: true,
         persistWith: {localStorageKey: 'blueprintsInspector'}
+    });
+
+    /**
+     * The views, as tabs for the view bar's switcher only: the shell's `editorView` is the view
+     * shown, and the two follow each other. Preview is a writer's draft's only.
+     */
+    @managed viewTabsModel = new TabContainerModel({
+        tabs: [
+            {id: 'canvas', title: 'Canvas', icon: Icon.gridLarge(), content: () => null},
+            {id: 'map', title: 'Map', icon: Icon.treeList(), content: () => null},
+            {id: 'json', title: 'JSON', icon: Icon.code(), content: () => null},
+            {
+                id: 'preview',
+                title: 'Preview',
+                icon: Icon.eye(),
+                tooltip: "The reader's view (P)",
+                content: () => null
+            }
+        ]
     });
 
     /** True to show the Map's legend strip. */
@@ -526,6 +547,26 @@ export class EditorModel extends HoistModel {
             this.askArchitect();
         }
         this.addReaction(
+            {
+                track: () => shell.editorView,
+                run: view => {
+                    if (this.viewTabsModel.activeTabId !== view)
+                        this.viewTabsModel.activateTab(view);
+                },
+                fireImmediately: true
+            },
+            {
+                track: () => this.viewTabsModel.activeTabId,
+                run: id => {
+                    if (shell.editorView !== id) shell.editorView = id as EditorView;
+                }
+            },
+            {
+                track: () => shell.canEdit,
+                run: canEdit =>
+                    (this.viewTabsModel.findTab('preview').excludeFromSwitcher = !canEdit),
+                fireImmediately: true
+            },
             {
                 track: () => this.currentJson,
                 run: (json, prev) => {

@@ -7,10 +7,10 @@ import {
     widgetPalette
 } from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {grid} from '@xh/hoist/cmp/grid';
+import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {div, filler, hbox, hframe, placeholder, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import type {HoistProps, Intent} from '@xh/hoist/core';
-import type {ReactElement} from 'react';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     jsonInput,
@@ -25,7 +25,6 @@ import {dialog} from '@xh/hoist/kit/blueprint';
 import classNames from 'classnames';
 import {architectChat, architectHeaderItems} from '../ArchitectPanel';
 import {arrowPointerIcon, handPointerIcon} from '../../core/Icons';
-import type {EditorView} from '../BlueprintShellModel';
 import {tag} from '../cards';
 import {documentBar} from '../documentBar/DocumentBar';
 import {EditorModel} from './EditorModel';
@@ -301,71 +300,28 @@ const publishDetailsDialog = hoistCmp.factory<EditorModel>({
 //------------------
 // View bar
 //------------------
-const VIEWS: {id: EditorView; label: string; icon: () => ReactElement}[] = [
-    {id: 'canvas', label: 'Canvas', icon: () => Icon.gridLarge()},
-    {id: 'map', label: 'Map', icon: () => Icon.treeList()},
-    {id: 'json', label: 'JSON', icon: () => Icon.code()}
-];
-
 /**
- * The view bar, over the content for a writer: Canvas, Map and JSON, then Preview for a draft,
- * with the tools of the view shown at the right. A reader has none.
+ * The view bar, over the content for a writer: the views as tabs, Canvas, Map, JSON and, for a
+ * draft, Preview, with the tools of the view shown at the right. A reader has none.
  */
 const viewBar = hoistCmp.factory<EditorModel>({
     model: uses(EditorModel),
     render: ({model}) => {
         const {shell} = model,
-            doc = shell.documentModel.document,
-            view = shell.editorView,
-            preview = view === 'preview';
+            doc = shell.documentModel.document;
         if (!model.shown || doc?.access !== 'write') return null;
         return hbox({
-            className: classNames('tb-viewbar', preview && 'tb-viewbar--preview'),
+            className: classNames(
+                'tb-viewbar',
+                shell.editorView === 'preview' && 'tb-viewbar--preview'
+            ),
             children: [
-                ...VIEWS.map(it => viewTab({key: it.id, ...it, active: view === it.id})),
-                ...(shell.canEdit
-                    ? [
-                          div({className: 'tb-viewbar__divider'}),
-                          viewTab({
-                              key: 'preview',
-                              id: 'preview',
-                              label: 'Preview',
-                              icon: Icon.eye,
-                              active: preview,
-                              title: "The reader's view (P)"
-                          })
-                      ]
-                    : []),
+                tabSwitcher({model: model.viewTabsModel, className: 'tb-viewbar__tabs'}),
                 filler(),
                 viewTools()
             ]
         });
     }
-});
-
-interface ViewTabProps extends HoistProps<EditorModel> {
-    id: EditorView;
-    label: string;
-    icon: () => ReactElement;
-    active: boolean;
-    title?: string;
-}
-
-const viewTab = hoistCmp.factory<ViewTabProps>({
-    model: uses(EditorModel),
-    render: ({model, id, label, icon, active, title}) =>
-        button({
-            className: classNames(
-                'tb-viewbar__tab',
-                active && 'tb-viewbar__tab--active',
-                id === 'preview' && 'tb-viewbar__tab--preview'
-            ),
-            text: label,
-            icon: icon(),
-            minimal: true,
-            title,
-            onClick: () => (model.shell.editorView = id)
-        })
 });
 
 /** The tools of the view shown. */
