@@ -234,7 +234,7 @@ const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
     render({model}) {
         return demoFrame({
             label: 'Detail rows',
-            info: 'compact, handle at end, renderDetail, an Add row after the list',
+            info: 'compact, handle at end, expandable rows - click a row or its chevron - and an Add row',
             children: div({
                 className: 'tb-sortable-list-panel__box',
                 children: [
@@ -258,16 +258,6 @@ const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
                                     }),
                                     filler(),
                                     button({
-                                        icon:
-                                            model.expandedId === it.id
-                                                ? Icon.chevronUp()
-                                                : Icon.chevronDown(),
-                                        minimal: true,
-                                        small: true,
-                                        title: 'Edit',
-                                        onClick: () => model.toggleExpanded(it.id)
-                                    }),
-                                    button({
                                         icon: Icon.delete(),
                                         intent: 'danger',
                                         minimal: true,
@@ -278,12 +268,10 @@ const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
                                 ]
                             }),
                         renderDetail: (it: Entry) =>
-                            model.expandedId === it.id
-                                ? div({
-                                      className: 'tb-sortable-list-panel__detail',
-                                      children: `Settings for "${it.name}" - this slot spans the list's width.`
-                                  })
-                                : null
+                            div({
+                                className: 'tb-sortable-list-panel__detail',
+                                children: `Settings for "${it.name}" - this slot spans the list's width.`
+                            })
                     }),
                     button({
                         className: 'tb-sortable-list-panel__add',
@@ -303,7 +291,6 @@ class SortableListPanelModel extends HoistModel {
     @bindable accessor compact = false;
     @bindable accessor disabled = false;
     @bindable accessor lastEvent: object = null;
-    @bindable accessor expandedId: string = null;
 
     @observableRef accessor dims: Entry[] = DIMS;
     @observableRef accessor tabs: Entry[] = TABS;
@@ -340,11 +327,6 @@ class SortableListPanelModel extends HoistModel {
             source: e.source,
             items: e.items.map(it => it.id)
         };
-    }
-
-    @action
-    toggleExpanded(id: string) {
-        this.expandedId = this.expandedId === id ? null : id;
     }
 
     @action
