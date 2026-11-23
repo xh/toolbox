@@ -365,6 +365,7 @@ const interactionControl = hoistCmp.factory<EditorModel>({
             title: 'Edit (E): click to select. Interact (I): click to use the widgets. ` switches between them.',
             children: segmentedControl({
                 value: mode,
+                fill: false,
                 onChange: v => designModel.setInteraction(v),
                 options: [
                     {

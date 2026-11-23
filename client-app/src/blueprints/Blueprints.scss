@@ -904,20 +904,26 @@ body[class*='tb-blueprints-maximized--'] .tb-switcher {
   }
 }
 
-// The view bar: a toolbar, the views' tabs on the left and the view's own tools on the right.
+// The view bar: a toolbar as the docbar is, the views' tabs on the left at its full height and the
+// view's own tools on the right.
 .tb-viewbar.xh-toolbar {
-  height: 32px;
-  min-height: 32px;
-  padding-top: 0;
-  padding-bottom: 0;
   background-color: var(--xh-bg);
 
   &.tb-viewbar--preview {
     background-color: var(--xh-intent-success-trans1);
   }
 
+  // Through the toolbar's vertical padding, so the active tab's underline sits on the bar's edge.
   > .xh-tab-switcher {
     align-self: stretch;
+    margin-top: calc(var(--xh-spacing-half) * -1);
+    margin-bottom: calc(var(--xh-spacing-half) * -1);
+
+    // The tabs take the switcher's height, so their labels centre on the tools' line.
+    .bp6-tabs,
+    .bp6-tab-list {
+      height: 100%;
+    }
   }
 }
 
