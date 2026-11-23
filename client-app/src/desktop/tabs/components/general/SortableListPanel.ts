@@ -1,10 +1,10 @@
 import {chip} from '@xh/hoist/cmp/chip';
-import {div, filler, hbox, span} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, span, vbox} from '@xh/hoist/cmp/layout';
 import type {SortableListProps} from '@xh/hoist/cmp/sortablelist';
 import {sortableList} from '@xh/hoist/cmp/sortablelist';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
-import {segmentedControl, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, segmentedControl, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import {
@@ -129,6 +129,30 @@ export const sortableListPanel = hoistCmp.factory({
                             label: 'Disabled',
                             propName: 'SortableListProps.disabled',
                             control: switchInput({bind: 'disabled'})
+                        }),
+                        wrapperOption({
+                            label: 'Scroll acceleration',
+                            propName: 'SortableListProps.scrollAcceleration',
+                            info: 'Auto-scroll speed while dragging near an edge. Add items to make the list scroll.',
+                            alignTop: true,
+                            control: vbox({
+                                width: 160,
+                                children: [
+                                    slider({
+                                        bind: 'scrollAcceleration',
+                                        min: 5,
+                                        max: 40,
+                                        stepSize: 5,
+                                        labelRenderer: false
+                                    }),
+                                    numberInput({
+                                        bind: 'scrollAcceleration',
+                                        width: 80,
+                                        min: 1,
+                                        max: 100
+                                    })
+                                ]
+                            })
                         })
                     ]
                 })
@@ -155,6 +179,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 handle: model.handle,
                                 compact: model.compact,
                                 disabled: model.disabled,
+                                scrollAcceleration: model.scrollAcceleration,
                                 getItemLabel: (it: Entry) => it.name,
                                 renderItem: (it: Entry) => entryRow({entry: it}),
                                 removable: true,
@@ -279,6 +304,7 @@ class SortableListPanelModel extends HoistModel {
     @bindable accessor handle: SortableListProps['handle'] = 'start';
     @bindable accessor compact = false;
     @bindable accessor disabled = false;
+    @bindable accessor scrollAcceleration = 15;
 
     @observableRef accessor dims: Entry[] = DIMS;
     @observableRef accessor tabs: Entry[] = TABS;
@@ -313,13 +339,14 @@ class SortableListPanelModel extends HoistModel {
     }
 
     get listConfig() {
-        const {variant, handle, compact, disabled} = this;
+        const {variant, handle, compact, disabled, scrollAcceleration} = this;
         return {
             bind: 'dims',
             variant: variant !== 'plain' ? variant : undefined,
             handle: handle !== 'start' ? handle : undefined,
             compact: compact || undefined,
             disabled: disabled || undefined,
+            scrollAcceleration: scrollAcceleration !== 15 ? scrollAcceleration : undefined,
             getItemLabel: raw('it => it.name'),
             renderItem: raw('it => entryRow({entry: it})'),
             removable: true,
