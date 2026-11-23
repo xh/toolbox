@@ -139,6 +139,16 @@ export const sortableListPanel = hoistCmp.factory({
                             control: switchInput({bind: 'compact'})
                         }),
                         wrapperOption({
+                            label: 'Removable',
+                            propName: 'SortableListProps.removable',
+                            control: switchInput({bind: 'removable'})
+                        }),
+                        wrapperOption({
+                            label: 'Add row',
+                            propName: 'SortableListProps.onAdd',
+                            control: switchInput({bind: 'addable'})
+                        }),
+                        wrapperOption({
                             label: 'Disabled',
                             propName: 'SortableListProps.disabled',
                             control: switchInput({bind: 'disabled'})
@@ -196,8 +206,8 @@ export const sortableListPanel = hoistCmp.factory({
                                 scrollAcceleration: model.scrollAcceleration,
                                 getItemLabel: (it: Entry) => it.name,
                                 renderItem: (it: Entry) => entryRow({entry: it}),
-                                removable: true,
-                                onAdd: () => model.newDim(),
+                                removable: model.removable,
+                                onAdd: model.addable ? () => model.newDim() : null,
                                 addText: 'Add dimension...'
                             })
                         })
@@ -320,6 +330,8 @@ class SortableListPanelModel extends HoistModel {
     @bindable accessor disabled = false;
     @bindable accessor scrollAcceleration = 15;
     @bindable accessor sizing: 'max' | 'fixed' = 'max';
+    @bindable accessor removable = true;
+    @bindable accessor addable = true;
 
     /** Height props for the Playground list - sized to fit the Playground band. */
     get sizeProps() {
@@ -359,7 +371,7 @@ class SortableListPanelModel extends HoistModel {
     }
 
     get listConfig() {
-        const {variant, handle, compact, disabled, scrollAcceleration} = this;
+        const {variant, handle, compact, disabled, scrollAcceleration, removable, addable} = this;
         return {
             bind: 'dims',
             ...this.sizeProps,
@@ -370,9 +382,9 @@ class SortableListPanelModel extends HoistModel {
             scrollAcceleration: scrollAcceleration !== 15 ? scrollAcceleration : undefined,
             getItemLabel: raw('it => it.name'),
             renderItem: raw('it => entryRow({entry: it})'),
-            removable: true,
-            onAdd: raw('() => model.newDim()'),
-            addText: 'Add dimension...'
+            removable: removable || undefined,
+            onAdd: addable ? raw('() => model.newDim()') : undefined,
+            addText: addable ? 'Add dimension...' : undefined
         };
     }
 }
