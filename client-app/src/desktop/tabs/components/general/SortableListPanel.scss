@@ -1,4 +1,23 @@
 .tb-sortable-list-panel__playground {
+  // A fixed height, so adding items shows how the list behaves once it overflows.
+  height: 300px;
+
+  .tbox-demo-playground__instance {
+    min-height: 0;
+  }
+
+  .tbox-demo-playground__instance-body {
+    flex: 1;
+    min-height: 0;
+  }
+
+  // The bound value fills the band's height, rather than the readout's usual 200px cap.
+  .tbox-demo-playground__value .tbox-demo-playground__code {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+  }
+
   // The config snippet is short; the bound value, one item per line, needs the room.
   .tbox-demo-playground__config {
     flex: none;
