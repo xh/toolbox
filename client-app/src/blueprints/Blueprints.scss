@@ -136,7 +136,7 @@
 
   &__children {
     margin-left: var(--xh-spacing);
-    border-left: 2px solid var(--xh-border-color);
+    border-left: 1px solid var(--xh-border-color);
 
     .tb-card {
       padding-left: var(--xh-spacing);
@@ -405,7 +405,6 @@
 .tb-card--selected,
 .tb-entry-card--selected {
   background-color: var(--xh-intent-primary-trans1);
-  box-shadow: inset 2px 0 var(--xh-intent-primary);
 }
 
 .tb-card {
@@ -512,7 +511,6 @@
 
   &__entry {
     padding: var(--xh-spacing-half) var(--xh-spacing);
-    border-left: 3px solid transparent;
     font-family: var(--xh-font-family-mono);
     font-size: var(--xh-font-size-small);
     cursor: pointer;
@@ -523,7 +521,7 @@
 
     &--active {
       color: var(--xh-intent-primary-text-color);
-      border-left-color: var(--xh-intent-primary);
+      font-weight: 600;
       background-color: var(--xh-intent-primary-trans1);
     }
   }
@@ -711,7 +709,6 @@
 }
 
 .tb-history__pinned {
-  box-shadow: inset 3px 0 var(--xh-intent-primary);
   font-weight: 600;
 }
 
