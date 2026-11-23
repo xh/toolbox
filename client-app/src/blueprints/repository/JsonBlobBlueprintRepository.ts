@@ -6,6 +6,7 @@ import type {
     BlueprintOpenOptions,
     BlueprintPersonalization,
     BlueprintPublish,
+    BlueprintPublishChanges,
     BlueprintPublishResult,
     BlueprintRecord,
     BlueprintRename,
@@ -60,8 +61,8 @@ export function jsonBlobTypes(type: string): {
  * - **A global draft is not secret.** It is readable by any user through the JsonBlob API. The
  *   library keeps readers off drafts in the UI only.
  * - **Personalizations** are private blobs of their user, one per blueprint and preset.
- * - **Publishes** never change. Each takes the next number, created only if no publish of that
- *   number exists. hoist-core refuses a second active blob of the same type, owner and name, so
+ * - **Publishes** never change their content, only their note, label and pin. Each takes the
+ *   next number, created only if no publish of that number exists. hoist-core refuses a second active blob of the same type, owner and name, so
  *   on a collision this class reads the publishes again and tries the next number.
  * - **Saves** have no compare-and-set on the server, so `enforcesBase` is false and the library
  *   checks the draft's version first. This class reads the draft just before writing it, checks
@@ -219,6 +220,32 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
             stubs.map(it => publishOf(metaOf(it))),
             it => it.version
         );
+    }
+
+    async updatePublishAsync(
+        id: string,
+        version: number,
+        changes: BlueprintPublishChanges
+    ): Promise<BlueprintPublish> {
+        const stub = await this.draftStubAsync(id);
+        if (!stub || !this.isOwner(stub)) {
+            throw new Error('Only its owner can update a publish.');
+        }
+        const pubStub = (await this.publishStubsAsync(id)).find(
+            it => metaOf(it).version === version
+        );
+        if (!pubStub) throw new Error(`There is no version ${version}.`);
+        const meta = {...metaOf(pubStub)},
+            text = (key: 'note' | 'label', value: string, max?: number) => {
+                const trimmed = value?.trim().slice(0, max);
+                if (trimmed) meta[key] = trimmed;
+                else delete meta[key];
+            };
+        if (changes.note !== undefined) text('note', changes.note);
+        if (changes.label !== undefined) text('label', changes.label, 50);
+        if (changes.pinned !== undefined) meta.pinned = changes.pinned;
+        await XH.jsonBlobService.updateAsync(pubStub.token, {meta});
+        return publishOf(meta);
     }
 
     async copyAsync(
@@ -417,12 +444,14 @@ function metaOf(blob: JsonBlob): PlainObject {
 }
 
 function publishOf(meta: PlainObject): BlueprintPublish {
-    const {version, published, publishedBy, note, renames} = meta;
+    const {version, published, publishedBy, note, label, pinned, renames} = meta;
     return {
         version,
         published,
         ...(publishedBy ? {publishedBy} : {}),
         ...(note ? {note} : {}),
+        ...(label ? {label} : {}),
+        ...(pinned ? {pinned} : {}),
         renames: renames ?? []
     };
 }

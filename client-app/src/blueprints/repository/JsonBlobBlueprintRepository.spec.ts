@@ -153,6 +153,39 @@ describe('JsonBlobBlueprintRepository', () => {
         });
     });
 
+    it("updates a publish's note, label and pin, and never its content", async () => {
+        const {id} = await repository.createAsync({name: 'Positions', blueprint});
+        await repository.publishAsync(id, {base: 1, note: 'Initial'});
+
+        const pinned = await repository.updatePublishAsync(id, 1, {
+            label: `  ${'Quarter end '.repeat(5)}`,
+            pinned: true
+        });
+        expect(pinned).toMatchObject({version: 1, note: 'Initial', pinned: true});
+        expect(pinned.label).toHaveLength(50);
+        expect(pinned.label.startsWith('Quarter end')).toBe(true);
+
+        const cleared = await repository.updatePublishAsync(id, 1, {note: '  ', label: null});
+        expect(cleared).toMatchObject({version: 1, pinned: true, publishedBy: OWNER});
+        expect(cleared.note).toBeUndefined();
+        expect(cleared.label).toBeUndefined();
+
+        expect(await repository.listPublishesAsync(id)).toEqual([cleared]);
+        const v1 = await repository.openAsync(id, {as: 'publish', version: 1});
+        expect(v1.blueprint).toEqual(blueprint);
+    });
+
+    it('updates a publish for its owner only, and refuses a version that is not there', async () => {
+        const {id} = await repository.createAsync({name: 'Positions', blueprint});
+        await repository.publishAsync(id, {base: 1});
+        await expect(repository.updatePublishAsync(id, 9, {pinned: true})).rejects.toThrow(
+            /no version 9/
+        );
+        await repository.updateAccessAsync(id, GLOBAL);
+        actAs(OTHER);
+        await expect(repository.updatePublishAsync(id, 1, {pinned: true})).rejects.toThrow(/owner/);
+    });
+
     it('refuses a publish based on a stale draft version', async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
         const result = await repository.publishAsync(id, {base: 0});
