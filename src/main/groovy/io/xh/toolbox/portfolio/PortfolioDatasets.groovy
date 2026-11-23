@@ -160,6 +160,42 @@ class PortfolioDatasets {
         }
     }
 
+    /**
+     * One row per trading day, fund, strategy and symbol from `start` through asOf, optionally for one
+     * fund: the day's P&L, and the cumulative P&L since the window began. The default window is the
+     * last {@link #POSITION_SERIES} days. Built from the same totals as the positions' and funds'
+     * series, so it sums to them. A day on which a holding had no P&L and none to date is left out.
+     */
+    List<Map> pnlHistory(LocalDate asOf, LocalDate start = null, String fund = null) {
+        LocalDate day = resolveDay(asOf)
+        if (!day) return []
+        int end = dayIndex[day],
+            first = start ? firstIndexOnOrAfter(start) : Math.max(0, end - POSITION_SERIES + 1)
+        if (first > end) return []
+
+        List<LocalDate> days = baselineAndDays(day, end - first + 1)
+        Map<List<String>, long[]> byHolding = [:]
+        pnlOverDays(days, fund).each { String key, long[] totals ->
+            List<String> parts = key.split('\\|') as List<String>
+            long[] sum = byHolding.computeIfAbsent([parts[0], parts[1], parts[5]]) { new long[totals.length] }
+            for (int i = 0; i < totals.length; i++) sum[i] += totals[i]
+        }
+
+        List<Map> ret = []
+        byHolding.each { List<String> holding, long[] totals ->
+            String f = holding[0], strategy = holding[1], symbol = holding[2],
+                   sector = portfolio.instruments[symbol]?.sector
+            for (int i = 1; i < totals.length; i++) {
+                long pnlDay = totals[i] - totals[i - 1], cumPnl = totals[i] - totals[0]
+                if (!pnlDay && !cumPnl) continue
+                String d = days[i].toString()
+                ret << [id: [d, f, strategy, symbol].join('|'), day: d, fund: f, strategy: strategy, sector: sector,
+                        symbol: symbol, pnlDay: pnlDay, cumPnl: cumPnl]
+            }
+        }
+        return ret
+    }
+
     /** One row per order on asOf, optionally for one fund. */
     List<Map> orders(LocalDate asOf, String fund = null) {
         liveOrders(asOf)
@@ -309,6 +345,11 @@ class PortfolioDatasets {
     private List<LocalDate> baselineAndDays(LocalDate day, int n) {
         int end = dayIndex[day], start = end - n
         return start >= 0 ? portfolio.tradingDays.subList(start, end + 1) : [null] + portfolio.tradingDays.subList(0, end + 1)
+    }
+
+    private int firstIndexOnOrAfter(LocalDate date) {
+        int idx = Collections.binarySearch(portfolio.tradingDays, date)
+        return idx >= 0 ? idx : -idx - 1
     }
 
     private List<Double> closeSeries(String symbol, List<LocalDate> days) {

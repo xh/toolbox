@@ -30,8 +30,13 @@ class BlueprintDataService extends BaseService {
 
     private static final List<String> WEATHER_DATASETS = ['weather', 'currentWeather']
 
-    static final int MAX_PRICE_ROWS = 25_000
-    int maxPriceRows = MAX_PRICE_ROWS
+    // The most rows a wide request may return, by dataset, with what to do past the cap.
+    static final Map<String, Integer> MAX_ROWS = [prices: 25_000, pnlHistory: 75_000]
+    private static final Map<String, String> CAP_ADVICE = [
+        prices    : 'Rows are symbols times trading days: name a symbol, filter by symbol, or shorten the window.',
+        pnlHistory: 'Rows are holdings times trading days: name a fund, filter by sector or symbol, or shorten the window.'
+    ]
+    Map<String, Integer> maxRows = new HashMap(MAX_ROWS)
 
     // Each takes the requested fields, so a dataset computes its costly fields only when asked for.
     private static final Map<String, Closure<List<Map>>> DATASETS = [
@@ -42,7 +47,8 @@ class BlueprintDataService extends BaseService {
             if (p.symbol && !ds.portfolio.instruments[p.symbol]) throw new BlueprintRequestException("Unknown symbol '${p.symbol}'")
             ds.prices(p.symbol, p.start, p.end)
         },
-        hypotheticalPortfolio: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.hypotheticalPortfolio(parseHoldings(ds, p.portfolio), p.asOf) }
+        hypotheticalPortfolio: { PortfolioDatasets ds, Map p, Set<String> fields -> ds.hypotheticalPortfolio(parseHoldings(ds, p.portfolio), p.asOf) },
+        pnlHistory : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.pnlHistory(p.asOf, p.start, p.fund) }
     ]
 
     private static final Map<String, Closure<Boolean>> LIVE = [
@@ -50,7 +56,8 @@ class BlueprintDataService extends BaseService {
         fundSummary: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
         orders     : { PortfolioDatasets ds, Map p -> ds.isLiveOrders(p.asOf) },
         prices   : { PortfolioDatasets ds, Map p -> ds.isLivePrices(p.start, p.end) },
-        hypotheticalPortfolio: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) }
+        hypotheticalPortfolio: { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) },
+        pnlHistory : { PortfolioDatasets ds, Map p -> ds.isLivePositions(p.asOf) }
     ]
 
     private static final Map<String, Closure> PARAM_FIELDS = [
@@ -124,8 +131,9 @@ class BlueprintDataService extends BaseService {
         }
 
         if (req.filter) rows = rows.findAll(req.filter.testFn)
-        if (req.dataset == 'prices' && rows.size() > maxPriceRows) {
-            throw new BlueprintRequestException("prices would return ${rows.size()} rows, over its limit of $maxPriceRows. Rows are symbols times trading days: name a symbol, filter by symbol, or shorten the window.")
+        Integer cap = maxRows[req.dataset]
+        if (cap != null && rows.size() > cap) {
+            throw new BlueprintRequestException("${req.dataset} would return ${rows.size()} rows, over its limit of $cap. ${CAP_ADVICE[req.dataset]}")
         }
 
         List<String> keep = ['id'] + req.fields + req.instances*.name
