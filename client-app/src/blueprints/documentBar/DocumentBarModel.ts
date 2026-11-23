@@ -7,6 +7,8 @@ import {libraryStatus} from '../libraryColumns';
 import {changeSummary} from './changeSummary';
 import {documentStatus} from './documentStatus';
 import type {DocumentStatus} from './documentStatus';
+import {publishState} from './publishState';
+import type {PublishState} from './publishState';
 
 const SWITCHER_GROUPS = ['Recent', 'All blueprints'];
 
@@ -72,6 +74,11 @@ export class DocumentBarModel extends HoistModel {
             ...all.filter(it => it.severity === 'error'),
             ...all.filter(it => it.severity !== 'error')
         ];
+    }
+
+    /** What the publish control and its popover show. */
+    get publishState(): PublishState {
+        return publishState(this.issues, this.shell.documentModel.unfinishedElements);
     }
 
     get errorCount(): number {

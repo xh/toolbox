@@ -12,6 +12,7 @@ import {useEffect} from 'react';
 import {arrowPointerIcon, handPointerIcon} from '../../core/Icons';
 import {blueprintMenu} from '../BlueprintMenu';
 import {DocumentBarModel} from './DocumentBarModel';
+import {plural} from './publishState';
 
 /**
  * The open blueprint's bar: the way back to the library, the quick switcher, its status, undo and
@@ -323,8 +324,7 @@ const issuesChip = hoistCmp.factory<DocumentBarModel>({
 const publishButton = hoistCmp.factory<DocumentBarModel>({
     model: uses(DocumentBarModel),
     render: ({model}) => {
-        const {errorCount} = model,
-            unfinished = model.shell.documentModel.unfinishedElements;
+        const {disabled, tooltip} = model.publishState;
         return popover({
             isOpen: model.publishOpen,
             onInteraction: open => {
@@ -336,12 +336,8 @@ const publishButton = hoistCmp.factory<DocumentBarModel>({
                 icon: Icon.upload(),
                 intent: 'primary',
                 minimal: false,
-                disabled: errorCount > 0 || unfinished.length > 0,
-                tooltip: errorCount
-                    ? `Fix ${plural(errorCount, 'error')} to publish`
-                    : unfinished.length
-                      ? `Finish ${unfinished.join(', ')} to publish`
-                      : null,
+                disabled,
+                tooltip,
                 onClick: () => model.openPublishAsync()
             }),
             content: publishPanel()
@@ -354,9 +350,7 @@ const publishPanel = hoistCmp.factory<DocumentBarModel>({
     render: ({model}) => {
         const {changes, nextVersion, shell} = model,
             last = nextVersion - 1,
-            unfinished = shell.documentModel.unfinishedElements,
-            incomplete = model.issues.filter(isIncomplete),
-            warnings = model.issues.filter(it => it.severity === 'warning' && !isIncomplete(it));
+            {finish, warning} = model.publishState;
         return vbox({
             className: 'tb-docbar__publish',
             children: [
@@ -371,30 +365,25 @@ const publishPanel = hoistCmp.factory<DocumentBarModel>({
                     width: null,
                     height: 56
                 }),
-                unfinished.length
+                finish
                     ? div({
                           className: 'tb-docbar__publish-warning xh-intent-danger',
                           children: [
                               Icon.warning(),
                               vbox({
                                   children: [
-                                      span(`Finish ${unfinished.join(', ')} before you publish.`),
-                                      ...incomplete.map((it, idx) =>
-                                          span({key: idx, children: it.message})
+                                      span(finish.text),
+                                      ...finish.messages.map((it, idx) =>
+                                          span({key: idx, children: it})
                                       )
                                   ]
                               })
                           ]
                       })
-                    : warnings.length
+                    : warning
                       ? div({
                             className: 'tb-docbar__publish-warning xh-intent-warning',
-                            children: [
-                                Icon.warning(),
-                                span(
-                                    `${plural(warnings.length, 'warning')}: ${warnings[0].message}${warnings.length > 1 ? ` And ${warnings.length - 1} more.` : ''} Publish anyway, or fix ${warnings.length > 1 ? 'them' : 'it'} first.`
-                                )
-                            ]
+                            children: [Icon.warning(), span(warning)]
                         })
                       : null,
                 div({
@@ -413,10 +402,7 @@ const publishPanel = hoistCmp.factory<DocumentBarModel>({
                             icon: Icon.upload(),
                             intent: 'primary',
                             minimal: false,
-                            disabled:
-                                unfinished.length > 0 ||
-                                changes == null ||
-                                (last > 0 && !changes.length),
+                            disabled: !!finish || changes == null || (last > 0 && !changes.length),
                             tooltip:
                                 last > 0 && changes?.length === 0
                                     ? `No changes since v${last}`
@@ -437,15 +423,6 @@ function changesText(lines: string[], last: number): string {
     return changes.length
         ? `Changes since v${last}: ${changes.join(', ')}.`
         : `No changes since v${last}.`;
-}
-
-function plural(n: number, noun: string): string {
-    return `${n} ${noun}${n === 1 ? '' : 's'}`;
-}
-
-// An unfinished widget, which keeps a blueprint from publishing, though its issue is a warning.
-function isIncomplete(issue: {code?: string}): boolean {
-    return issue.code === 'config.incomplete';
 }
 
 function isError(issue: {severity: string}): boolean {
