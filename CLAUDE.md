@@ -627,30 +627,12 @@ The file opens with an HTML comment restating the essentials below. Keep the two
 
 ### Where entries go: `changelog.d/`
 
-New entries never go in `CHANGELOG.md` directly. Each change adds a **fragment**: a markdown file in
-`changelog.d/` at the repo root, named for its branch. A release assembles the fragments into
-`CHANGELOG.md` under the real version number and deletes them. This keeps pull requests from
-conflicting over `CHANGELOG.md`, and keeps a late merge from landing under a version that already
-shipped. The `xh-changelog` command from hoist-dev-utils does the work - run it as
-`pnpm changelog <command>` from `client-app/`.
+New entries go in a fragment file in `changelog.d/`, never in `CHANGELOG.md`. A release assembles
+the fragments into `CHANGELOG.md` and deletes them. From `client-app/`, add a one-line entry with
+`pnpm changelog add <section> "<text>"`, and run `pnpm changelog check` before you commit. For a
+longer entry, edit the fragment that `add` writes. The fragment format and the other commands are
+in the [hoist-dev-utils README](https://github.com/xh/hoist-dev-utils/blob/master/README.md#changelog-fragments).
 
-A fragment is the body of a release without its `##` heading:
-
-```
-### New Features
-
-* Added Weather Dashboard example app backed by the OpenWeatherMap API.
-
-### Libraries
-
-* @xh/hoist `80.0 → 80.1`
-```
-
-- `pnpm changelog add fix "<text>"` adds a one-line entry to `changelog.d/<branch>.md`. It finds the
-  section from a short name, such as `fix`, `feature`, `tech` or `lib`, and wraps the line.
-  `pnpm changelog new` creates an empty fragment for a longer entry.
-- `pnpm changelog check` validates every fragment, and CI runs it on each pull request.
-  `pnpm changelog preview` prints the next release.
 - **Sections**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`, `Libraries`, listed in
   `changelog.d/config.json` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. `check`
   rejects any other `###` title.
@@ -659,9 +641,7 @@ A fragment is the body of a release without its `##` heading:
 - **Version headings** in `CHANGELOG.md`: `## <version> - <date>`, no `v` prefix, date as
   `YYYY-MM-DD`. The top heading is a bare `## <x.y>-SNAPSHOT - unreleased` for the version in
   development. Never write entries under it.
-- **Releasing**: `pnpm changelog release <version>` writes the new release block into
-  `CHANGELOG.md`, deletes the fragments, and rolls the SNAPSHOT heading forward on a major
-  release. Review and edit the block, then commit it.
+- A release runs `pnpm changelog release <version>` - see the `release-toolbox` skill.
 
 ### Wrapping and sub-bullets
 

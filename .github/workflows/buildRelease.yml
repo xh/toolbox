@@ -46,6 +46,13 @@ jobs:
           with:
               version: ${{ inputs.version }}
 
+        # Fails unless CHANGELOG.md holds this version and no changelog fragments are left, so a
+        # release cannot start before `pnpm changelog release` has run.
+        - name: Check changelog
+          uses: xh/hoist-dev-utils/.github/actions/check-changelog@3e286bdc09b126ef9b51a34415a73cc44ed5374d # master
+          with:
+              release: ${{ inputs.version }}
+
         # A release must ship released Hoist libraries. A missed swap still builds clean. pnpm
         # installs the snapshot that the lockfile holds for `next`, and a stale gradle.lockfile
         # overrides a lower hoistCoreVersion. So this step requires an exact release for each
