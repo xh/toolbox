@@ -12,6 +12,7 @@ import {builtinRolePageContent} from './builtins/BuiltinPage';
 import {BUILTIN_ROLES} from './builtins/builtinRoles';
 import {conceptPageContent} from './concepts/ConceptPage';
 import {CONCEPT_PAGES} from './concepts/conceptPages';
+import {hostingPage} from './hosting/HostingPage';
 
 const ROUTE = 'default.blueprints';
 
@@ -33,6 +34,7 @@ export function blueprintsTab(switcher: TabSwitcherConfig): TabConfig {
             group: 'concepts',
             content: conceptPageContent(page)
         })),
+        {id: 'hosting', title: 'Hosting in an app', group: 'concepts', content: hostingPage},
         ...BUILTIN_ROLES.map((role): TabConfig => ({
             id: `builtin-${role.key}`,
             title: role.title,
@@ -104,6 +106,7 @@ export function blueprintsRoutes(): HoistRoute {
         children: [
             {name: 'overview', path: '/overview'},
             ...CONCEPT_PAGES.map(it => ({name: `concept-${it.id}`, path: `/concepts/${it.id}`})),
+            {name: 'hosting', path: '/concepts/hosting'},
             ...BUILTIN_ROLES.map(it => ({
                 name: `builtin-${it.key}`,
                 path: `/builtins/${it.key}?widget`
