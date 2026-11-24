@@ -23,6 +23,7 @@ import {
     raw
 } from '../../../common/Demo';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
+import {useEffect, useRef} from 'react';
 import './SortableListPanel.scss';
 
 interface Entry {
@@ -244,7 +245,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 addText: 'Add dimension...',
                                 addRenderer:
                                     model.addMode === 'picker'
-                                        ? ({add, items}) => dimPicker({add, items})
+                                        ? ({add, items}) => dimPicker({add, chosen: items})
                                         : null
                             })
                         })
@@ -334,15 +335,24 @@ const entryRow = hoistCmp.factory<HoistProps & {entry: Entry}>({
 });
 
 // Leaves out the dimensions already in the list. Focus stays here, ready for the next pick.
-const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; items: Entry[]}>({
+const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; chosen: Entry[]}>({
     displayName: 'SortableDimPicker',
     model: false,
-    render({add, items}) {
+    render({add, chosen}) {
         const options = [...DIMS, ...MORE_DIMS]
-            .filter(d => !items.some(it => it.id === d.id))
-            .map(d => ({value: d.id, label: d.name}));
+                .filter(d => !chosen.some(it => it.id === d.id))
+                .map(d => ({value: d.id, label: d.name})),
+            justAdded = useRef(false);
+
+        useEffect(() => {
+            justAdded.current = false;
+        });
+
         return select({
+            // A new key on each add clears the typed text. The remount drops focus, so take it back.
             key: options.length,
+            autoFocus: justAdded.current,
+            className: 'tb-sortable-list-panel__dim-picker',
             options,
             placeholder: options.length ? 'Add dimension...' : 'All dimensions added',
             disabled: !options.length,
@@ -352,7 +362,10 @@ const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; items:
             enableFilter: true,
             hideDropdownIndicator: true,
             hideSelectedOptionCheck: true,
-            onChange: id => add([...DIMS, ...MORE_DIMS].find(d => d.id === id))
+            onChange: id => {
+                justAdded.current = true;
+                add([...DIMS, ...MORE_DIMS].find(d => d.id === id));
+            }
         });
     }
 });
@@ -451,7 +464,9 @@ class SortableListPanelModel extends HoistModel {
             getNewItem: addMode === 'button' ? raw('() => model.newDim()') : undefined,
             addText: addMode === 'button' ? 'Add dimension...' : undefined,
             addRenderer:
-                addMode === 'picker' ? raw('({add, items}) => dimPicker({add, items})') : undefined
+                addMode === 'picker'
+                    ? raw('({add, items}) => dimPicker({add, chosen: items})')
+                    : undefined
         };
     }
 }

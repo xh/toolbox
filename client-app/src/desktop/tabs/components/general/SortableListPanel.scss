@@ -69,3 +69,15 @@
   background-color: var(--xh-bg-alt);
   font-size: var(--xh-font-size-small);
 }
+
+// Flush with the list's frame, as GroupingChooser's Add level row is.
+.tb-sortable-list-panel__dim-picker {
+  .xh-select__control {
+    background: none;
+    box-shadow: none;
+  }
+
+  .xh-select__control__left-icon {
+    color: var(--xh-input-placeholder-text-color);
+  }
+}
