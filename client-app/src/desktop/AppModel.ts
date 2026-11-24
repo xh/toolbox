@@ -30,6 +30,7 @@ import {codeInputsPanel} from './tabs/forms/inputs/CodeInputsPanel';
 import {dateInputPanel} from './tabs/forms/inputs/DateInputPanel';
 import {dateRangePickerPanel} from './tabs/components/choosers/DateRangePickerPanel';
 import {fileChooserPanel} from './tabs/components/choosers/FileChooserPanel';
+import {formFieldItemsPanel} from './tabs/forms/FormFieldItemsPanel';
 import {formPanel} from './tabs/forms/FormPanel';
 import {inputsIndexPanel} from './tabs/forms/inputs/InputsIndexPanel';
 import {iconPickerPanel} from './tabs/forms/inputs/IconPickerPanel';
@@ -304,6 +305,7 @@ export class AppModel extends BaseAppModel {
                         children: [
                             {name: 'form', path: '/form'},
                             {name: 'toolbarForms', path: '/toolbarForms'},
+                            {name: 'fieldItems', path: '/fieldItems'},
                             {name: 'inputs', path: '/inputs'},
                             {name: 'textInput', path: '/textInput'},
                             {name: 'textArea', path: '/textArea'},
@@ -563,6 +565,12 @@ export class AppModel extends BaseAppModel {
                             title: 'Forms in Toolbars',
                             group: 'forms',
                             content: toolbarFormPanel
+                        },
+                        {
+                            id: 'fieldItems',
+                            title: 'Field Items',
+                            group: 'forms',
+                            content: formFieldItemsPanel
                         },
                         ...[
                             {
