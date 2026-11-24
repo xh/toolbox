@@ -1,5 +1,6 @@
 {
     "version": 1,
+    "modelAccess": "rows",
     "label": "Portfolio",
     "formats": {
         "mv": {"scale": "millions", "precision": 1, "ledger": true},
@@ -45,7 +46,14 @@
             "parentDimension": "strategy",
             "category": "Organization"
         },
-        {"name": "trader", "label": "Trader", "type": "string", "isDimension": true, "category": "Organization"},
+        {
+            "name": "trader",
+            "label": "Trader",
+            "type": "string",
+            "isDimension": true,
+            "category": "Organization",
+            "modelAccess": "schema"
+        },
         {
             "name": "model",
             "label": "Model",

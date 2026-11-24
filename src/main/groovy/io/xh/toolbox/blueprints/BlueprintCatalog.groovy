@@ -18,7 +18,8 @@ class BlueprintCatalog {
     }
 
     /**
-     * Merge catalogs into one, as for an app's single Data Catalog.
+     * Merge catalogs into one, as for an app's single Data Catalog. A catalog's `modelAccess` moves
+     * onto each of its datasets that does not set its own.
      * @throws IllegalStateException if they share a format, kind, field or dataset name, or differ in version.
      */
     static BlueprintCatalog merge(String label, List<Map> catalogs) {
@@ -26,9 +27,14 @@ class BlueprintCatalog {
         if (versions.size() > 1) throw new IllegalStateException("Cannot merge catalogs of versions $versions")
 
         Map ret = [version: versions.first(), label: label]
-        ['formats', 'kinds', 'datasets'].each { String section ->
+        ['formats', 'kinds'].each { String section ->
             ret[section] = mergeUnique(section, catalogs.collect { (it[section] ?: [:]) as Map })
         }
+        ret.datasets = mergeUnique('datasets', catalogs.collect { Map c ->
+            ((c.datasets ?: [:]) as Map<String, Map>).collectEntries { name, ds ->
+                [name, c.modelAccess && !ds.modelAccess ? ds + [modelAccess: c.modelAccess] : ds]
+            }
+        })
         List<Map> fields = catalogs.collectMany { (it.fields ?: []) as List<Map> }
         Map byName = mergeUnique('fields', fields.collect { [(it.name): it] })
         ret.fields = byName.values() as List

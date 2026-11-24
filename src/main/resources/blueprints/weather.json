@@ -1,5 +1,6 @@
 {
     "version": 1,
+    "modelAccess": "rows",
     "label": "Weather",
     "formats": {
         "temp": {"precision": 0, "label": "°"},

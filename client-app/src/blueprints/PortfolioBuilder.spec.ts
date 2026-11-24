@@ -20,7 +20,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    const catalog = new DataCatalog(catalogJson);
+    const catalog = new DataCatalog(catalogJson as any);
     bpModel = new BlueprintModel({
         catalog,
         registry: createToolboxRegistry(),

@@ -14,7 +14,7 @@ import {
 } from './toolboxRegistry';
 import {weatherIconRenderer} from './WeatherIcon';
 
-const catalog = new DataCatalog(catalogJson);
+const catalog = new DataCatalog(catalogJson as any);
 
 const fundGrid: Blueprint = {
     variables: {

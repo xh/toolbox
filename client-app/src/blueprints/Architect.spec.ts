@@ -15,7 +15,7 @@ const run = (name: string, input: unknown) => tools[name].execute(input as any, 
 
 beforeAll(async () => {
     await initTestAppAsync();
-    const catalog = new DataCatalog(catalogJson);
+    const catalog = new DataCatalog(catalogJson as any);
     model = new BlueprintModel({
         catalog,
         registry: createToolboxRegistry(),

@@ -53,6 +53,31 @@ class BlueprintCatalogSpec extends Specification {
         req.filter.allFields == ['retYtd']
     }
 
+    def "each catalog's modelAccess carries onto its own datasets, which may set their own"() {
+        when:
+        def merged = BlueprintCatalog.merge('X', [
+            [version: 1, modelAccess: 'rows', datasets: [a: [fields: []], b: [modelAccess: 'none', fields: []]]],
+            [version: 1, datasets: [c: [fields: []]]]
+        ])
+
+        then:
+        !merged.json.containsKey('modelAccess')
+        merged.datasets.a.modelAccess == 'rows'
+        merged.datasets.b.modelAccess == 'none'
+        !merged.datasets.c.containsKey('modelAccess')
+    }
+
+    def 'the demo catalogs open their rows to the model, except trader names'() {
+        given:
+        def merged = BlueprintCatalog.merge('Toolbox', ['portfolio', 'weather'].collect {
+            JSONParser.parseObject(getClass().getResourceAsStream("/blueprints/${it}.json"))
+        })
+
+        expect:
+        merged.datasets.every { name, ds -> ds.modelAccess == 'rows' }
+        merged.fieldsFor('positions').trader.modelAccess == 'schema'
+    }
+
     def 'catalogs merge into one, and a shared name fails loudly'() {
         given:
         def weather = JSONParser.parseObject(getClass().getResourceAsStream('/blueprints/weather.json'))

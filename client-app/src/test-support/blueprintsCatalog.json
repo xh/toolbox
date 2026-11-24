@@ -400,7 +400,8 @@
           ],
           "guidance": "The position's daily P&L for each of the last 30 business days through asOf, oldest first. The last point equals pnlDay, and is live when asOf is today. Large across all funds: request it with a fund parameter or a filter."
         }
-      ]
+      ],
+      "modelAccess": "rows"
     },
     "fundSummary": {
       "label": "Fund Summary",
@@ -496,7 +497,8 @@
           ],
           "guidance": "How far the fund's cumulative P&L sits below its running peak over the last 60 business days, in USD. Always zero or less."
         }
-      ]
+      ],
+      "modelAccess": "rows"
     },
     "orders": {
       "label": "Orders",
@@ -578,7 +580,8 @@
           "aggregator": "MAX",
           "category": "Order"
         }
-      ]
+      ],
+      "modelAccess": "rows"
     },
     "prices": {
       "label": "Prices",
@@ -653,7 +656,8 @@
           "kind": "shares",
           "aggregator": "SUM"
         }
-      ]
+      ],
+      "modelAccess": "rows"
     },
     "hypotheticalPortfolio": {
       "label": "Hypothetical Portfolio",
@@ -696,7 +700,8 @@
         "var95",
         "var99",
         "shockedPnl"
-      ]
+      ],
+      "modelAccess": "rows"
     },
     "weather": {
       "label": "Forecast",
@@ -804,7 +809,8 @@
           "type": "number",
           "kind": "rain"
         }
-      ]
+      ],
+      "modelAccess": "rows"
     },
     "currentWeather": {
       "label": "Current Conditions",
@@ -875,7 +881,8 @@
           "kind": "temperature",
           "guidance": "The temperature for each three-hour step of the next 24 hours, oldest first: the first eight steps of the weather dataset."
         }
-      ]
+      ],
+      "modelAccess": "rows"
     }
   },
   "fields": [
@@ -907,7 +914,8 @@
       "label": "Trader",
       "type": "string",
       "isDimension": true,
-      "category": "Organization"
+      "category": "Organization",
+      "modelAccess": "schema"
     },
     {
       "name": "model",
