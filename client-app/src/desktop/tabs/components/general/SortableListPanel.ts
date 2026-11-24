@@ -4,7 +4,13 @@ import type {SortableListProps} from '@xh/hoist/cmp/sortablelist';
 import {sortableList} from '@xh/hoist/cmp/sortablelist';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
-import {numberInput, segmentedControl, slider, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {
+    numberInput,
+    segmentedControl,
+    select,
+    slider,
+    switchInput
+} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observableRef} from '@xh/hoist/mobx';
 import {
@@ -60,6 +66,13 @@ const DIMS: Entry[] = [
         {id: 'px', name: 'Price'},
         {id: 'mv', name: 'Mkt Value'},
         {id: 'pnl', name: 'P&L', meta: 'pinned', pinned: true}
+    ],
+    // Dimensions the Playground's picker can add, beyond those it starts with.
+    MORE_DIMS: Entry[] = [
+        {id: 'strategy', name: 'Strategy', meta: 'string'},
+        {id: 'account', name: 'Account', meta: 'string'},
+        {id: 'country', name: 'Country', meta: 'string'},
+        {id: 'assetClass', name: 'Asset class', meta: 'string'}
     ],
     STEPS: Entry[] = [
         {id: 's1', name: 'Load positions', meta: 'source'},
@@ -153,8 +166,17 @@ export const sortableListPanel = hoistCmp.factory({
                         }),
                         wrapperOption({
                             label: 'Add row',
-                            propName: 'SortableListProps.onAdd',
-                            control: switchInput({bind: 'addable'})
+                            info: 'A built-in button (getNewItem), or a picker of your own (addRenderer).',
+                            control: segmentedControl({
+                                bind: 'addMode',
+                                fill: false,
+                                compact: true,
+                                options: [
+                                    {value: 'none', label: 'none'},
+                                    {value: 'button', label: 'getNewItem'},
+                                    {value: 'picker', label: 'addRenderer'}
+                                ]
+                            })
                         }),
                         wrapperOption({
                             label: 'Disabled',
@@ -213,11 +235,17 @@ export const sortableListPanel = hoistCmp.factory({
                                 disabled: model.disabled,
                                 scrollAcceleration: model.scrollAcceleration,
                                 getItemLabel: (it: Entry) => it.name,
-                                renderItem: (it: Entry) => entryRow({entry: it}),
+                                itemRenderer: (it: Entry) => entryRow({entry: it}),
                                 removable: model.removable,
                                 showRemoveOnHover: model.showRemoveOnHover,
-                                onAdd: model.addable ? () => model.newDim() : null,
-                                addText: 'Add dimension...'
+                                emptyText: 'No dimensions',
+                                getNewItem:
+                                    model.addMode === 'button' ? () => model.newDim() : null,
+                                addText: 'Add dimension...',
+                                addRenderer:
+                                    model.addMode === 'picker'
+                                        ? ({add, items}) => dimPicker({add, items})
+                                        : null
                             })
                         })
                     }),
@@ -239,7 +267,7 @@ export const sortableListPanel = hoistCmp.factory({
                                             wrap: true,
                                             handle: 'item',
                                             getItemLabel: (it: Entry) => it.name,
-                                            renderItem: (it: Entry) =>
+                                            itemRenderer: (it: Entry) =>
                                                 chip({
                                                     outlined: true,
                                                     size: 'large',
@@ -259,7 +287,7 @@ export const sortableListPanel = hoistCmp.factory({
                                             variant: 'divided',
                                             height: 180,
                                             getItemLabel: (it: Entry) => it.name,
-                                            renderItem: (it: Entry) => entryRow({entry: it})
+                                            itemRenderer: (it: Entry) => entryRow({entry: it})
                                         })
                                     })
                                 }),
@@ -276,7 +304,7 @@ export const sortableListPanel = hoistCmp.factory({
                                             isItemMovable: (it: Entry) => !it.pinned,
                                             isItemRemovable: (it: Entry) => !it.pinned,
                                             getItemLabel: (it: Entry) => it.name,
-                                            renderItem: (it: Entry) => entryRow({entry: it})
+                                            itemRenderer: (it: Entry) => entryRow({entry: it})
                                         })
                                     })
                                 }),
@@ -305,12 +333,36 @@ const entryRow = hoistCmp.factory<HoistProps & {entry: Entry}>({
     }
 });
 
+// Leaves out the dimensions already in the list. Focus stays here, ready for the next pick.
+const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; items: Entry[]}>({
+    displayName: 'SortableDimPicker',
+    model: false,
+    render({add, items}) {
+        const options = [...DIMS, ...MORE_DIMS]
+            .filter(d => !items.some(it => it.id === d.id))
+            .map(d => ({value: d.id, label: d.name}));
+        return select({
+            key: options.length,
+            options,
+            placeholder: options.length ? 'Add dimension...' : 'All dimensions added',
+            disabled: !options.length,
+            leftIcon: Icon.add(),
+            flex: 1,
+            width: null,
+            enableFilter: true,
+            hideDropdownIndicator: true,
+            hideSelectedOptionCheck: true,
+            onChange: id => add([...DIMS, ...MORE_DIMS].find(d => d.id === id))
+        });
+    }
+});
+
 const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
     displayName: 'SortableStepsEditor',
     render({model}) {
         return demoFrame({
             label: 'Detail rows',
-            info: "renderDetail, variant: 'divided', compact, handle at end - click a row or its chevron",
+            info: "detailRenderer, variant: 'divided', compact, handle at end - click a row or its chevron",
             children: div({
                 className: 'tb-sortable-list-panel__pad',
                 children: sortableList({
@@ -320,8 +372,8 @@ const stepsEditor = hoistCmp.factory<SortableListPanelModel>({
                     compact: true,
                     handle: 'end',
                     getItemLabel: (it: Entry) => it.name,
-                    renderItem: (it: Entry) => entryRow({entry: it}),
-                    renderDetail: (it: Entry) =>
+                    itemRenderer: (it: Entry) => entryRow({entry: it}),
+                    detailRenderer: (it: Entry) =>
                         div({
                             className: 'tb-sortable-list-panel__detail',
                             children: `Settings for "${it.name}" - this slot spans the list's width.`
@@ -340,7 +392,7 @@ class SortableListPanelModel extends HoistModel {
     @bindable accessor scrollAcceleration = 15;
     @bindable accessor sizing: 'max' | 'fixed' = 'max';
     @bindable accessor removable = true;
-    @bindable accessor addable = true;
+    @bindable accessor addMode: 'none' | 'button' | 'picker' = 'picker';
     @bindable accessor showRemoveOnHover = false;
 
     /** Height props for the Playground list - sized to fit the Playground band. */
@@ -381,7 +433,7 @@ class SortableListPanelModel extends HoistModel {
     }
 
     get listConfig() {
-        const {variant, handle, compact, disabled, scrollAcceleration, removable, addable} = this,
+        const {variant, handle, compact, disabled, scrollAcceleration, removable, addMode} = this,
             {showRemoveOnHover} = this;
         return {
             bind: 'dims',
@@ -392,11 +444,14 @@ class SortableListPanelModel extends HoistModel {
             disabled: disabled || undefined,
             scrollAcceleration: scrollAcceleration !== 15 ? scrollAcceleration : undefined,
             getItemLabel: raw('it => it.name'),
-            renderItem: raw('it => entryRow({entry: it})'),
+            itemRenderer: raw('it => entryRow({entry: it})'),
             removable: removable || undefined,
             showRemoveOnHover: (removable && showRemoveOnHover) || undefined,
-            onAdd: addable ? raw('() => model.newDim()') : undefined,
-            addText: addable ? 'Add dimension...' : undefined
+            emptyText: 'No dimensions',
+            getNewItem: addMode === 'button' ? raw('() => model.newDim()') : undefined,
+            addText: addMode === 'button' ? 'Add dimension...' : undefined,
+            addRenderer:
+                addMode === 'picker' ? raw('({add, items}) => dimPicker({add, items})') : undefined
         };
     }
 }
