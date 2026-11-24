@@ -7,7 +7,7 @@ const registry = createPortfolioRegistry(),
 
 describe('builtinSettings', () => {
     it("takes a widget's simple settings from its sections, in order", () => {
-        const settings = settingsOf('dashCanvas').map(it => [it.key, it.kind]);
+        const settings = settingsOf('dashboard').map(it => [it.key, it.kind]);
         expect(settings.slice(0, 2)).toEqual([
             ['columns', 'number'],
             ['rowHeight', 'number']
@@ -16,7 +16,7 @@ describe('builtinSettings', () => {
     });
 
     it('marks settings that apply to each child', () => {
-        const hideHeader = settingsOf('dashCanvas').find(it => it.key === 'hideHeader');
+        const hideHeader = settingsOf('dashboard').find(it => it.key === 'hideHeader');
         expect(hideHeader.perChild).toBe(true);
     });
 
@@ -35,7 +35,7 @@ describe('builtinSettings', () => {
     });
 
     it('shows a setting named for its negative positive first', () => {
-        const hideHeader = settingsOf('dashCanvas').find(it => it.key === 'hideHeader');
+        const hideHeader = settingsOf('dashboard').find(it => it.key === 'hideHeader');
         expect(hideHeader).toMatchObject({
             label: 'Cell headers',
             boolOptions: [
@@ -55,7 +55,7 @@ describe('builtinSettings', () => {
     });
 
     it('labels a setting by its title, else its key in words', () => {
-        const byKey = Object.fromEntries(settingsOf('dashCanvas').map(it => [it.key, it.label]));
+        const byKey = Object.fromEntries(settingsOf('dashboard').map(it => [it.key, it.label]));
         expect(byKey.compact).toBe('Packing');
         expect(byKey.columns).toBe('Columns');
     });

@@ -1,5 +1,5 @@
 {
-    "schema": {"blueprint": 1, "widgets": {"dashCanvas": 1, "chart": 1, "statCard": 1, "tileFrame": 1}},
+    "schema": {"blueprint": 1, "widgets": {"dashboard": 1, "chart": 1, "statCard": 1, "tileFrame": 1}},
     "variables": {
         "city": {
             "type": "string",
@@ -17,7 +17,7 @@
     "root": "dashboard",
     "elements": {
         "dashboard": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "now", "x": 0, "y": 0, "w": 12, "h": 2},
                 {"id": "tempChart", "x": 0, "y": 2, "w": 12, "h": 6}

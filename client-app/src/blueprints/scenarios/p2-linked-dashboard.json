@@ -1,7 +1,7 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"dashCanvas": 1, "cubeGrid": 1, "chart": 1, "statCard": 1, "tileFrame": 1},
+        "widgets": {"dashboard": 1, "cubeGrid": 1, "chart": 1, "statCard": 1, "tileFrame": 1},
         "resolvers": {"today": 1}
     },
     "variables": {
@@ -15,7 +15,7 @@
     "root": "dashboard",
     "elements": {
         "dashboard": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "headline", "x": 0, "y": 0, "w": 12, "h": 2},
                 {"id": "posGrid", "x": 0, "y": 2, "w": 8, "h": 7},

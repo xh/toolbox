@@ -1,1 +1,1 @@
-{"root": "dashboard", "elements": {"dashboard": {"component": "dashCanvas", "children": []}}, "title": "s3-joins-showcase"}
+{"root": "dashboard", "elements": {"dashboard": {"component": "dashboard", "children": []}}, "title": "s3-joins-showcase"}

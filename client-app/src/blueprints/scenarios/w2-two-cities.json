@@ -1,7 +1,7 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"dashCanvas": 1, "buttonGroupInput": 1, "chart": 1, "cubeGrid": 1, "statCard": 1, "tileFrame": 1}
+        "widgets": {"dashboard": 1, "buttonGroupInput": 1, "chart": 1, "cubeGrid": 1, "statCard": 1, "tileFrame": 1}
     },
     "variables": {
         "cityA": {
@@ -34,7 +34,7 @@
     "root": "dashboard",
     "elements": {
         "dashboard": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "unitsToggle", "x": 0, "y": 0, "w": 12, "h": 1},
                 {"id": "nowA", "x": 0, "y": 1, "w": 6, "h": 2},

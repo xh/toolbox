@@ -6,7 +6,7 @@ const from: Blueprint = {
     root: 'dash',
     variables: {fund: {type: 'string'}},
     elements: {
-        dash: {component: 'dashCanvas', children: [{id: 'grid'}]},
+        dash: {component: 'dashboard', children: [{id: 'grid'}]},
         grid: {component: 'cubeGrid', config: {title: 'Positions', source: 'positions'}}
     }
 };
@@ -46,7 +46,7 @@ describe('compareRows', () => {
         const a = {
                 elements: {
                     dash: {
-                        component: 'dashCanvas',
+                        component: 'dashboard',
                         children: [
                             {id: 'p1', x: 0, y: 9, w: 6},
                             {id: 'p2', x: 6, y: 0, w: 6}

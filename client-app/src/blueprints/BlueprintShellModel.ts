@@ -72,7 +72,7 @@ export type DesignerView = 'blueprint' | 'catalog' | 'registry';
 /** A new blueprint: an empty dashboard, ready for widgets. */
 const EMPTY_BLUEPRINT = {
     root: 'dashboard',
-    elements: {dashboard: {component: 'dashCanvas', children: []}}
+    elements: {dashboard: {component: 'dashboard', children: []}}
 } as Blueprint;
 
 const MAX_RECENT = 5;

@@ -1,1 +1,1 @@
-{"root": "dashboard", "elements": {"dashboard": {"component": "dashCanvas", "children": []}}, "title": "w4-new-york-london"}
+{"root": "dashboard", "elements": {"dashboard": {"component": "dashboard", "children": []}}, "title": "w4-new-york-london"}

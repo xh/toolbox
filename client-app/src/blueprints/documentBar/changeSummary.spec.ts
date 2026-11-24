@@ -7,7 +7,7 @@ const base: Blueprint = {
     variables: {fund: {type: 'string'}, asOf: {type: 'date'}},
     sources: {positions: {dataset: 'positions'}} as Blueprint['sources'],
     elements: {
-        dash: {component: 'dashCanvas', children: [{id: 'grid'}, {id: 'chart'}]},
+        dash: {component: 'dashboard', children: [{id: 'grid'}, {id: 'chart'}]},
         grid: {component: 'cubeGrid', config: {source: 'positions'}},
         chart: {component: 'chart', config: {source: 'positions'}}
     }

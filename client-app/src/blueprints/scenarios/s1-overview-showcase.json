@@ -2,7 +2,7 @@
     "schema": {
         "blueprint": 1,
         "widgets": {
-            "dashCanvas": 1,
+            "dashboard": 1,
             "markdown": 1,
             "callout": 1,
             "panel": 1,
@@ -27,7 +27,7 @@
     "root": "dashboard",
     "elements": {
         "dashboard": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "intro", "x": 0, "y": 0, "w": 12, "h": 2},
                 {"id": "headline", "x": 0, "y": 2, "w": 9, "h": 3},

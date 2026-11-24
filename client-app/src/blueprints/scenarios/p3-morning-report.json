@@ -3,7 +3,7 @@
         "blueprint": 1,
         "widgets": {
             "tabContainer": 1,
-            "dashCanvas": 1,
+            "dashboard": 1,
             "chart": 1,
             "groupingChooser": 1,
             "buttonGroup": 1,
@@ -111,7 +111,7 @@
             ]
         },
         "overview": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "reportActions", "x": 0, "y": 0, "w": 12, "h": 1},
                 {"id": "headline", "x": 0, "y": 1, "w": 12, "h": 2},
@@ -181,7 +181,7 @@
             }
         },
         "positions": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "groupChooser", "x": 0, "y": 0, "w": 4, "h": 1},
                 {"id": "pnlButtons", "x": 4, "y": 0, "w": 8, "h": 1},
@@ -248,7 +248,7 @@
                 "y": ["close"]
             }
         },
-        "orders": {"component": "dashCanvas", "children": [{"id": "ordersGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
+        "orders": {"component": "dashboard", "children": [{"id": "ordersGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
         "ordersGrid": {
             "component": "cubeGrid",
             "config": {

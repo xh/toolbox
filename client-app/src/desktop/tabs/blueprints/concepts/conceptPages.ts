@@ -41,7 +41,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
         title: 'Elements and layout',
         paragraphs: [
             'Every element sits in one flat map, keyed by its id, and `root` names the top one.',
-            "A container lists its children by reference, and the reference carries the placement: `x`, `y`, `w` and `h` on a dashboard canvas, a title on a tab. A widget's config holds no layout, so a move changes only references.",
+            "A container lists its children by reference, and the reference carries the placement: `x`, `y`, `w` and `h` on a dashboard, a title on a tab. A widget's config holds no layout, so a move changes only references.",
             "Each element has one parent. A container's named slots match its Hoist props: a panel has `children`, `tbar`, `bbar` and `headerItems`."
         ],
         example: p2 as Blueprint
@@ -60,7 +60,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             root: 'dash',
             elements: {
                 dash: {
-                    component: 'dashCanvas',
+                    component: 'dashboard',
                     children: [
                         {id: 'mktValCard', x: 0, y: 0, w: 3, h: 2},
                         {id: 'pnlCard', x: 3, y: 0, w: 3, h: 2},
@@ -112,7 +112,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             root: 'dash',
             elements: {
                 dash: {
-                    component: 'dashCanvas',
+                    component: 'dashboard',
                     children: [
                         {id: 'pnlButtons', x: 0, y: 0, w: 12, h: 1},
                         {id: 'posGrid', x: 0, y: 1, w: 12, h: 6}
@@ -171,7 +171,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             root: 'dash',
             elements: {
                 dash: {
-                    component: 'dashCanvas',
+                    component: 'dashboard',
                     children: [
                         {id: 'sectorMap', x: 0, y: 0, w: 5, h: 7},
                         {id: 'posGrid', x: 5, y: 0, w: 7, h: 7}
@@ -306,7 +306,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             root: 'dash',
             elements: {
                 dash: {
-                    component: 'dashCanvas',
+                    component: 'dashboard',
                     children: [
                         {id: 'posViewsSelector', x: 0, y: 0, w: 12, h: 1},
                         {id: 'posGrid', x: 0, y: 1, w: 12, h: 6}
@@ -337,7 +337,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             root: 'dash',
             elements: {
                 dash: {
-                    component: 'dashCanvas',
+                    component: 'dashboard',
                     children: [
                         {id: 'buttons', x: 0, y: 0, w: 12, h: 1},
                         {id: 'posGrid', x: 0, y: 1, w: 12, h: 6}

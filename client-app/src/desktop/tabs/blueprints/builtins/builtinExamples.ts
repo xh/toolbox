@@ -50,14 +50,14 @@ const posGrid = {
 };
 
 const RICH_EXAMPLES: Record<string, () => Blueprint> = {
-    dashCanvas: () =>
+    dashboard: () =>
         ({
             variables: {asOf},
             sources: {positions},
-            root: 'dashCanvas',
+            root: 'dashboard',
             elements: {
-                dashCanvas: {
-                    component: 'dashCanvas',
+                dashboard: {
+                    component: 'dashboard',
                     children: [
                         {id: 'mvCard', x: 0, y: 0, w: 4, h: 2, title: 'Market value'},
                         {id: 'pnlCard', x: 4, y: 0, w: 4, h: 2, title: 'Day P&L'},
@@ -206,7 +206,7 @@ function inputsOverview(): Blueprint {
         root: INPUTS_OVERVIEW,
         elements: {
             [INPUTS_OVERVIEW]: {
-                component: 'dashCanvas',
+                component: 'dashboard',
                 children: inputs.map(([id, el], idx) => ({
                     id: `${id}Cell`,
                     x: (idx % 3) * 4,

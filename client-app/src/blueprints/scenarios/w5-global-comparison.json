@@ -2,7 +2,7 @@
     "schema": {
         "blueprint": 1,
         "widgets": {
-            "dashCanvas": 1,
+            "dashboard": 1,
             "gauge": 1,
             "tileFrame": 1,
             "statCard": 1,
@@ -108,7 +108,7 @@
     "root": "dashboard",
     "elements": {
         "dashboard": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {
                     "id": "title",

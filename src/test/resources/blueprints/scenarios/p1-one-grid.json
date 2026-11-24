@@ -1,1 +1,1 @@
-{"root": "dashboard", "elements": {"dashboard": {"component": "dashCanvas", "children": []}}, "title": "p1-one-grid"}
+{"root": "dashboard", "elements": {"dashboard": {"component": "dashboard", "children": []}}, "title": "p1-one-grid"}

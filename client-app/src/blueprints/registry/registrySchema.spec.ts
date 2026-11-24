@@ -22,7 +22,7 @@ describe('schemaSections', () => {
             'Style'
         ]);
         expect(
-            sectionsOf('dashCanvas')
+            sectionsOf('dashboard')
                 .find(it => it.title === 'Display')
                 .props.map(it => it.key)
                 .slice(0, 2)
@@ -54,7 +54,7 @@ describe('schemaSections', () => {
 
     it('labels a property by its title, else its key in words', () => {
         expect(propOf('cubeGrid', 'showSummary').label).toBe('Summary row');
-        expect(propOf('dashCanvas', 'rowHeight').label).toBe('Row height');
+        expect(propOf('dashboard', 'rowHeight').label).toBe('Row height');
     });
 
     it("nests an array of objects' item properties as children", () => {

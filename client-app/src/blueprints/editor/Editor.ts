@@ -311,7 +311,7 @@ const publishDetailsDialog = hoistCmp.factory<EditorModel>({
 // View bar
 //------------------
 /**
- * The view bar, over the content for a writer: the views as tabs, Canvas, Map, JSON and, for a
+ * The view bar, over the content for a writer: the views as tabs, Layout, Map, JSON and, for a
  * draft, Preview, with the tools of the view shown at the right. A reader has none.
  */
 const viewBar = hoistCmp.factory<EditorModel>({

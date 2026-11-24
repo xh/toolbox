@@ -5,7 +5,7 @@ import type {
     DataCatalog,
     WidgetSpec
 } from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintModel, CANVAS_COLUMNS, rescaleCells} from '@xh/hoist-chat-kit/blueprint';
+import {BlueprintModel, DASHBOARD_COLUMNS, rescaleCells} from '@xh/hoist-chat-kit/blueprint';
 import {blueprintView, thumbnailPreview} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {div, filler, hbox, hframe, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, uses, XH} from '@xh/hoist/core';
@@ -83,8 +83,8 @@ class BuiltinPageModel extends HoistModel {
             children = rescale
                 ? rescaleCells(
                       root.children,
-                      (this.settingValue(setting) as number) ?? CANVAS_COLUMNS,
-                      (value as number) ?? CANVAS_COLUMNS,
+                      (this.settingValue(setting) as number) ?? DASHBOARD_COLUMNS,
+                      (value as number) ?? DASHBOARD_COLUMNS,
                       id => this.minWidth(id)
                   )
                 : root.children,
@@ -349,7 +349,7 @@ const builtinBody = hoistCmp.factory<BuiltinPageModel>({
 // Implementation
 //------------------
 const ISLAND_TITLES: Record<string, string> = {
-    dashCanvas: 'Example: drag a header to move a cell',
+    dashboard: 'Example: drag a header to move a cell',
     [INPUTS_OVERVIEW]: 'Each input, bound to a variable'
 };
 

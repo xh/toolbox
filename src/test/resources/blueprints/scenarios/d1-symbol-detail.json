@@ -1,1 +1,1 @@
-{"root": "dashboard", "elements": {"dashboard": {"component": "dashCanvas", "children": []}}, "title": "d1-symbol-detail"}
+{"root": "dashboard", "elements": {"dashboard": {"component": "dashboard", "children": []}}, "title": "d1-symbol-detail"}

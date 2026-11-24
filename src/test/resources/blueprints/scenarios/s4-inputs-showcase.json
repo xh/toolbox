@@ -1,1 +1,1 @@
-{"root": "dashboard", "elements": {"dashboard": {"component": "dashCanvas", "children": []}}, "title": "s4-inputs-showcase"}
+{"root": "dashboard", "elements": {"dashboard": {"component": "dashboard", "children": []}}, "title": "s4-inputs-showcase"}

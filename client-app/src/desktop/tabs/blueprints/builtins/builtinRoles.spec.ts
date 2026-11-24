@@ -15,7 +15,7 @@ describe('roleWidgets', () => {
                 'box',
                 'panel',
                 'tabContainer',
-                'dashCanvas',
+                'dashboard',
                 'tileFrame',
                 'toolbar'
             ])

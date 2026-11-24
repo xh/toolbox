@@ -1,7 +1,7 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"tabContainer": 1, "dashCanvas": 1, "cubeGrid": 1, "chart": 1, "toolbox.portfolioBuilder": 1},
+        "widgets": {"tabContainer": 1, "dashboard": 1, "cubeGrid": 1, "chart": 1, "toolbox.portfolioBuilder": 1},
         "variableTypes": {"toolbox.portfolio": 1},
         "resolvers": {"previousBusinessDay": 1}
     },
@@ -47,7 +47,7 @@
             ]
         },
         "risk": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "riskGrid", "x": 0, "y": 0, "w": 12, "h": 7},
                 {"id": "shockChart", "x": 0, "y": 7, "w": 12, "h": 5}
@@ -71,7 +71,7 @@
                 "y": ["shockDown10", "shockDown5", "shockUp5", "shockUp10"]
             }
         },
-        "options": {"component": "dashCanvas", "children": [{"id": "optionsGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
+        "options": {"component": "dashboard", "children": [{"id": "optionsGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
         "optionsGrid": {
             "component": "cubeGrid",
             "config": {
@@ -87,7 +87,7 @@
                 }
             }
         },
-        "bonds": {"component": "dashCanvas", "children": [{"id": "bondsGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
+        "bonds": {"component": "dashboard", "children": [{"id": "bondsGrid", "x": 0, "y": 0, "w": 12, "h": 10}]},
         "bondsGrid": {
             "component": "cubeGrid",
             "config": {
@@ -98,7 +98,7 @@
             }
         },
         "hypothetical": {
-            "component": "dashCanvas",
+            "component": "dashboard",
             "children": [
                 {"id": "portfolioBuilder", "x": 0, "y": 0, "w": 4, "h": 10},
                 {"id": "hypoGrid", "x": 4, "y": 0, "w": 8, "h": 10}

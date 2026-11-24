@@ -20,7 +20,7 @@ export const blueprintsOverview = hoistCmp.factory({
                 'data sources they read, and the variables that link them. Hoist renders it with real',
                 'Hoist components, and the same document always renders the same view.',
                 '',
-                'People build and change blueprints on a canvas, and the Architect builds them from a',
+                'People build and change blueprints in a designer, and the Architect builds them from a',
                 'conversation, both through the same checked edits. Each example below runs the full',
                 'designer on its own data.'
             ],

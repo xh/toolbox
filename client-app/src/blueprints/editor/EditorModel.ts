@@ -112,7 +112,7 @@ export class EditorModel extends HoistModel {
      */
     @managed viewTabsModel = new TabContainerModel({
         tabs: [
-            {id: 'canvas', title: 'Canvas', icon: Icon.gridLarge(), content: () => null},
+            {id: 'canvas', title: 'Layout', icon: Icon.gridLarge(), content: () => null},
             {id: 'map', title: 'Map', icon: Icon.treeList(), content: () => null},
             {id: 'json', title: 'JSON', icon: Icon.code(), content: () => null},
             {
