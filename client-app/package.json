@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "node scripts/export-docs.mjs && rsbuild build --env-mode prod",
+    "changelog": "xh-changelog",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "docs": "node scripts/export-docs.mjs",
     "docs:watch": "node scripts/export-docs.mjs --watch",

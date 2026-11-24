@@ -580,62 +580,41 @@ that the operator tiers **cannot** perform, by design.
 
 ## Changelog
 
-Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-parser` (via
-hoist-dev-utils) and displayed in-app to users via Hoist's `ChangelogService`. Write entries for an
-audience of developers and potential clients evaluating Hoist.
+Toolbox maintains a `CHANGELOG.md` that is parsed at build time by hoist-dev-utils and displayed
+in-app to users via Hoist's `ChangelogService`. Write entries for an audience of developers and
+potential clients evaluating Hoist.
 
 The file opens with an HTML comment restating the essentials below. Keep the two in sync.
 
-### Format
+### Where entries go: `changelog.d/`
 
-The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
+New entries go in a fragment file in `changelog.d/`, never in `CHANGELOG.md`. A release assembles
+the fragments into `CHANGELOG.md` and deletes them. From `client-app/`, add a one-line entry with
+`pnpm changelog add <section> "<text>"`, and run `pnpm changelog check` before you commit. For a
+longer entry, edit the fragment that `add` writes. The fragment format and the other commands are
+in the [hoist-dev-utils README](https://github.com/xh/hoist-dev-utils/blob/master/README.md#changelog-fragments).
 
-```
-# Changelog
+- **Sections**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`, `Libraries`, listed in
+  `changelog.d/config.json` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. `check`
+  rejects any other `###` title.
+- To change an unreleased entry, edit its fragment. To correct a released entry, edit
+  `CHANGELOG.md`.
+- **Version headings** in `CHANGELOG.md`: `## <version> - <date>`, no `v` prefix, date as
+  `YYYY-MM-DD`. The top heading is a bare `## <x.y>-SNAPSHOT - unreleased` for the version in
+  development. Never write entries under it.
+- A release runs `pnpm changelog release <version>` - see the `release-toolbox` skill.
 
-## 9.0-SNAPSHOT - unreleased
+### Wrapping and sub-bullets
 
-### New Features
+hoist-dev-utils parses this file into structured markdown. Each bullet keeps all of its lines, so
+entries follow the library convention:
 
-* Added Weather Dashboard example app backed by the OpenWeatherMap API.
+1. Start bullets and `###` headings at column 0.
+2. Hard-wrap bullets at 100 characters, with two-space indentation for continuation lines.
+   `pnpm changelog check` warns on longer lines in a fragment.
+3. Indent sub-bullets two spaces under their parent. They render as a nested list in-app.
 
-### Libraries
-
-* @xh/hoist `80.0 → 80.1`
-```
-
-- **Version headings**: `## <version> - <date>` - no `v` prefix, date as `YYYY-MM-DD`. Use
-  `## <x.y>-SNAPSHOT - unreleased`, with no date, for the in-development version.
-- **Adding a new SNAPSHOT version**: Before adding a changelog entry, check whether the topmost
-  version in `CHANGELOG.md` has already been released. A version is released if it has a date
-  (e.g. `## 8.1.0 - 2026-02-12`) or a matching `v<version>` git tag exists. If it has been
-  released, create a new `## <next-major>.0-SNAPSHOT` heading above it (with no date) before
-  adding your entry. Bump the major version number from the last release (e.g. after `8.1.0`,
-  create `9.0-SNAPSHOT`).
-- **Recognized categories**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`,
-  `Libraries` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. Use them in that
-  order. Any other `###` title still renders, just without the accent styling.
-
-### Critical: whitespace is load-bearing
-
-The parser is line-based and fails **silently** - a malformed entry is dropped from the parsed
-output while the build still succeeds, so nothing flags the mistake. Two rules follow:
-
-1. **Bullets and `###` headers must start at column 0.** The patterns are `/^[*-]/` and `/^###/`
-   matched against the raw line, so a single leading space drops it. Nested sub-bullets and
-   indented continuation lines are therefore impossible, not merely discouraged.
-2. **Every bullet is exactly one line, however long.** A wrapped bullet keeps its first line and
-   loses the rest. A 300-character single line is correct; a neatly wrapped two-line bullet is
-   broken.
-
-```
-// GOOD - single line, renders completely in-app
-* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types.
-
-// BAD - continuation line will be silently dropped
-* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap
-  API, featuring a `DashCanvas` layout with multiple chart types.
-```
+Code spans, links and bold text also render in-app.
 
 ### Libraries entries
 
