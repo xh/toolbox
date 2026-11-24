@@ -614,8 +614,7 @@ entries follow the library convention:
    `pnpm changelog check` warns on longer lines in a fragment.
 3. Indent sub-bullets two spaces under their parent. They render as a nested list in-app.
 
-Code spans, links and bold text also render in-app. Older entries written as one long line stay
-as they are.
+Code spans, links and bold text also render in-app.
 
 ### Libraries entries
 
