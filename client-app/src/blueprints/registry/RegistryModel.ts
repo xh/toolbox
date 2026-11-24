@@ -412,13 +412,20 @@ export class RegistryModel extends HoistModel {
     override onLinked() {
         this.addReaction(
             {
-                // A link may name the entry to show, such as from a Built-ins page.
-                track: () => XH.routerState?.params?.entry as string,
-                run: entry => {
-                    if (entry && this.entries.some(it => it.id === entry)) {
-                        this.selectedId = entry;
-                        this.listModel.selModel.select(entry);
-                    }
+                // A link may name the entry to show, by its ID or its name, such as from a
+                // Built-ins page. Tracked until the entries load, as a cold link comes first.
+                track: () => {
+                    const want = XH.routerState?.params?.entry as string;
+                    if (!want) return null;
+                    const {entries} = this;
+                    return (
+                        entries.find(it => it.id === want) ?? entries.find(it => it.name === want)
+                    )?.id;
+                },
+                run: id => {
+                    if (!id) return;
+                    this.selectedId = id;
+                    this.listModel.selModel.select(id);
                 },
                 fireImmediately: true
             },
