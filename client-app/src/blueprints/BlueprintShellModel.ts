@@ -23,7 +23,7 @@ import {
     chatUiTextSpec
 } from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
-import {addToBlueprint} from '@xh/hoist-chat-kit/genui/architect';
+import {addToBlueprint, ArchitectTurnCapture} from '@xh/hoist-chat-kit/genui/architect';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import type {LoadSpec, PlainObject} from '@xh/hoist/core';
@@ -46,7 +46,8 @@ import {
 import {find, pick} from 'lodash';
 import type {ReactElement} from 'react';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
-import {createArchitectChat} from './architectChat';
+import {architectSystemPrompt, createArchitectChat} from './architectChat';
+import {ArchitectExports} from './architectExport';
 import {revealEdit} from './editor/historyTimeline';
 import {copyLinkAsync} from './copyLink';
 import {LIBRARY_GROUPS, libraryGroup, libraryName, libraryStatus} from './libraryColumns';
@@ -182,6 +183,9 @@ export class BlueprintShellModel extends HoistModel {
 
     /** The Architect, holding the selected blueprint's conversation. Null until the catalog loads. */
     @observableRef accessor chatModel: ChatModel = null;
+
+    /** Exports of the Architect's conversation, whole or by turn. */
+    architectExports: ArchitectExports = null;
 
     readonly repository: BlueprintRepository;
 
@@ -505,32 +509,49 @@ export class BlueprintShellModel extends HoistModel {
                     addToHost: addToBlueprint(blueprintModel)
                 }
             });
+            const systemPrompt = architectSystemPrompt(blueprintModel, this.answerCatalog),
+                capture = new ArchitectTurnCapture({
+                    blueprintOf: () => ({
+                        blueprint: blueprintModel.blueprint,
+                        id: this.documentModel?.document?.id,
+                        type: this.type.name,
+                        name: this.selected?.name
+                    })
+                });
             this.chatModel = this.markManaged(
-                createArchitectChat(
+                createArchitectChat({
                     blueprintModel,
-                    this.designModel,
-                    this.answerCatalog,
-                    () => {
+                    designModel: this.designModel,
+                    catalog: this.answerCatalog,
+                    systemPrompt,
+                    capture,
+                    onSave: () => {
                         this.saveConversation();
                         this.refreshUsageAsync();
                     },
-                    () => ({
+                    context: () => ({
                         app: XH.clientAppCode,
                         feature: 'architect',
                         blueprintId: this.documentModel?.document?.id
                     }),
-                    () => usageBlockedReason(this.usage),
-                    featureRequestSink(() => ({
+                    sendBlocker: () => usageBlockedReason(this.usage),
+                    featureRequests: featureRequestSink(() => ({
                         blueprintType: this.type.name,
                         blueprintId: this.documentModel?.document?.id ?? null,
                         app: XH.clientAppCode
                     })),
-                    ops => {
+                    onShowEdit: ops => {
                         revealEdit(this.designModel, ops);
                         this.editorView = 'canvas';
                     }
-                )
+                })
             );
+            this.architectExports = new ArchitectExports({
+                chatModel: () => this.chatModel,
+                capture,
+                systemPrompt,
+                nameOf: () => this.selected?.name
+            });
         });
         this.refreshUsageAsync();
         dropOldLibrary();
