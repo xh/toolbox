@@ -516,7 +516,8 @@ export class BlueprintShellModel extends HoistModel {
                         id: this.documentModel?.document?.id,
                         type: this.type.name,
                         name: this.selected?.name
-                    })
+                    }),
+                    systemPromptOf: () => systemPrompt
                 });
             this.chatModel = this.markManaged(
                 createArchitectChat({
