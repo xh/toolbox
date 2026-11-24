@@ -153,6 +153,24 @@ describe('JsonBlobBlueprintRepository', () => {
         });
     });
 
+    it("attributes edits and publishes to the blobs' server-set users, never to meta", async () => {
+        const {id} = await repository.createAsync({name: 'Positions', blueprint});
+        await repository.publishAsync(id, {base: 1});
+        const [draft] = await XH.jsonBlobService.listAsync({type: BLUEPRINT_TYPE}),
+            [pub] = await XH.jsonBlobService.listAsync({type: PUBLISH_TYPE});
+        expect(draft.meta).not.toHaveProperty('updatedBy');
+        expect(pub.meta).not.toHaveProperty('publishedBy');
+
+        await XH.jsonBlobService.updateAsync(draft.token, {
+            meta: {...(draft.meta as object), updatedBy: OTHER}
+        });
+        await XH.jsonBlobService.updateAsync(pub.token, {
+            meta: {...(pub.meta as object), publishedBy: OTHER}
+        });
+        expect((await repository.listAsync())[0].updatedBy).toBe(OWNER);
+        expect((await repository.listPublishesAsync(id))[0].publishedBy).toBe(OWNER);
+    });
+
     it("updates a publish's note, label and pin, and never its content", async () => {
         const {id} = await repository.createAsync({name: 'Positions', blueprint});
         await repository.publishAsync(id, {base: 1, note: 'Initial'});

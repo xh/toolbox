@@ -51,6 +51,8 @@ export function jsonBlobTypes(type: string): {
  * - **Writes:** a blueprint belongs to the user who created it, its JsonBlobs' owner. Only that
  *   user may save, publish, share or delete it, as hoist-core lets only a blob's owner write it.
  *   Summaries and records say so, and `canPublish` and `canShare` follow the owner.
+ * - **Attribution:** `updatedBy` is the draft blob's `lastUpdatedBy`, and `publishedBy` the publish
+ *   blob's owner, both set by hoist-core. Names a client writes into meta are never read.
  * - **Sharing** is private or global only (`sharingModes` is `everyone`). A new blueprint is
  *   private: its blobs' ACL is unset, so only the owner reads them. Global sets `acl: '*'` on the
  *   draft and every publish, and later publishes take the draft's ACL. Every other user then runs
@@ -160,7 +162,6 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
                 draftVersion: 1,
                 publishedVersion: null,
                 updated: Date.now(),
-                updatedBy: this.username(),
                 ...(spec.copiedFrom ? {copiedFrom: spec.copiedFrom} : {})
             }
         });
@@ -218,7 +219,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
     async listPublishesAsync(id: string): Promise<BlueprintPublish[]> {
         const stubs = await this.publishStubsAsync(id);
         return sortBy(
-            stubs.map(it => publishOf(metaOf(it))),
+            stubs.map(it => publishOf(it)),
             it => it.version
         );
     }
@@ -245,8 +246,7 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
         if (changes.note !== undefined) text('note', changes.note);
         if (changes.label !== undefined) text('label', changes.label, 50);
         if (changes.pinned !== undefined) meta.pinned = changes.pinned;
-        await XH.jsonBlobService.updateAsync(pubStub.token, {meta});
-        return publishOf(meta);
+        return publishOf(await XH.jsonBlobService.updateAsync(pubStub.token, {meta}));
     }
 
     async copyAsync(
@@ -356,14 +356,14 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
             canShare: owner,
             canShareGlobally: owner,
             updated: meta.updated,
-            updatedBy: meta.updatedBy,
+            updatedBy: blob.lastUpdatedBy,
             ...(meta.copiedFrom ? {copiedFrom: meta.copiedFrom} : {}),
             ...(owner ? {sharing: blob.acl === '*' ? GLOBAL : PRIVATE} : {})
         };
     }
 
     private touched() {
-        return {updated: Date.now(), updatedBy: this.username()};
+        return {updated: Date.now()};
     }
 
     private async draftStubAsync(id: string): Promise<JsonBlob> {
@@ -395,22 +395,22 @@ export class JsonBlobBlueprintRepository implements BlueprintRepository {
                     it => metaOf(it).version as number
                 ),
                 version = Math.max(0, ...taken) + 1,
-                info: BlueprintPublish = {
+                info = {
                     version,
                     published: Date.now(),
-                    publishedBy: this.username(),
                     ...(note ? {note} : {}),
                     renames: draft.value.pendingRenames ?? []
                 };
             try {
-                await XH.jsonBlobService.createAsync({
-                    type: this.types.publish,
-                    name: `${id}:${version}`,
-                    acl: draft.acl,
-                    value: {blueprint: draft.value.blueprint},
-                    meta: {blueprintId: id, ...info}
-                });
-                return info;
+                return publishOf(
+                    await XH.jsonBlobService.createAsync({
+                        type: this.types.publish,
+                        name: `${id}:${version}`,
+                        acl: draft.acl,
+                        value: {blueprint: draft.value.blueprint},
+                        meta: {blueprintId: id, ...info}
+                    })
+                );
             } catch (e) {
                 // Retry only if another publish took this number, which hoist-core refuses.
                 const taker = (await this.publishStubsAsync(id)).find(
@@ -444,12 +444,12 @@ function metaOf(blob: JsonBlob): PlainObject {
     return (blob.meta ?? {}) as PlainObject;
 }
 
-function publishOf(meta: PlainObject): BlueprintPublish {
-    const {version, published, publishedBy, note, label, pinned, renames} = meta;
+function publishOf(blob: JsonBlob): BlueprintPublish {
+    const {version, published, note, label, pinned, renames} = metaOf(blob);
     return {
         version,
         published,
-        ...(publishedBy ? {publishedBy} : {}),
+        publishedBy: blob.owner,
         ...(note ? {note} : {}),
         ...(label ? {label} : {}),
         ...(pinned ? {pinned} : {}),
