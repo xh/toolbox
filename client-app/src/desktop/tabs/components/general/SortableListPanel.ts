@@ -244,7 +244,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 addText: 'Add dimension...',
                                 addRenderer:
                                     model.addMode === 'picker'
-                                        ? ({add, items}) => dimPicker({add, items})
+                                        ? ({add, items}) => dimPicker({add, chosen: items})
                                         : null
                             })
                         })
@@ -334,12 +334,12 @@ const entryRow = hoistCmp.factory<HoistProps & {entry: Entry}>({
 });
 
 // Leaves out the dimensions already in the list. Focus stays here, ready for the next pick.
-const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; items: Entry[]}>({
+const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; chosen: Entry[]}>({
     displayName: 'SortableDimPicker',
     model: false,
-    render({add, items}) {
+    render({add, chosen}) {
         const options = [...DIMS, ...MORE_DIMS]
-            .filter(d => !items.some(it => it.id === d.id))
+            .filter(d => !chosen.some(it => it.id === d.id))
             .map(d => ({value: d.id, label: d.name}));
         return select({
             key: options.length,
@@ -451,7 +451,9 @@ class SortableListPanelModel extends HoistModel {
             getNewItem: addMode === 'button' ? raw('() => model.newDim()') : undefined,
             addText: addMode === 'button' ? 'Add dimension...' : undefined,
             addRenderer:
-                addMode === 'picker' ? raw('({add, items}) => dimPicker({add, items})') : undefined
+                addMode === 'picker'
+                    ? raw('({add, items}) => dimPicker({add, chosen: items})')
+                    : undefined
         };
     }
 }
