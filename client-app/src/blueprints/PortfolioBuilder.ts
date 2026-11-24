@@ -206,10 +206,11 @@ export const portfolioBuilderSpec: WidgetSpec = {
     label: 'Portfolio builder',
     terms: ['portfolio builder', 'hypothetical portfolio', 'basket', 'pick tickers'],
     category: 'input',
+    fits: ['content'],
     app: true,
     guidance:
         'An app widget where a user builds a portfolio from tickers and weights. Its value is a ' +
-        'portfolio variable.',
+        'portfolio variable. It needs room: give it a layout cell, never a toolbar.',
     config: CONFIG_SCHEMA,
     value: {type: 'toolbox.portfolio'},
     size: {default: {w: 4, h: 8}},

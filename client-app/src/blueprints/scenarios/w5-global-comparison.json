@@ -105,8 +105,11 @@
             }
         }
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "cityAInput"}, {"id": "cityBInput"}, {"id": "unitsToggle"}], "children": [{"id": "dashboard"}]},
+        "cityAInput": {"component": "variableInput", "config": {"variable": "cityA"}},
+        "cityBInput": {"component": "variableInput", "config": {"variable": "cityB"}},
         "dashboard": {
             "component": "dashboard",
             "children": [
@@ -114,14 +117,7 @@
                     "id": "title",
                     "x": 0,
                     "y": 0,
-                    "w": 9,
-                    "h": 1
-                },
-                {
-                    "id": "unitsToggle",
-                    "x": 9,
-                    "y": 0,
-                    "w": 3,
+                    "w": 12,
                     "h": 1
                 },
                 {

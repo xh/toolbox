@@ -48,8 +48,12 @@
             "params": {"symbol": {"$var": "symbol"}, "start": {"$var": "lookbackStart"}, "end": {"$var": "asOf"}}
         }
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "fundInput"}, {"id": "asOfInput"}, {"id": "lookbackInput"}], "children": [{"id": "dashboard"}]},
+        "fundInput": {"component": "variableInput", "config": {"variable": "fund"}},
+        "asOfInput": {"component": "variableInput", "config": {"variable": "asOf"}},
+        "lookbackInput": {"component": "variableInput", "config": {"variable": "lookback"}},
         "dashboard": {
             "component": "dashboard",
             "children": [

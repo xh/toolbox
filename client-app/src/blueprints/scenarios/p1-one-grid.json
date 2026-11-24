@@ -4,8 +4,10 @@
         "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "today"}}
     },
     "sources": {"positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}}}},
-    "root": "posGrid",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "asOfInput"}], "children": [{"id": "posGrid"}]},
+        "asOfInput": {"component": "variableInput", "config": {"variable": "asOf"}},
         "posGrid": {
             "component": "cubeGrid",
             "config": {"source": "positions", "groupBy": ["sector", "symbol"], "columnState": ["mktVal", "pnlDay"]}

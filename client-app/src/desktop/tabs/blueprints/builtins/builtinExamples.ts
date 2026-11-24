@@ -1,6 +1,7 @@
 import type {Blueprint, BlueprintRegistry, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import {exampleBlueprintOf} from '@xh/hoist-chat-kit/blueprint';
 import type {PlainObject} from '@xh/hoist/core';
+import {withPromptInputs} from '../../../../blueprints/withPromptInputs';
 
 /** The id of the Built-ins page that shows every input at once. */
 export const INPUTS_OVERVIEW = 'inputs';
@@ -51,7 +52,7 @@ const posGrid = {
 
 const RICH_EXAMPLES: Record<string, () => Blueprint> = {
     dashboard: () =>
-        ({
+        withPromptInputs({
             variables: {asOf},
             sources: {positions},
             root: 'dashboard',
@@ -72,10 +73,10 @@ const RICH_EXAMPLES: Record<string, () => Blueprint> = {
                 sectorChart,
                 posGrid
             }
-        }) as Blueprint,
+        } as Blueprint),
 
     tabContainer: () =>
-        ({
+        withPromptInputs({
             variables: {asOf},
             sources: {positions},
             root: 'tabContainer',
@@ -99,14 +100,14 @@ const RICH_EXAMPLES: Record<string, () => Blueprint> = {
                 posGrid,
                 sectorChart
             }
-        }) as Blueprint,
+        } as Blueprint),
 
     [INPUTS_OVERVIEW]: () => inputsOverview()
 };
 
 /**
- * Each input in a cell headed with its widget's name, bound to a labelled variable, over a line
- * that shows the variable's value.
+ * Each input in the tbar of a cell headed with its widget's name, bound to a labelled variable, over
+ * a line that shows the variable's value.
  */
 function inputsOverview(): Blueprint {
     const inputs: [string, PlainObject, string, PlainObject][] = [
@@ -184,21 +185,15 @@ function inputsOverview(): Blueprint {
         variables: PlainObject = {asOf};
 
     inputs.forEach(([id, el, name, decl]) => {
-        const cell = `${id}Cell`,
-            value = `${id}Value`,
+        const value = `${id}Value`,
             unlabelled = el.component === 'buttonGroupInput' || el.component === 'groupingChooser';
         variables[name] = {...decl, setBy: {element: id}};
         elements[id] = unlabelled ? el : {...el, config: {...el.config, label: decl.label}};
-        elements[value] = {component: 'markdown', config: {text: `\`${name}\` = {${name}}`}};
-        // An input with no label of its own takes one from its variable, above it.
-        if (unlabelled) {
-            elements[`${id}Label`] = {component: 'markdown', config: {text: `**${decl.label}**`}};
-        }
-        elements[cell] = {
-            component: 'box',
-            config: {direction: 'column', gap: 8},
-            children: [...(unlabelled ? [{id: `${id}Label`}] : []), {id}, {id: value}]
+        elements[value] = {
+            component: 'markdown',
+            config: {text: `**${decl.label}**: \`${name}\` = {${name}}`}
         };
+        elements[`${id}Cell`] = {component: 'panel', tbar: [{id}], children: [{id: value}]};
     });
     return {
         variables,

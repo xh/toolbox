@@ -14,8 +14,10 @@
         "current": {"dataset": "currentWeather", "params": {"city": {"$var": "city"}, "units": {"$var": "units"}}},
         "forecast": {"dataset": "weather", "params": {"city": {"$var": "city"}, "units": {"$var": "units"}}}
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "cityInput"}], "children": [{"id": "dashboard"}]},
+        "cityInput": {"component": "variableInput", "config": {"variable": "city"}},
         "dashboard": {
             "component": "dashboard",
             "children": [

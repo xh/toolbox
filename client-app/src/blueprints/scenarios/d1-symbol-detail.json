@@ -74,8 +74,11 @@
             }
         }
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "symbolInput"}, {"id": "asOfInput"}], "children": [{"id": "dashboard"}]},
+        "symbolInput": {"component": "variableInput", "config": {"variable": "symbol"}},
+        "asOfInput": {"component": "variableInput", "config": {"variable": "asOf"}},
         "dashboard": {
             "component": "dashboard",
             "children": [

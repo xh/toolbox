@@ -73,10 +73,12 @@ describe('registry used marks', () => {
             'widget:cubeGrid',
             'widget:dashboard',
             'widget:groupingChooser',
+            'widget:panel',
             'widget:presetSelector',
             'widget:statCard',
             'widget:tabContainer',
-            'widget:tileFrame'
+            'widget:tileFrame',
+            'widget:variableInput'
         ]);
     });
 

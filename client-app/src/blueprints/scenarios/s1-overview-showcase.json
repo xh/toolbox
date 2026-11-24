@@ -24,8 +24,11 @@
         "summary": {"dataset": "fundSummary", "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}}},
         "positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}, "fund": {"$var": "fund"}}}
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "fundInput"}, {"id": "asOfInput"}], "children": [{"id": "dashboard"}]},
+        "fundInput": {"component": "variableInput", "config": {"variable": "fund"}},
+        "asOfInput": {"component": "variableInput", "config": {"variable": "asOf"}},
         "dashboard": {
             "component": "dashboard",
             "children": [

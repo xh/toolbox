@@ -12,8 +12,10 @@
         "positions": {"dataset": "positions", "params": {"asOf": {"$var": "asOf"}}},
         "orders": {"dataset": "orders", "params": {"asOf": {"$var": "asOf"}}}
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "asOfInput"}], "children": [{"id": "dashboard"}]},
+        "asOfInput": {"component": "variableInput", "config": {"variable": "asOf"}},
         "dashboard": {
             "component": "dashboard",
             "children": [

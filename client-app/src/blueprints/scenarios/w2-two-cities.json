@@ -31,27 +31,29 @@
         "currentB": {"dataset": "currentWeather", "params": {"city": {"$var": "cityB"}, "units": {"$var": "units"}}},
         "forecastB": {"dataset": "weather", "params": {"city": {"$var": "cityB"}, "units": {"$var": "units"}}}
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "cityAInput"}, {"id": "cityBInput"}, {"id": "unitsToggle"}], "children": [{"id": "dashboard"}]},
+        "cityAInput": {"component": "variableInput", "config": {"variable": "cityA"}},
+        "cityBInput": {"component": "variableInput", "config": {"variable": "cityB"}},
         "dashboard": {
             "component": "dashboard",
             "children": [
-                {"id": "unitsToggle", "x": 0, "y": 0, "w": 12, "h": 1},
-                {"id": "nowA", "x": 0, "y": 1, "w": 6, "h": 2},
-                {"id": "tempChartA", "x": 0, "y": 3, "w": 6, "h": 4},
-                {"id": "precipChartA", "x": 0, "y": 7, "w": 6, "h": 4},
-                {"id": "windChartA", "x": 0, "y": 11, "w": 6, "h": 4},
-                {"id": "forecastGridA", "x": 0, "y": 15, "w": 6, "h": 6},
-                {"id": "nowB", "x": 6, "y": 1, "w": 6, "h": 2},
-                {"id": "tempChartB", "x": 6, "y": 3, "w": 6, "h": 4},
-                {"id": "precipChartB", "x": 6, "y": 7, "w": 6, "h": 4},
-                {"id": "windChartB", "x": 6, "y": 11, "w": 6, "h": 4},
-                {"id": "forecastGridB", "x": 6, "y": 15, "w": 6, "h": 6}
+                {"id": "nowA", "x": 0, "y": 0, "w": 6, "h": 2},
+                {"id": "tempChartA", "x": 0, "y": 2, "w": 6, "h": 4},
+                {"id": "precipChartA", "x": 0, "y": 6, "w": 6, "h": 4},
+                {"id": "windChartA", "x": 0, "y": 10, "w": 6, "h": 4},
+                {"id": "forecastGridA", "x": 0, "y": 14, "w": 6, "h": 6},
+                {"id": "nowB", "x": 6, "y": 0, "w": 6, "h": 2},
+                {"id": "tempChartB", "x": 6, "y": 2, "w": 6, "h": 4},
+                {"id": "precipChartB", "x": 6, "y": 6, "w": 6, "h": 4},
+                {"id": "windChartB", "x": 6, "y": 10, "w": 6, "h": 4},
+                {"id": "forecastGridB", "x": 6, "y": 14, "w": 6, "h": 6}
             ]
         },
         "unitsToggle": {
             "component": "buttonGroupInput",
-            "config": {"options": [{"value": "imperial", "label": "°F"}, {"value": "metric", "label": "°C"}]}
+            "config": {"options": [{"value": "metric", "label": "°C"}, {"value": "imperial", "label": "°F"}]}
         },
         "nowA": {
             "component": "tileFrame",

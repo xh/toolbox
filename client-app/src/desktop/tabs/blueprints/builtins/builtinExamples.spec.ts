@@ -8,14 +8,14 @@ const catalog = new DataCatalog(catalogJson as any),
     registry = createPortfolioRegistry();
 
 describe('builtinExample', () => {
-    it('validates every example with no errors', () => {
+    it('validates every example with no issues', () => {
         const names = [...Object.keys(registry.widgets), INPUTS_OVERVIEW],
             problems = names.flatMap(name => {
                 const bp = builtinExample(name, registry, catalog);
                 return bp
-                    ? validateBlueprint(bp, {registry, catalog})
-                          .filter(it => it.severity === 'error')
-                          .map(it => `${name}: ${it.code} ${it.path} ${it.message}`)
+                    ? validateBlueprint(bp, {registry, catalog}).map(
+                          it => `${name}: ${it.code} ${it.path} ${it.message}`
+                      )
                     : [];
             });
         expect(problems).toEqual([]);

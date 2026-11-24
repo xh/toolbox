@@ -8,12 +8,12 @@ const catalog = new DataCatalog(catalogJson as any),
     registry = createPortfolioRegistry();
 
 describe('CONCEPT_PAGES', () => {
-    it('validates each example blueprint with no errors', () => {
+    it('validates each example blueprint with no issues', () => {
         const problems = CONCEPT_PAGES.flatMap(({id, example}) =>
             example
-                ? validateBlueprint(example, {registry, catalog})
-                      .filter(it => it.severity === 'error')
-                      .map(it => `${id}: ${it.code} ${it.path} ${it.message}`)
+                ? validateBlueprint(example, {registry, catalog}).map(
+                      it => `${id}: ${it.code} ${it.path} ${it.message}`
+                  )
                 : []
         );
         expect(problems).toEqual([]);

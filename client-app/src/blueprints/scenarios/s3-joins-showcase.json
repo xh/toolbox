@@ -33,8 +33,10 @@
             "joins": [{"source": "funds", "on": {"fund": "fund"}, "fields": ["manager", "style"]}]
         }
     },
-    "root": "dashboard",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "asOfInput"}], "children": [{"id": "dashboard"}]},
+        "asOfInput": {"component": "variableInput", "config": {"variable": "asOf"}},
         "dashboard": {
             "component": "dashboard",
             "children": [

@@ -1,6 +1,7 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
 import p1 from '../../../../blueprints/scenarios/p1-one-grid.json';
 import p2 from '../../../../blueprints/scenarios/p2-linked-dashboard.json';
+import {withPromptInputs} from '../../../../blueprints/withPromptInputs';
 
 /** A page of the Blueprints tab's Concepts group. */
 export interface ConceptPage {
@@ -54,7 +55,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             'A widget declares its config schema, its outputs, and the paths presets may control. Its state lives in its config, never hidden in its model.',
             "Apps register their own widgets under dotted names, such as `toolbox.portfolioBuilder`. Each example's Registry lists every widget with a live example."
         ],
-        example: {
+        example: withPromptInputs({
             variables: {asOf},
             sources: {positions},
             root: 'dash',
@@ -96,7 +97,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
                     }
                 }
             }
-        } as Blueprint
+        } as Blueprint)
     },
     {
         id: 'variables',
@@ -106,7 +107,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             'Variables live at the root. Each declares a type, a label, a default and `setBy`, which names the one thing that may set it: a prompt, a widget, an output, a resolver or an action.',
             'A default is a literal or a resolver, such as `previousBusinessDay`, so a saved blueprint keeps moving with time. Below, the buttons set `pnlFilter` and the grid reads it.'
         ],
-        example: {
+        example: withPromptInputs({
             variables: {asOf, pnlFilter: {type: 'filter', setBy: 'action'}},
             sources: {positions},
             root: 'dash',
@@ -152,7 +153,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
                     }
                 }
             }
-        } as Blueprint
+        } as Blueprint)
     },
     {
         id: 'binding',
@@ -162,7 +163,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             "Widgets connect only through variables, never through references to each other. Below, the treemap's selection sets `sectorPick`, and the grid's filter reads it. Click a sector.",
             'The Map view draws these links, and the Inspector lists what the selected widget reads and sets.'
         ],
-        example: {
+        example: withPromptInputs({
             variables: {
                 asOf,
                 sectorPick: {type: 'filter', setBy: {element: 'sectorMap', output: 'selection'}}
@@ -197,7 +198,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
                     }
                 }
             }
-        } as Blueprint
+        } as Blueprint)
     },
     {
         id: 'sources',
@@ -207,7 +208,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             "A source can join other sources by key, with no join on the server. The grain of each side picks how: the same grain copies values, and a coarser one keeps one value per key, such as a fund's NAV.",
             "Below, positions join each fund's NAV, manager and style, and each symbol's latest close."
         ],
-        example: {
+        example: withPromptInputs({
             variables: {
                 asOf,
                 priceStart: {
@@ -251,7 +252,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
                     }
                 }
             }
-        } as Blueprint
+        } as Blueprint)
     },
     {
         id: 'presets',
@@ -259,9 +260,9 @@ export const CONCEPT_PAGES: ConceptPage[] = [
         paragraphs: [
             'A preset group is a named set of values a designer publishes for users to switch between, such as column views on a grid.',
             'The group lists the paths it controls, and each preset sets every one of them, so switching always gives the same result.',
-            'A `presetSelector` widget shows the switch, wherever the designer puts it. Switch between the P&L and Risk views below.'
+            'A `presetSelector` widget shows the switch, in the toolbar of the view it drives. Switch between the P&L and Risk views below.'
         ],
-        example: {
+        example: withPromptInputs({
             variables: {asOf},
             sources: {positions},
             presets: {
@@ -308,8 +309,14 @@ export const CONCEPT_PAGES: ConceptPage[] = [
                 dash: {
                     component: 'dashboard',
                     children: [
-                        {id: 'posViewsSelector', x: 0, y: 0, w: 12, h: 1},
-                        {id: 'posGrid', x: 0, y: 1, w: 12, h: 6}
+                        {
+                            id: 'posGrid',
+                            x: 0,
+                            y: 0,
+                            w: 12,
+                            h: 7,
+                            headerItems: [{id: 'posViewsSelector'}]
+                        }
                     ]
                 },
                 posViewsSelector: {
@@ -321,7 +328,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
                     config: {source: 'positions', groupBy: ['sector', 'symbol']}
                 }
             }
-        } as Blueprint
+        } as Blueprint)
     },
     {
         id: 'actions',
@@ -331,7 +338,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
             'A prop takes one action or a list of up to eight steps. An action with side effects always asks the user to confirm.',
             '`openBlueprint` drills into another blueprint of the same type, and a row action reads the clicked row with `{"$row": field}`. Right-click a position below to open its symbol.'
         ],
-        example: {
+        example: withPromptInputs({
             variables: {asOf, pnlFilter: {type: 'filter', setBy: 'action'}},
             sources: {positions},
             root: 'dash',
@@ -381,7 +388,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
                     }
                 }
             }
-        } as Blueprint
+        } as Blueprint)
     },
     {
         id: 'editing',

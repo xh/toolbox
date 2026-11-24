@@ -32,8 +32,15 @@ const fundGrid: Blueprint = {
             params: {asOf: {$var: 'asOf'}, fund: {$var: 'fund'}}
         }
     },
-    root: 'grid',
+    root: 'page',
     elements: {
+        page: {
+            component: 'panel',
+            tbar: [{id: 'fundInput'}, {id: 'asOfInput'}],
+            children: [{id: 'grid'}]
+        },
+        fundInput: {component: 'variableInput', config: {variable: 'fund'}},
+        asOfInput: {component: 'variableInput', config: {variable: 'asOf'}},
         grid: {
             component: 'cubeGrid',
             config: {source: 'positions', groupBy: ['sector'], columnState: ['mktVal']}

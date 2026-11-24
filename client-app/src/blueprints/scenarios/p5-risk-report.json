@@ -35,8 +35,10 @@
             }
         }
     },
-    "root": "tabs",
+    "root": "page",
     "elements": {
+        "page": {"component": "panel", "tbar": [{"id": "asOfInput"}], "children": [{"id": "tabs"}]},
+        "asOfInput": {"component": "variableInput", "config": {"variable": "asOf"}},
         "tabs": {
             "component": "tabContainer",
             "children": [
