@@ -451,6 +451,16 @@ export class RegistryModel extends HoistModel {
                     if (rec) this.selectedId = rec.id as string;
                 },
                 fireImmediately: true
+            },
+            {
+                // The address names the entry shown, so a reload or a copied link returns to it.
+                track: () => this.selectedId,
+                run: id => {
+                    const route = this.panelModel.pageRoutes?.registry,
+                        state = XH.routerState;
+                    if (!id || state?.name !== route || state.params?.entry === id) return;
+                    XH.navigate(route, {...state.params, entry: id}, {replace: true});
+                }
             }
         );
     }
