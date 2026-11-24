@@ -47,7 +47,7 @@ class BlueprintPresetService extends BaseService {
         [type: PORTFOLIO, token: 'symbol-detail', file: 'd1-symbol-detail', name: 'Symbol detail',
          description: "One symbol across all funds: its close over three months, and each fund's position."],
         [type: WEATHER, token: 'weather-one-city', file: 'w1-one-city', name: 'W1. Weather for one city',
-         description: 'Current conditions and the temperature forecast for one city.'],
+         description: 'Current conditions for one city, and its forecast, which runs again only on Run once the city or units change.'],
         [type: WEATHER, token: 'weather-two-cities', file: 'w2-two-cities', name: 'W2. Two cities side by side',
          description: 'Two cities side by side: temperature, chance of rain and wind.'],
         [type: WEATHER, token: 'weather-around-the-world', file: 's5-weather-showcase', name: 'S5. Weather around the world',
