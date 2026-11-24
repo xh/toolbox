@@ -1,7 +1,12 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintRegistry, DataCatalog, validateBlueprint} from '@xh/hoist-chat-kit/blueprint';
+import {
+    BlueprintRegistry,
+    DataCatalog,
+    runAsyncChecksAsync,
+    validateBlueprint
+} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
-import {initTestAppAsync} from '@xh/hoist/test-support';
+import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import type {ReactElement} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {beforeAll, describe, expect, it} from 'vitest';
@@ -51,7 +56,13 @@ const fundGrid: Blueprint = {
 const codes = (registry: BlueprintRegistry) =>
     validateBlueprint(fundGrid, {catalog, registry}).map(it => it.code);
 
-beforeAll(() => initTestAppAsync());
+beforeAll(async () => {
+    await initTestAppAsync();
+    hoistCore.route('GET', 'blueprints/symbols', () => [
+        {symbol: 'AAPL', name: 'Apple Inc.', sector: 'Technology'},
+        {symbol: 'MSFT', name: 'Microsoft Corp.', sector: 'Technology'}
+    ]);
+});
 
 describe('Toolbox blueprint registry', () => {
     it('adds the fund type and the userFund resolver to the built-ins', () => {
@@ -112,5 +123,35 @@ describe('publishToPmPack action', () => {
         expect(publishToPmPackAction.describe({fund: null, asOf: '2026-11-18'})).toBe(
             'Publish the report for all funds, 2026-11-18'
         );
+    });
+
+    it("checks a portfolio variable's literal holdings against the server's symbols", async () => {
+        const portfolio = (symbols: string[]) => ({
+                holdings: symbols.map(symbol => ({symbol, weight: 1 / symbols.length}))
+            }),
+            withDefault = (symbols: string[]): Blueprint => ({
+                variables: {
+                    portfolio: {
+                        type: 'toolbox.portfolio',
+                        setBy: 'prompt',
+                        default: {value: portfolio(symbols)}
+                    }
+                },
+                root: 'page',
+                elements: {page: {component: 'panel'}}
+            }),
+            registry = createToolboxRegistry();
+
+        expect(await runAsyncChecksAsync(null, withDefault(['AAPL', 'MSFT']), registry)).toEqual(
+            []
+        );
+        expect(await runAsyncChecksAsync(null, withDefault(['AAPL', 'ZZZZ']), registry)).toEqual([
+            {
+                code: 'variable.badValue',
+                severity: 'error',
+                path: '/variables/portfolio/default/value',
+                message: expect.stringContaining('ZZZZ')
+            }
+        ]);
     });
 });

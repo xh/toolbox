@@ -7,7 +7,8 @@ import type {
 } from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import {fundInput} from './FundInput';
-import {portfolioBuilderSpec} from './PortfolioBuilder';
+import type {Portfolio} from './PortfolioBuilder';
+import {fetchInstrumentsAsync, portfolioBuilderSpec} from './PortfolioBuilder';
 import {renderTicker} from './Ticker';
 import {weatherIconRenderer} from './WeatherIcon';
 
@@ -27,7 +28,16 @@ export const portfolioType: VariableTypeSpec = {
     matches: 'toolbox.portfolio',
     guidance:
         'A hypothetical portfolio: {"holdings": [{"symbol": "AAPL", "weight": 0.5}]}, with ' +
-        'weights as fractions. A portfolio builder sets it, and sets it to null when empty.'
+        'weights as fractions. A portfolio builder sets it, and sets it to null when empty.',
+    checkAsync: async value => {
+        const symbols = (value as Portfolio)?.holdings?.map(it => it.symbol) ?? [];
+        if (!symbols.length) return null;
+        const known = new Set((await fetchInstrumentsAsync()).map(it => it.symbol)),
+            unknown = symbols.filter(it => !known.has(it));
+        return unknown.length
+            ? `Unknown symbol(s): ${unknown.join(', ')}. Use symbols the portfolio data holds.`
+            : null;
+    }
 };
 
 export const userFundResolver: ResolverSpec = {

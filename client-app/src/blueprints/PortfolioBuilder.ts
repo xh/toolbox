@@ -44,6 +44,11 @@ export interface InstrumentOption {
     sector: string;
 }
 
+/** Every instrument the portfolio data knows, from the server. */
+export function fetchInstrumentsAsync(loadSpec?: LoadSpec): Promise<InstrumentOption[]> {
+    return XH.fetchJson({url: 'blueprints/symbols'}, {loadSpec});
+}
+
 /**
  * The `portfolioBuilder` app widget: a hypothetical portfolio of tickers and weights, the value of
  * the `portfolio` variable whose `setBy` names it. Each add, remove or weight edit sets the
@@ -122,7 +127,7 @@ export class PortfolioBuilderModel extends BlueprintWidgetModel<PortfolioBuilder
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        const instruments = await XH.fetchJson({url: 'blueprints/symbols'}, {loadSpec});
+        const instruments = await fetchInstrumentsAsync(loadSpec);
         if (!loadSpec.isStale) runInAction(() => (this.instruments = instruments));
     }
 
