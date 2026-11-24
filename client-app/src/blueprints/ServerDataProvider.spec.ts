@@ -50,7 +50,11 @@ function setChannel(key: string) {
 
 const subscribeRequests = () => hoistCore.requestsTo('blueprints/subscribe'),
     unsubscribeRequests = () => hoistCore.requestsTo('blueprints/unsubscribe'),
-    aggregatesRequests = () => hoistCore.requestsTo('blueprints/aggregates');
+    aggregatesRequests = () => hoistCore.requestsTo('blueprints/aggregates'),
+    subscribedAfter = (count: number) =>
+        vi.waitFor(() => expect(subscribeRequests().length).toBeGreaterThan(count)),
+    // Lets queued requests run, for a check that one was not made.
+    settle = () => wait(0);
 
 describe('ServerDataProvider', () => {
     it('loads rows with the request as the body', async () => {
@@ -60,9 +64,10 @@ describe('ServerDataProvider', () => {
     });
 
     it('sends the snapshot as a replace, then held and live pushes in order', async () => {
-        const updates: BlueprintDataUpdate[] = [];
+        const updates: BlueprintDataUpdate[] = [],
+            before = subscribeRequests().length;
         provider.subscribe(req, u => updates.push(u));
-        await wait(10);
+        await subscribedAfter(before);
 
         const {json} = subscribeRequests().at(-1);
         expect(json).toMatchObject({...req, topic: expect.any(String)});
@@ -72,7 +77,7 @@ describe('ServerDataProvider', () => {
         expect(updates).toEqual([]);
 
         releaseSnapshot();
-        await wait(10);
+        await vi.waitFor(() => expect(updates).toHaveLength(2));
         push({topic: json.topic, data: {remove: ['a']}});
 
         expect(updates).toEqual([
@@ -86,11 +91,11 @@ describe('ServerDataProvider', () => {
         setChannel(null);
         const before = subscribeRequests().length;
         provider.subscribe(req, () => {});
-        await wait(10);
+        await settle();
         expect(subscribeRequests()).toHaveLength(before);
 
         setChannel('channel-2');
-        await wait(10);
+        await subscribedAfter(before);
         expect(subscribeRequests().at(-1).json).toMatchObject({channelKey: 'channel-2'});
         releaseSnapshot();
     });
@@ -102,7 +107,7 @@ describe('ServerDataProvider', () => {
             stop = provider.subscribe(req, () => {});
         stop();
         setChannel('channel-3');
-        await wait(10);
+        await settle();
         expect(subscribeRequests()).toHaveLength(subsBefore);
         expect(unsubscribeRequests()).toHaveLength(unsubsBefore);
     });
@@ -113,37 +118,38 @@ describe('ServerDataProvider', () => {
         const updates: BlueprintDataUpdate[] = [],
             subsBefore = subscribeRequests().length;
         provider.subscribe(req, u => updates.push(u));
-        await wait(10);
+        await vi.waitFor(() => expect(updates).toEqual([{replace: snapshot}]));
         expect(subscribeRequests()).toHaveLength(subsBefore);
-        expect(updates).toEqual([{replace: snapshot}]);
     });
 
     it('stops at once, and ends the server pushes once the subscribe settles', async () => {
         const updates: BlueprintDataUpdate[] = [],
-            unsubscribedBefore = unsubscribeRequests().length;
+            unsubscribedBefore = unsubscribeRequests().length,
+            before = subscribeRequests().length;
         const unsubscribe = provider.subscribe(req, u => updates.push(u));
-        await wait(10);
+        await subscribedAfter(before);
         const {topic} = subscribeRequests().at(-1).json;
 
         unsubscribe();
         expect(XH.webSocketService.unsubscribe).toHaveBeenCalled();
-        await wait(10);
+        await settle();
         expect(unsubscribeRequests()).toHaveLength(unsubscribedBefore);
 
         releaseSnapshot();
-        await wait(10);
+        await vi.waitFor(() => expect(unsubscribeRequests()).toHaveLength(unsubscribedBefore + 1));
         expect(updates).toEqual([]);
         expect(unsubscribeRequests().at(-1).json).toMatchObject({topic});
     });
 
     it('loads more grouping sets into the live subscription once it is set up', async () => {
+        const before = subscribeRequests().length;
         provider.subscribe(req, () => {});
-        await wait(10);
+        await subscribedAfter(before);
         const {topic, channelKey} = subscribeRequests().at(-1).json,
             more = {...req, groupBy: [['sector']]};
 
         const loading = provider.loadAggregatesAsync(more);
-        await wait(10);
+        await settle();
         expect(aggregatesRequests().filter(r => r.json.topic === topic)).toHaveLength(0);
 
         releaseSnapshot();
@@ -155,10 +161,12 @@ describe('ServerDataProvider', () => {
         await provider.loadAggregatesAsync({...req, groupBy: [['sector']]});
         expect(aggregatesRequests().at(-1).json).toEqual({...req, groupBy: [['sector']]});
 
-        const unsubscribe = provider.subscribe(req, () => {});
-        await wait(10);
+        const updates: BlueprintDataUpdate[] = [],
+            before = subscribeRequests().length,
+            unsubscribe = provider.subscribe(req, u => updates.push(u));
+        await subscribedAfter(before);
         releaseSnapshot();
-        await wait(10);
+        await vi.waitFor(() => expect(updates).toHaveLength(1));
         unsubscribe();
         await provider.loadAggregatesAsync({...req, groupBy: [['symbol']]});
         expect(aggregatesRequests().at(-1).json).toEqual({...req, groupBy: [['symbol']]});

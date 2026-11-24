@@ -1,7 +1,7 @@
 import {DataCatalog, FakeBlueprintDataProvider, isGlobal} from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
-import {find} from 'lodash';
+import {find, get} from 'lodash';
 import {wait} from '@xh/hoist/promise';
 import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
 import {BlueprintShellModel} from './BlueprintShellModel';
@@ -279,9 +279,10 @@ describe('Blueprints designer', () => {
         const opens = () => hoistCore.requestsTo('xh/getJsonBlob').length;
         model.libraryView = 'cards';
         try {
-            await wait(50);
             const ids = model.summaries.map(it => it.id);
-            expect(Object.keys(model.previews).sort()).toEqual([...ids].sort());
+            await vi.waitFor(() =>
+                expect(Object.keys(model.previews).sort()).toEqual([...ids].sort())
+            );
             expect(model.previews[byName(PRESETS[0][1]).id].blueprint).toMatchObject({
                 root: p1.root
             });
@@ -289,7 +290,8 @@ describe('Blueprints designer', () => {
             const before = opens();
             model.libraryView = 'list';
             model.libraryView = 'cards';
-            await wait(50);
+            // Lets any load the switch started reach the server, for the check that none did.
+            await wait(0);
             expect(opens()).toBe(before);
         } finally {
             model.libraryView = 'list';
@@ -318,8 +320,14 @@ describe('Blueprints designer', () => {
         expect(model.recentIds.slice(0, 2)).toEqual([mine, mineToo]);
         expect(model.recentIds.filter(it => it === mine)).toHaveLength(1);
 
-        // Persistence writes are debounced.
-        await new Promise(r => setTimeout(r, 300));
+        // Persistence writes are debounced, so wait for this one to land.
+        await vi.waitFor(() => {
+            const stored = XH.localStorageService.get(`spec.${PORTFOLIO_TYPE.name}`);
+            expect(get(stored, `recentIds.${PORTFOLIO_TYPE.name}`)?.slice(0, 2)).toEqual([
+                mine,
+                mineToo
+            ]);
+        });
 
         const reloaded = await createModelAsync();
         expect(reloaded.recentIds.slice(0, 2)).toEqual([mine, mineToo]);
