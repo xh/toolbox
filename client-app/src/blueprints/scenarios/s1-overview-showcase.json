@@ -2,13 +2,13 @@
     "schema": {
         "blueprint": 1,
         "widgets": {
+            "panel": 1,
+            "variableInput": 1,
             "dashboard": 1,
             "markdown": 1,
-            "callout": 1,
-            "panel": 1,
-            "box": 1,
             "tileFrame": 1,
             "statCard": 1,
+            "callout": 1,
             "treemap": 1,
             "cubeGrid": 1
         },

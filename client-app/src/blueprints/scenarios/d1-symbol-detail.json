@@ -2,6 +2,8 @@
     "schema": {
         "blueprint": 1,
         "widgets": {
+            "panel": 1,
+            "variableInput": 1,
             "dashboard": 1,
             "markdown": 1,
             "tileFrame": 1,

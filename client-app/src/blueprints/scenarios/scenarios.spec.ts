@@ -1,5 +1,5 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {DataCatalog, validateBlueprint} from '@xh/hoist-chat-kit/blueprint';
+import {DataCatalog, stampSchemaVersions, validateBlueprint} from '@xh/hoist-chat-kit/blueprint';
 import {pick} from 'lodash';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {beforeAll, describe, expect, it} from 'vitest';
@@ -53,5 +53,11 @@ describe('scenario blueprints', () => {
                 registry: type.createRegistry()
             });
         expect(issues.map(it => `${it.severity} ${it.code} ${it.path}: ${it.message}`)).toEqual([]);
+    });
+
+    it.each(Object.keys(SCENARIOS))('%s records each widget it uses in its schema', name => {
+        const [blueprint, type] = SCENARIOS[name],
+            bp = blueprint as Blueprint;
+        expect(bp.schema).toEqual(stampSchemaVersions(bp, type.createRegistry()).schema);
     });
 });

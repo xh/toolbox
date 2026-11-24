@@ -1,5 +1,9 @@
 {
-    "schema": {"blueprint": 1, "widgets": {"cubeGrid": 1}, "resolvers": {"today": 1}},
+    "schema": {
+        "blueprint": 1,
+        "widgets": {"panel": 1, "variableInput": 1, "cubeGrid": 1},
+        "resolvers": {"today": 1}
+    },
     "variables": {
         "asOf": {"type": "localDate", "label": "As of", "setBy": "prompt", "default": {"resolver": "today"}}
     },

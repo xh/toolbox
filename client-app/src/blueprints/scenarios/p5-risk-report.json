@@ -1,7 +1,7 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"tabContainer": 1, "dashboard": 1, "cubeGrid": 1, "chart": 1, "toolbox.portfolioBuilder": 1},
+        "widgets": {"panel": 1, "variableInput": 1, "tabContainer": 1, "dashboard": 1, "cubeGrid": 1, "chart": 1, "toolbox.portfolioBuilder": 1},
         "variableTypes": {"toolbox.portfolio": 1},
         "resolvers": {"previousBusinessDay": 1}
     },

@@ -1,7 +1,7 @@
 {
     "schema": {
         "blueprint": 1,
-        "widgets": {"dashboard": 1, "cubeGrid": 1, "chart": 1, "statCard": 1, "tileFrame": 1},
+        "widgets": {"panel": 1, "variableInput": 1, "dashboard": 1, "tileFrame": 1, "statCard": 1, "cubeGrid": 1, "chart": 1},
         "resolvers": {"today": 1}
     },
     "variables": {
