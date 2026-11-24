@@ -699,7 +699,7 @@ export class BlueprintShellModel extends HoistModel {
     async deleteBlueprintAsync() {
         const id = this.selectedId;
         await this.documentModel.deleteAsync();
-        await this.threadStore.deleteThreadsAsync([id]).catch(() => {});
+        await this.threadStore.deleteThreadsAsync([id]).catchDefault({showAlert: false});
         await this.refreshSummariesAsync();
         runInAction(() => {
             this.selectedId = null;
@@ -747,7 +747,7 @@ export class BlueprintShellModel extends HoistModel {
         const summary = find(this.summaries, {id});
         if (!summary || !(await this.confirmDeleteAsync(summary.name))) return;
         await this.repository.deleteAsync(id);
-        await this.threadStore.deleteThreadsAsync([id]).catch(() => {});
+        await this.threadStore.deleteThreadsAsync([id]).catchDefault({showAlert: false});
         await this.refreshSummariesAsync();
         runInAction(() => {
             if (this.selectedId === id) this.selectedId = null;
