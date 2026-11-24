@@ -3,6 +3,7 @@ import type {
     ActionSpec,
     RendererSpec,
     ResolverSpec,
+    ToolSpec,
     VariableTypeSpec
 } from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
@@ -88,6 +89,30 @@ export const publishToPmPackAction: ActionSpec = {
     }
 };
 
+/** A client tool for the Architect: the tickers whose company name or symbol matches a query. */
+export const lookupSymbolTool: ToolSpec = {
+    name: 'toolbox.lookupSymbol',
+    app: true,
+    runsOn: 'client',
+    summary: 'Find the tickers of companies in the portfolio data, by company name.',
+    guidance:
+        'Use it before writing a symbol you are not sure of, such as when the user names a ' +
+        'company. Returns at most 10 matches; an empty list means the data does not hold it.',
+    parameters: {
+        type: 'object',
+        required: ['query'],
+        additionalProperties: false,
+        properties: {query: {type: 'string', description: 'A company name, or part of one.'}}
+    },
+    execute: async ({query}) => {
+        const q = (query as string)?.trim().toLowerCase();
+        if (!q) throw new Error('Give a company name to look up.');
+        return (await fetchInstrumentsAsync())
+            .filter(it => it.name.toLowerCase().includes(q) || it.symbol.toLowerCase() === q)
+            .slice(0, 10);
+    }
+};
+
 /** The built-in registry, plus Toolbox's portfolio widgets, types, resolvers and renderers. */
 export function createPortfolioRegistry(): BlueprintRegistry {
     return new BlueprintRegistry({
@@ -95,7 +120,8 @@ export function createPortfolioRegistry(): BlueprintRegistry {
         variableTypes: [fundType, portfolioType],
         resolvers: [userFundResolver],
         actions: [publishToPmPackAction],
-        renderers: [tickerRenderer]
+        renderers: [tickerRenderer],
+        tools: [lookupSymbolTool]
     });
 }
 
@@ -111,6 +137,7 @@ export function createToolboxRegistry(): BlueprintRegistry {
         variableTypes: [fundType, portfolioType],
         resolvers: [userFundResolver],
         actions: [publishToPmPackAction],
-        renderers: [tickerRenderer, weatherIconRenderer]
+        renderers: [tickerRenderer, weatherIconRenderer],
+        tools: [lookupSymbolTool]
     });
 }

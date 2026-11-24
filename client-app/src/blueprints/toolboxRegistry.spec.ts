@@ -154,4 +154,19 @@ describe('publishToPmPack action', () => {
             }
         ]);
     });
+
+    it('offers the Architect a client tool that looks up tickers by company name', async () => {
+        const tool = createToolboxRegistry().tools['toolbox.lookupSymbol'],
+            lookup = (query: string) => tool.execute({query}, {target: null});
+
+        expect(tool.runsOn).toBe('client');
+        expect(await lookup('microsoft')).toEqual([
+            {symbol: 'MSFT', name: 'Microsoft Corp.', sector: 'Technology'}
+        ]);
+        expect(await lookup('aapl')).toEqual([
+            {symbol: 'AAPL', name: 'Apple Inc.', sector: 'Technology'}
+        ]);
+        expect(await lookup('Acme')).toEqual([]);
+        await expect(lookup(' ')).rejects.toThrow(/company name/);
+    });
 });
