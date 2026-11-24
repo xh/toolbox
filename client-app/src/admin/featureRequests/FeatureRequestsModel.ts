@@ -25,7 +25,12 @@ export class FeatureRequestsModel extends HoistModel {
             {field: 'userWords', headerName: "User's words", flex: 1, minWidth: 240, tooltip: true},
             {field: 'workaround', width: 220, tooltip: true},
             {field: 'blueprintType', headerName: 'Type', width: 130, hidden: true},
-            {field: 'blueprintId', headerName: 'Blueprint', width: 160, hidden: true},
+            {
+                field: 'clientBlueprintId',
+                headerName: 'Blueprint (client-reported)',
+                width: 200,
+                hidden: true
+            },
             {field: 'fragment', hidden: true, excludeFromExport: true}
         ]
     });

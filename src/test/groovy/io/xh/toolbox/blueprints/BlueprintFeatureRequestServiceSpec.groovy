@@ -54,7 +54,7 @@ class BlueprintFeatureRequestServiceSpec extends Specification implements Servic
             user         : 'ann',
             app          : 'app',
             blueprintType: 'toolbox.portfolio',
-            blueprintId  : 'one-grid',
+            clientBlueprintId: 'one-grid',
             category     : 'widget',
             summary      : 'A gauge that shows a target band',
             userWords    : 'can the gauge show our risk limit band in amber?',
@@ -65,7 +65,7 @@ class BlueprintFeatureRequestServiceSpec extends Specification implements Servic
         testTrackService.lastTracked.category == 'Blueprint Feature Request'
         testTrackService.lastTracked.data == [
             id: id, category: 'widget', summary: 'A gauge that shows a target band',
-            app: 'app', blueprintType: 'toolbox.portfolio', blueprintId: 'one-grid'
+            app: 'app', blueprintType: 'toolbox.portfolio', clientBlueprintId: 'one-grid'
         ]
     }
 

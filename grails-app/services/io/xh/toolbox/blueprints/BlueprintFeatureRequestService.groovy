@@ -39,7 +39,8 @@ class BlueprintFeatureRequestService extends BaseService {
      * Check and store a request for the current user.
      *
      * @param body `{request, blueprintType, blueprintId, app}`, where `request` is the kit's
-     *      `FeatureRequest`. Its `context` is ignored: the user comes from the session.
+     *      `FeatureRequest`. Its `context` is ignored: the user comes from the session. Nothing
+     *      verifies `blueprintId`, so it is stored and tracked as `clientBlueprintId`.
      * @return `{id}`, the stored request's token
      */
     Map submit(Map body) {
@@ -47,7 +48,7 @@ class BlueprintFeatureRequestService extends BaseService {
         Map meta = [
             app          : checkedText(body.app, 'app', 50),
             blueprintType: checkedText(body.blueprintType, 'blueprintType', 50),
-            blueprintId  : checkedToken(body.blueprintId),
+            clientBlueprintId: checkedToken(body.blueprintId),
             category     : request.category,
             summary      : request.summary
         ]
@@ -79,7 +80,7 @@ class BlueprintFeatureRequestService extends BaseService {
                     user         : b.owner,
                     app          : meta.app,
                     blueprintType: meta.blueprintType,
-                    blueprintId  : meta.blueprintId,
+                    clientBlueprintId: meta.clientBlueprintId,
                     category     : value.category,
                     summary      : value.summary,
                     userWords    : value.userWords,

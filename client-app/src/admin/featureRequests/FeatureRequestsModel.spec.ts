@@ -9,7 +9,7 @@ const REQUEST = {
     user: 'jdoe',
     app: 'blueprintWeather',
     blueprintType: 'toolbox.weather',
-    blueprintId: 'weather-new-york',
+    clientBlueprintId: 'weather-new-york',
     category: 'widget',
     summary: 'A wind rose',
     userWords: 'Show me where the wind comes from',
@@ -35,7 +35,8 @@ describe('FeatureRequestsModel', () => {
         expect(rec.data).toMatchObject({
             user: 'jdoe',
             summary: 'A wind rose',
-            app: 'blueprintWeather'
+            app: 'blueprintWeather',
+            clientBlueprintId: 'weather-new-york'
         });
         model.gridModel.selectAsync('fr-1');
         expect(model.selectedFragment).toBe(JSON.stringify(REQUEST.fragment, null, 2));
