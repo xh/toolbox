@@ -10,6 +10,8 @@ class BlueprintSession {
 
     final String channelKey
     final String topic
+    /** The auth user who subscribed, and owns the channel. */
+    final String owner
     final BlueprintRequest request
     /** When the first rows were computed. Updates computed before then must not apply. */
     final Instant snapshotTime
@@ -19,9 +21,10 @@ class BlueprintSession {
     // Values last sent, by a group's dims.
     private Map<Map, Map> aggregates = [:]
 
-    BlueprintSession(String channelKey, String topic, BlueprintRequest request, BlueprintResult first, Instant snapshotTime) {
+    BlueprintSession(String channelKey, String topic, String owner, BlueprintRequest request, BlueprintResult first, Instant snapshotTime) {
         this.channelKey = channelKey
         this.topic = topic
+        this.owner = owner
         this.request = request
         this.snapshotTime = snapshotTime
         this.rows = byId(first.rows)

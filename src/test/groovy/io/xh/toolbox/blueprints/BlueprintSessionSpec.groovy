@@ -11,7 +11,7 @@ class BlueprintSessionSpec extends Specification {
     }
 
     private static BlueprintSession session(List<Map> rows, List<Map> aggregates = null, List groupBy = []) {
-        new BlueprintSession('ch', 'tp', new BlueprintRequest(groupBy: groupBy), result(rows, aggregates), Instant.now())
+        new BlueprintSession('ch', 'tp', 'ann', new BlueprintRequest(groupBy: groupBy), result(rows, aggregates), Instant.now())
     }
 
     def 'updates diff fresh rows against the rows last sent, by id'() {
