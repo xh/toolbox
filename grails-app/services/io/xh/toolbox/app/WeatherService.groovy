@@ -66,10 +66,14 @@ class WeatherService extends BaseService {
             return client.executeAsMap(new HttpGet(url))
         } catch (ExternalHttpException e) {
             // Its message holds the request URL, and with it the API key.
-            if (e.statusCode in [400, 404]) throw new RoutineRuntimeException("Unknown city '$city'")
-            String status = e.statusCode ?: 'no response'
-            logWarn('OpenWeatherMap request failed', [city: city, status: status])
-            throw new DataNotAvailableException("Weather data is unavailable: OpenWeatherMap returned $status")
+            Integer status = e.statusCode
+            if (status in [400, 404]) throw new RoutineRuntimeException("Unknown city '$city'")
+
+            // Without a status, the cause is a transport error that can also hold the URL.
+            String cause = status ? e.cause?.message : null
+            logWarn('OpenWeatherMap request failed', [city: city, status: status ?: 'no response', cause: cause].findAll { it.value != null })
+            String detail = status ? "OpenWeatherMap status: $status" : 'no response from OpenWeatherMap'
+            throw new DataNotAvailableException("Weather data is unavailable ($detail)")
         }
     }
 

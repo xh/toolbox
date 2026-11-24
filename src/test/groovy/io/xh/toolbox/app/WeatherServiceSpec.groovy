@@ -46,8 +46,6 @@ class WeatherServiceSpec extends Specification implements ServiceUnitTest<Weathe
     def 'an OpenWeatherMap failure is reported without its request URL, which holds the API key'() {
         given:
         testConfigService.set('weatherApiKey', 'SECRET-KEY')
-        // The Hoist test harness has no TraceService, so the span just runs its closure.
-        service.metaClass.span = { String name -> [logDebug: { msg -> [run: { Closure fn -> fn() }] }] }
         service._jsonClient = new FailingClient(status)
 
         when:
@@ -62,8 +60,8 @@ class WeatherServiceSpec extends Specification implements ServiceUnitTest<Weathe
         method              | status || expected                  | message
         'getCurrentWeather' | 404    || RoutineRuntimeException   | "Unknown city 'Nowhere'"
         'getForecast'       | 400    || RoutineRuntimeException   | "Unknown city 'Nowhere'"
-        'getCurrentWeather' | 401    || DataNotAvailableException | 'Weather data is unavailable: OpenWeatherMap returned 401'
-        'getForecast'       | null   || DataNotAvailableException | 'Weather data is unavailable: OpenWeatherMap returned no response'
+        'getCurrentWeather' | 401    || DataNotAvailableException | 'Weather data is unavailable (OpenWeatherMap status: 401)'
+        'getForecast'       | null   || DataNotAvailableException | 'Weather data is unavailable (no response from OpenWeatherMap)'
     }
 
     // Fails as JSONClient does, with the request URL in its message.
