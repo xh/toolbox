@@ -43,9 +43,10 @@ import static java.nio.charset.StandardCharsets.UTF_8
  *     `max_tokens` and `stream`, which a codec may send, and rejects a request with any other key.
  *   - It sets `model`, `max_tokens` and `stream` from config. Other request params, such as
  *     `thinking` or `temperature`, come only from `LlmConfig.requestParams`.
- *   - It accepts only client tools, sent as `{name, description, input_schema}`. Anthropic server
- *     tools, such as web search or code execution, cost extra and reach other systems. The server
- *     adds those enabled in `LlmConfig.serverTools`, and rejects any the client sends.
+ *   - It accepts only client tools, sent as `{name, description, input_schema}`, and refuses
+ *     Anthropic server tools and their blocks in messages, since the client could forge a server
+ *     tool's result. Server tools need a signed continuation, which the relay does not have, so
+ *     every call fails while `LlmConfig.serverTools` is set.
  *   - It caps the size of the request and the number of messages, and accepts only text, tool and
  *     thinking content blocks.
  *
@@ -253,29 +254,32 @@ class LlmService extends BaseService {
         }
 
         def config = getConfig(),
-            clientTools = (request.tools ?: []) as List<Map>,
-            serverTools = config.serverTools ?: []
+            clientTools = (request.tools ?: []) as List<Map>
+        if (config.serverTools) {
+            throw new IllegalStateException(
+                'llmConfig.serverTools is set, but server tools need a signed continuation, which ' +
+                    'the relay does not have. Clear it.'
+            )
+        }
         if (clientTools.any { it.type && it.type != 'custom' }) {
             throw new RoutineRuntimeException('Request includes server tools, which are not accepted.')
         }
-        checkContentBlocks(messages, !serverTools.isEmpty())
+        checkContentBlocks(messages)
 
         def ret = (config.requestParams ?: [:]) + request.subMap(CLIENT_KEYS) + [
             model     : config.model,
             max_tokens: config.maxTokens,
             stream    : true
         ]
-        ret.tools = serverTools + clientTools
-        if (!ret.tools) ret.remove('tools')
+        if (!clientTools) ret.remove('tools')
         return ret
     }
 
     /**
      * Accept only the content blocks the chats send: text, tool calls and results, and the model's
-     * own thinking, which goes back with its signature. Server tool blocks are accepted only while
-     * server tools are configured.
+     * own thinking, which goes back with its signature.
      */
-    private void checkContentBlocks(List messages, boolean allowServerTools) {
+    private void checkContentBlocks(List messages) {
         messages.each { message ->
             def content = (message as Map)?.content
             if (content instanceof String) return
@@ -284,8 +288,7 @@ class LlmService extends BaseService {
             }
             content.each { block ->
                 def type = (block as Map)?.type as String
-                def isServerTool = type == 'server_tool_use' || type?.endsWith('_tool_result')
-                if (!(type in CONTENT_TYPES) && !(allowServerTools && isServerTool)) {
+                if (!(type in CONTENT_TYPES)) {
                     throw new RoutineRuntimeException("Message content type not accepted: $type.")
                 }
             }

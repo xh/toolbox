@@ -53,9 +53,10 @@ class LlmConfig extends TypedConfigMap {
     Map requestParams = [:]
 
     /**
-     * Anthropic server tool definitions added to every call, e.g.
-     * `[{"type": "web_search_20260209", "name": "web_search", "max_uses": 3}]`. Server tools cost
-     * extra, so the relay rejects any the client sends.
+     * Anthropic server tool definitions, e.g.
+     * `[{"type": "web_search_20260209", "name": "web_search", "max_uses": 3}]`. Leave empty: server
+     * tools need a signed continuation, so the client cannot forge their results, and until the
+     * relay has one, every call fails while this is set.
      */
     List<Map> serverTools = []
 

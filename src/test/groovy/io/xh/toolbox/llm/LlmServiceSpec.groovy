@@ -292,11 +292,33 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
         def e = thrown(RoutineRuntimeException)
         e.message.contains('image')
 
-        when:
-        service.createBody(request([[type: 'server_tool_use', id: 's1', name: 'web_search']]))
+    }
 
-        then: 'server tool blocks only while server tools are configured'
-        thrown(RoutineRuntimeException)
+    def 'a client-sent server tool block is refused, as the client could forge its result'() {
+        when:
+        service.createBody(request([block]))
+
+        then:
+        def e = thrown(RoutineRuntimeException)
+        e.message.contains(block.type as String)
+
+        where:
+        block << [
+            [type: 'server_tool_use', id: 's1', name: 'web_search', input: [:]],
+            [type: 'web_search_tool_result', tool_use_id: 's1', content: []]
+        ]
+    }
+
+    def 'configured server tools refuse every call, as they need a signed continuation'() {
+        given:
+        setLlmConfig(serverTools: [[type: 'web_search_20260209', name: 'web_search', max_uses: 3]])
+
+        when:
+        service.createBody(request([[type: 'text', text: 'Hi']]))
+
+        then:
+        def e = thrown(IllegalStateException)
+        e.message.contains('signed continuation')
     }
 
     def 'calls use Sonnet 5.5 unless the config names a model'() {
