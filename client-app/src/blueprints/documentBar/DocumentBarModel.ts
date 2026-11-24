@@ -59,7 +59,9 @@ export class DocumentBarModel extends HoistModel {
         ]
     });
 
-    /** What changed since the live publish, as lines, or null before a publish or while it loads. */
+    /**
+     * What changed since the live publish, as lines, or null before a publish or while it loads.
+     */
     @computed
     get changes(): string[] {
         const {documentModel, blueprintModel} = this.shell,

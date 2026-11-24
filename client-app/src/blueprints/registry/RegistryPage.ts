@@ -220,7 +220,10 @@ interface PropCardProps extends HoistProps<RegistryModel> {
     prop: SchemaProp;
 }
 
-/** A property: name, label, types, values and tags, its default, its description, and any properties it holds. */
+/**
+ * A property: name, label, types, values and tags, its default, its description, and any properties
+ * it holds.
+ */
 const propCard = hoistCmp.factory<PropCardProps>({
     model: uses(() => RegistryModel),
     render: ({model, prop}) => {

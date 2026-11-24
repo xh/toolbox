@@ -12,7 +12,10 @@ import {showBlueprintsHelp} from './blueprintsHelp';
 import {libraryGroup} from './libraryColumns';
 import {copyLinkAsync} from './copyLink';
 
-/** The open blueprint's other actions: copy its link, share, copy, delete, a reader's views, and help. */
+/**
+ * The open blueprint's other actions: copy its link, share, copy, delete, a reader's views, and
+ * help.
+ */
 export const blueprintMenu = hoistCmp.factory<BlueprintShellModel>({
     model: uses(BlueprintShellModel),
     render: ({model}) =>

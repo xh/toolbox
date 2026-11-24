@@ -18,7 +18,9 @@ export interface DocumentStatus {
     text: string;
     intent: Intent;
     locked: boolean;
-    /** Whether the draft's edits are saved, shown by an icon beside the text, or null to show none. */
+    /**
+     * Whether the draft's edits are saved, shown by an icon beside the text, or null to show none.
+     */
     saveState: 'saved' | 'saving';
     /** The state in words, for the chip's tooltip. */
     tooltip: string;

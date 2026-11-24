@@ -201,7 +201,9 @@ export class RegistryModel extends HoistModel {
         ].filter(Boolean);
     }
 
-    /** The selected entry's config, or an action's parameters, in the Inspector's setting groups. */
+    /**
+     * The selected entry's config, or an action's parameters, in the Inspector's setting groups.
+     */
     @computed
     get schemaSections(): SchemaSection[] {
         const entry = this.selected;

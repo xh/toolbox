@@ -35,7 +35,9 @@ export function tag(text: string, intent?: Intent, title?: string): ReactElement
 export interface ChipSpec {
     text: string;
     title?: string;
-    /** As for the kind of thing it names: `success` for a dataset or source, none for an element. */
+    /**
+     * As for the kind of thing it names: `success` for a dataset or source, none for an element.
+     */
     intent?: Intent;
     onClick?: () => void;
 }

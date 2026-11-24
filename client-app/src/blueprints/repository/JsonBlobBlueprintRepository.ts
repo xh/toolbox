@@ -62,8 +62,9 @@ export function jsonBlobTypes(type: string): {
  *   library keeps readers off drafts in the UI only.
  * - **Personalizations** are private blobs of their user, one per blueprint and preset.
  * - **Publishes** never change their content, only their note, label and pin. Each takes the
- *   next number, created only if no publish of that number exists. hoist-core refuses a second active blob of the same type, owner and name, so
- *   on a collision this class reads the publishes again and tries the next number.
+ *   next number, created only if no publish of that number exists. hoist-core refuses a second
+ *   active blob of the same type, owner and name, so on a collision this class reads the
+ *   publishes again and tries the next number.
  * - **Saves** have no compare-and-set on the server, so `enforcesBase` is false and the library
  *   checks the draft's version first. This class reads the draft just before writing it, checks
  *   the version again, keeps the meta it read but its version, and after saving reads the draft

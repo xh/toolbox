@@ -18,8 +18,9 @@ export interface EditCardState {
 }
 
 /**
- * What an Architect edit's card may do. Its edit is matched in the history by version, author and
- * description, as versions start again when a blueprint reopens. Only the latest edit can be undone.
+ * What an Architect edit's card may do. Its edit is matched in the history by version, author
+ * and description, as versions start again when a blueprint reopens. Only the latest edit can be
+ * undone.
  *
  * @param undoAllowed - false in run mode, or while the Architect's turn runs.
  */

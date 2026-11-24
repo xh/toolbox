@@ -32,7 +32,9 @@ const ICONS: Record<string, () => ReactNode> = {
     Mist: () => cloudFogIcon()
 };
 
-/** A weather condition as its icon and name. A condition without its own icon gets a general one. */
+/**
+ * A weather condition as its icon and name. A condition without its own icon gets a general one.
+ */
 export const weatherIconRenderer: RendererSpec = {
     name: 'toolbox.weatherIcon',
     app: true,

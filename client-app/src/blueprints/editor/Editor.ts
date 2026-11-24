@@ -181,7 +181,9 @@ const blueprintPane = hoistCmp.factory<EditorModel>({
     }
 });
 
-/** The blueprint as JSON, to edit and apply as one edit in design, or a comparison with a publish. */
+/**
+ * The blueprint as JSON, to edit and apply as one edit in design, or a comparison with a publish.
+ */
 const jsonView = hoistCmp.factory<EditorModel>({
     model: uses(EditorModel),
     render: ({model}) => {

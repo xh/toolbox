@@ -57,7 +57,8 @@ function section(title: string, props: SchemaProp[], more: SchemaProp[] = []): S
     return {title, props, more};
 }
 
-// Props under the groups given, in their order, with advanced ones under More and the rest under Other.
+// Props under the groups given, in their order, with advanced ones under More and the rest under
+// Other.
 function groupSections(
     props: GroupedProp[],
     groups: {id: string; label: string}[]

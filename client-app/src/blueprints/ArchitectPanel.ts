@@ -46,7 +46,9 @@ export const architectChat = hoistCmp.factory<BlueprintShellModel>({
     }
 });
 
-/** The Architect's header items: what the user has left of the API, exports, and clearing the chat. */
+/**
+ * The Architect's header items: what the user has left of the API, exports, and clearing the chat.
+ */
 export function architectHeaderItems(model: BlueprintShellModel): ReactNode[] {
     const {chatModel, usage} = model,
         left = usageText(usage);

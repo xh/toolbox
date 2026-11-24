@@ -34,7 +34,10 @@ export function usedBadge(count: number, usedAt: string[]): ReactNode {
     });
 }
 
-/** The entry at work: a widget's example, live; a renderer's sample; an action's or resolver's output. */
+/**
+ * The entry at work: a widget's example, live; a renderer's sample; an action's or resolver's
+ * output.
+ */
 export const exampleBody = hoistCmp.factory<RegistryModel>({
     model: uses(() => RegistryModel),
     render: ({model}) => {

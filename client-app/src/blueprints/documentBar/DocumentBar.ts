@@ -74,7 +74,9 @@ export const documentBar = hoistCmp.factory({
     }
 });
 
-/** The status: the version, with a check when saved, a spinner while saving, or its state in words. */
+/**
+ * The status: the version, with a check when saved, a spinner while saving, or its state in words.
+ */
 const statusChip = hoistCmp.factory<DocumentBarModel>({
     model: uses(DocumentBarModel),
     render: ({model}) => {
@@ -304,7 +306,10 @@ const undoRedo = hoistCmp.factory<DocumentBarModel>({
     }
 });
 
-/** A count of the blueprint's errors, or else its warnings, opening the list. Each selects its target. */
+/**
+ * A count of the blueprint's errors, or else its warnings, opening the list. Each selects its
+ * target.
+ */
 const issuesChip = hoistCmp.factory<DocumentBarModel>({
     model: uses(DocumentBarModel),
     render: ({model}) => {

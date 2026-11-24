@@ -43,7 +43,7 @@ import {
     observableRef,
     runInAction
 } from '@xh/hoist/mobx';
-import {find, pick} from 'lodash';
+import {find, pick, sortBy, toPairs} from 'lodash';
 import type {ReactElement} from 'react';
 import {LocalThreadStore} from '../desktop/tabs/chatkit/integrations/LocalThreadStore';
 import {architectSystemPrompt, createArchitectChat} from './architectChat';
@@ -105,10 +105,11 @@ export interface BlueprintShellConfig {
 
 /**
  * A blueprint app's shell: a library of blueprints in a {@link BlueprintRepository}, each with its
- * own conversation with the Architect. The Blueprints tab and the blueprint example apps share it. One {@link BlueprintModel}, opened through a
- * {@link BlueprintDocumentModel}, and one Architect `ChatModel` hold the selected blueprint, once
- * the server's Data Catalog loads. The user's own blueprints open as drafts, which save as they
- * change. Other users' blueprints open at their latest publish, read-only.
+ * own conversation with the Architect. The Blueprints tab and the blueprint example apps share it.
+ * One {@link BlueprintModel}, opened through a {@link BlueprintDocumentModel}, and one Architect
+ * `ChatModel` hold the selected blueprint, once the server's Data Catalog loads. The user's own
+ * blueprints open as drafts, which save as they change. Other users' blueprints open at their
+ * latest publish, read-only.
  */
 export class BlueprintShellModel extends HoistModel {
     /** The blueprints the user may read, as the repository lists them. */
@@ -178,7 +179,9 @@ export class BlueprintShellModel extends HoistModel {
     /** The Architect's answers: text and layout around the blueprint's own widgets and data. */
     @observableRef accessor answerCatalog: ChatUiCatalog = null;
 
-    /** The Architect, holding the selected blueprint's conversation. Null until the catalog loads. */
+    /**
+     * The Architect, holding the selected blueprint's conversation. Null until the catalog loads.
+     */
     @observableRef accessor chatModel: ChatModel = null;
 
     /** Exports of the Architect's conversation, whole or by turn. */
@@ -848,7 +851,10 @@ export class BlueprintShellModel extends HoistModel {
         this.editorView = this.editorView === 'preview' ? this.lastWorkView : 'preview';
     }
 
-    /** True if the user may republish an earlier version: they may publish, and the draft is current. */
+    /**
+     * True if the user may republish an earlier version: they may publish, and the draft is
+     * current.
+     */
     get canRollback(): boolean {
         const {documentModel} = this;
         return (
@@ -1178,9 +1184,5 @@ export class BlueprintShellModel extends HoistModel {
 }
 
 function linkKey(params: BlueprintLinkParams): string {
-    return JSON.stringify(
-        Object.entries(params ?? {})
-            .map(([k, v]) => [k, String(v)])
-            .sort()
-    );
+    return JSON.stringify(sortBy(toPairs(params), 0).map(([k, v]) => [k, String(v)]));
 }
