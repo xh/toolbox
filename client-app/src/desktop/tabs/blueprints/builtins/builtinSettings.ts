@@ -1,5 +1,16 @@
-import type {EditorNode, WidgetSpec} from '@xh/hoist-chat-kit/blueprint';
-import {SETTING_GROUPS, toEditorSpec} from '@xh/hoist-chat-kit/blueprint';
+import type {
+    Blueprint,
+    BlueprintElement,
+    EditorNode,
+    WidgetSpec
+} from '@xh/hoist-chat-kit/blueprint';
+import {
+    DASHBOARD_COLUMNS,
+    rescaleCells,
+    SETTING_GROUPS,
+    toEditorSpec
+} from '@xh/hoist-chat-kit/blueprint';
+import type {PlainObject} from '@xh/hoist/core';
 import {upperFirst} from 'lodash';
 
 /** One of a widget's settings, as a Built-ins page's options rail offers it. */
@@ -40,6 +51,59 @@ export function builtinSettings(spec: WidgetSpec): BuiltinSetting[] {
             .filter(it => it.kind === 'boolean')
             .map(it => ({...settingOf(it, 'Children'), perChild: true}));
     return [...own, ...perChild];
+}
+
+/**
+ * The ID of the element a Built-ins page's settings apply to: its widget's element in the example,
+ * which may sit inside a panel that holds the example's inputs.
+ */
+export function settingTargetId(blueprint: Blueprint, widget: string): string {
+    const {root, elements} = blueprint;
+    if (elements[root]?.component === widget) return root;
+    return Object.keys(elements).find(id => elements[id].component === widget) ?? root;
+}
+
+/** A setting's value in the example: its widget's, or its widget's first child reference's. */
+export function settingValue(blueprint: Blueprint, widget: string, setting: BuiltinSetting) {
+    const target: PlainObject = blueprint?.elements[settingTargetId(blueprint, widget)],
+        holder = setting.perChild ? target?.children?.[0] : target?.config;
+    return holder?.[setting.key] ?? setting.default;
+}
+
+/**
+ * The example with a setting changed on its widget, or on each of its widget's child references.
+ * A dashboard's cells rescale when its columns change.
+ *
+ * @param minWidth - an element's minimum width in columns, by its ID.
+ */
+export function withSetting(
+    blueprint: Blueprint,
+    widget: string,
+    setting: BuiltinSetting,
+    value: unknown,
+    minWidth: (id: string) => number
+): Blueprint {
+    const id = settingTargetId(blueprint, widget),
+        target: PlainObject = blueprint.elements[id],
+        rescale = setting.key === 'columns' && target.children?.[0]?.w != null,
+        children = rescale
+            ? rescaleCells(
+                  target.children,
+                  (settingValue(blueprint, widget, setting) as number) ?? DASHBOARD_COLUMNS,
+                  (value as number) ?? DASHBOARD_COLUMNS,
+                  minWidth
+              )
+            : target.children,
+        next = setting.perChild
+            ? {
+                  ...target,
+                  children: target.children.map((it: PlainObject) => ({
+                      ...it,
+                      [setting.key]: value
+                  }))
+              }
+            : {...target, children, config: {...target.config, [setting.key]: value}};
+    return {...blueprint, elements: {...blueprint.elements, [id]: next as BlueprintElement}};
 }
 
 //------------------

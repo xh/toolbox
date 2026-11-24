@@ -1,9 +1,17 @@
+import {DataCatalog} from '@xh/hoist-chat-kit/blueprint';
 import {describe, expect, it} from 'vitest';
 import {createPortfolioRegistry} from '../../../../blueprints/toolboxRegistry';
-import {builtinSettings, minColumns} from './builtinSettings';
+import catalogJson from '../../../../test-support/blueprintsCatalog.json';
+import {builtinExample} from './builtinExamples';
+import {builtinSettings, minColumns, settingValue, withSetting} from './builtinSettings';
 
 const registry = createPortfolioRegistry(),
-    settingsOf = (name: string) => builtinSettings({...registry.widgets[name], name});
+    catalog = new DataCatalog(catalogJson as any),
+    settingsOf = (name: string) => builtinSettings({...registry.widgets[name], name}),
+    settingOf = (name: string, key: string) => settingsOf(name).find(it => it.key === key),
+    widgetOf = (bp: any, name: string) =>
+        Object.values<any>(bp.elements).find(it => it.component === name),
+    minWidth = () => 1;
 
 describe('builtinSettings', () => {
     it("takes a widget's simple settings by their x-group, in the setting groups' order", () => {
@@ -60,6 +68,39 @@ describe('builtinSettings', () => {
         const byKey = Object.fromEntries(settingsOf('dashboard').map(it => [it.key, it.label]));
         expect(byKey.compact).toBe('Packing');
         expect(byKey.columns).toBe('Columns');
+    });
+});
+
+describe('withSetting', () => {
+    it("sets the page's widget in its example, not the panel around it", () => {
+        const example = builtinExample('statCard', registry, catalog),
+            intent = settingOf('statCard', 'intent'),
+            next = withSetting(example, 'statCard', intent, 'success', minWidth);
+        expect(widgetOf(next, 'statCard').config.intent).toBe('success');
+        expect(next.elements[next.root].config?.intent).toBeUndefined();
+        expect(settingValue(next, 'statCard', intent)).toBe('success');
+    });
+
+    it("sets a per-child setting on each of the widget's child references", () => {
+        const example = builtinExample('dashboard', registry, catalog),
+            hideHeader = settingOf('dashboard', 'hideHeader'),
+            next = withSetting(example, 'dashboard', hideHeader, true, minWidth);
+        expect(widgetOf(next, 'dashboard').children.every(it => it.hideHeader)).toBe(true);
+        expect(settingValue(next, 'dashboard', hideHeader)).toBe(true);
+    });
+
+    it("rescales a dashboard's cells when its columns change", () => {
+        const example = builtinExample('dashboard', registry, catalog),
+            next = withSetting(
+                example,
+                'dashboard',
+                settingOf('dashboard', 'columns'),
+                24,
+                minWidth
+            ),
+            dash = widgetOf(next, 'dashboard');
+        expect(dash.config.columns).toBe(24);
+        expect(Math.max(...dash.children.map(it => it.x + it.w))).toBe(24);
     });
 });
 

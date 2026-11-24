@@ -1,11 +1,10 @@
 import type {
     Blueprint,
-    BlueprintElement,
     BlueprintRegistry,
     DataCatalog,
     WidgetSpec
 } from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintModel, DASHBOARD_COLUMNS, rescaleCells} from '@xh/hoist-chat-kit/blueprint';
+import {BlueprintModel} from '@xh/hoist-chat-kit/blueprint';
 import {blueprintView, thumbnailPreview} from '@xh/hoist-chat-kit/desktop/cmp/blueprint';
 import {div, filler, hbox, hframe, placeholder, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, uses, XH} from '@xh/hoist/core';
@@ -33,7 +32,13 @@ import {portfolioCatalogAsync} from '../portfolioCatalog';
 import {builtinExample, INPUTS_OVERVIEW} from './builtinExamples';
 import {roleWidgetNames} from './builtinRoles';
 import type {BuiltinRole} from './builtinRoles';
-import {builtinSettings, minColumns} from './builtinSettings';
+import {
+    builtinSettings,
+    minColumns,
+    settingTargetId,
+    settingValue,
+    withSetting
+} from './builtinSettings';
 import type {BuiltinSetting} from './builtinSettings';
 
 /** A Built-ins page: one widget, or every input at once, live, with its main settings to try. */
@@ -68,44 +73,21 @@ class BuiltinPageModel extends HoistModel {
         this.open(blueprint);
     }
 
-    /** A setting's value in the example: its root's, or its first child reference's. */
+    /** A setting's value in the example: its widget's, or its first child reference's. */
     settingValue(setting: BuiltinSetting): unknown {
-        const root = this.root,
-            holder = setting.perChild ? root?.children?.[0] : root?.config;
-        return holder?.[setting.key] ?? setting.default;
+        return settingValue(this.blueprint, this.name, setting);
     }
 
     @action
     set(setting: BuiltinSetting, value: unknown) {
-        const {blueprint} = this,
-            root = this.root,
-            rescale = setting.key === 'columns' && root.children?.[0]?.w != null,
-            children = rescale
-                ? rescaleCells(
-                      root.children,
-                      (this.settingValue(setting) as number) ?? DASHBOARD_COLUMNS,
-                      (value as number) ?? DASHBOARD_COLUMNS,
-                      id => this.minWidth(id)
-                  )
-                : root.children,
-            next = setting.perChild
-                ? {
-                      ...root,
-                      children: root.children.map((it: PlainObject) => ({
-                          ...it,
-                          [setting.key]: value
-                      }))
-                  }
-                : {...root, children, config: {...root.config, [setting.key]: value}};
-        this.apply({
-            ...blueprint,
-            elements: {...blueprint.elements, [blueprint.root]: next as BlueprintElement}
-        });
+        this.apply(withSetting(this.blueprint, this.name, setting, value, id => this.minWidth(id)));
     }
 
     /** The fewest columns the example's dashboard can have: its widest cell's minimum width. */
     get minColumns(): number {
-        const cells: PlainObject[] = this.root?.children ?? [];
+        const {blueprint} = this,
+            target: PlainObject = blueprint?.elements[settingTargetId(blueprint, this.name)],
+            cells: PlainObject[] = target?.children ?? [];
         return minColumns(cells.map(it => this.minWidth(it.id)));
     }
 
@@ -123,10 +105,6 @@ class BuiltinPageModel extends HoistModel {
     override destroy() {
         XH.safeDestroy(this.blueprintModel);
         super.destroy();
-    }
-
-    private get root(): PlainObject {
-        return this.blueprint?.elements[this.blueprint.root];
     }
 
     // A new model, since a user's moves live in the old one's state rather than in its blueprint.
