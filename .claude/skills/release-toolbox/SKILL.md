@@ -21,9 +21,9 @@ the latest **official, versioned** Hoist releases. A release is therefore a brie
 SNAPSHOTs to releases and back:
 
 ```
-develop (snaps) --[swap to releases + finalize CHANGELOG, commit]--> develop (release-pinned)
+develop (snaps) --[swap to releases + assemble CHANGELOG, commit]--> develop (release-pinned)
                 --[ff-merge develop -> master]--> master  ──[Build Release from master]──> prod
-                --[back on develop: restore snaps + new CHANGELOG header, commit]--> develop (snaps)
+                --[back on develop: restore snaps + app version, commit]--> develop (snaps)
 ```
 
 Three invariants that drive the whole process - keep them in mind:
@@ -332,10 +332,11 @@ have the developer re-comment it, then re-run.
 > snapshot, `develop` *cannot* take a versioned Hoist release - but you can still ship the next
 > patch/minor on the current released line directly from `master`, which already sits on the last
 > release with its release-pinned libraries. Adapt the flow: **skip the develop-side library swap
-> (Phases 3 and 5)**, commit the fix(es) and a finalized CHANGELOG section straight onto `master`
-> (Phase 4), trigger Build Release from `master` (Phase 8), then - in place of the Phase 9 restore -
-> **merge `master` back into `develop`**, resolving the CHANGELOG so the unreleased `x.y-SNAPSHOT`
-> header stays on top with the newly released section below it. This is still an ordinary sequential
+> (Phases 3 and 5)**, commit the fix(es), each with its changelog fragment, straight onto
+> `master`, assemble the release there (Phase 4), trigger Build Release from `master` (Phase 8),
+> then - in place of the Phase 9 restore - **merge `master` back into `develop`**. The release already deleted the fragments it shipped, and
+> `release` inserted the new block below the unreleased `x.y-SNAPSHOT` header, so the merge needs no
+> CHANGELOG resolution beyond keeping that header on top. This is still an ordinary sequential
 > release (the version is just the next increment from the latest tag). The library "hotfix" concept
 > - shipping an *older* line after a newer major has already released - does **not** apply to an app
 > with a single production line, which only ever moves forward. When Phase 2.4 or the Phase 3
@@ -364,14 +365,28 @@ Validate the choice: the Build Release action requires the version be **exactly 
 proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.0.0`, `9.1.0`,
 `9.0.1`). **Confirm the final version with the developer.**
 
-### 2. Finalize the entries
+### 2. Assemble and curate the release
 
-- Change the top header from `## x.y...-SNAPSHOT - unreleased` to `## <chosen-version> - <today>`
-  using the **full 3-part semver** for the released version and today's date (`YYYY-MM-DD`).
-- Review the accumulated entries for completeness - scan commits since the last release tag
+New entries live as fragments in `changelog.d/` until release (see `CLAUDE.md`, "Changelog"). From
+`client-app/`, after the Phase 3 install:
+
+```bash
+pnpm changelog preview                      # the entries that will ship
+pnpm changelog release <chosen-version>     # writes `## <version> - <today>`, deletes the fragments
+```
+
+`release` inserts the new block below the bare `## x.y-SNAPSHOT - unreleased` heading, which stays
+on top. On a **major** release it also rolls that heading forward (e.g. `14.0-SNAPSHOT` ->
+`15.0-SNAPSHOT`) and says to bump the project version to match. **Do not bump it now** - per
+invariant #1 the app version stays put until the Phase 9 restore, which brings `gradle.properties`
+and `package.json` up to the rolled heading.
+
+Then review and edit the new block in `CHANGELOG.md`:
+
+- Review the entries for completeness - scan commits since the last release tag
   (`git log <last-tag>..HEAD --oneline`) for material features, bug fixes, or technical changes not
-  yet captured. Add what's missing under the right category (`New Features`, `Bug Fixes`,
-  `Technical`, `Breaking Changes`).
+  yet captured. Add what's missing directly to the new block under the right category
+  (`New Features`, `Bug Fixes`, `Technical`, `Breaking Changes`).
 - Add/confirm a **`Libraries`** entry for each library whose **released version** actually moved,
   e.g. `* @xh/hoist \`87.0 → 87.1\``. Use the two-part `major.minor` form with the `→` separator -
   **not** the 3-part `87.0.0 → 87.1.0` and **not** the retired `ZZ.x` shorthand (`14.x → 15.x`).
@@ -383,21 +398,23 @@ proposed version is a valid single increment (e.g. latest `9.0.0` -> valid: `10.
   `15.0.0 → 15.0.1` renders as `15.0 → 15.0` - a line that says nothing. Omit it; do **not** reach
   for the 3-part form to make it legible. The two-part convention is deliberate, and patch-level
   library churn is not release-note material.
-- **Formatting is critical and fails silently** - a malformed entry is dropped from the parsed
-  output while the build still succeeds. Every bullet must be a **single line** however long, and
-  every bullet and `###` header must start at **column 0** - one leading space drops it. See the
-  header comment at the top of `CHANGELOG.md`.
+- **Formatting**: bullets and `###` headers start at **column 0**; wrapped bullets continue with a
+  two-space indent. See `CLAUDE.md` ("Wrapping and sub-bullets").
 - **No em dashes** anywhere in the copy (per user/global style) - use a plain hyphen. The `→` in
   Libraries entries is the one exception.
+
+Finally, run `pnpm changelog check --release <chosen-version>`. Build Release runs the same check
+and fails if `CHANGELOG.md` lacks the version or any fragment is left.
 
 ---
 
 ## Phase 5: Commit on develop
 
-Stage the library swaps, both lockfiles, and the finalized CHANGELOG, and commit on `develop`:
+Stage the library swaps, both lockfiles, the assembled CHANGELOG and the deleted fragments, and
+commit on `develop`:
 
 ```bash
-git add gradle.properties gradle.lockfile client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md
+git add gradle.properties gradle.lockfile client-app/package.json client-app/pnpm-lock.yaml CHANGELOG.md changelog.d
 git commit -m "Toolbox <version> - release against Hoist <core-ver> / hoist-react <hr-ver>"
 ```
 
@@ -659,7 +676,8 @@ Write that 2-part value to **all three** locations so they stay in sync:
 
 - `gradle.properties` -> `xhAppVersion=<SNAP>.0-SNAPSHOT`
 - `client-app/package.json` -> `"version": "<SNAP>.0-SNAPSHOT"`
-- `CHANGELOG.md` -> a fresh top header `## <SNAP>.0-SNAPSHOT - unreleased`
+- `CHANGELOG.md` -> top header `## <SNAP>.0-SNAPSHOT - unreleased`. On a major release,
+  `pnpm changelog release` already rolled it forward in Phase 4, so it should already read this.
 
 **A major release advances the snap; a minor or patch release does not.** Releasing off the prior
 line reproduces the snap already in the files, so the version files should come out unchanged:
@@ -671,8 +689,8 @@ line reproduces the snap already in the files, so the version files should come 
 | `9.5.0` | `10.0-SNAPSHOT` | `(9+1)` = 10 | stays `10.0-SNAPSHOT` |
 
 **Self-check before committing:** on a minor or patch release, `git diff` should show **no change**
-to `gradle.properties` `xhAppVersion` or to `package.json` `version` - only the CHANGELOG header and
-the library specs move. If either version file changed, you derived SNAP from the snap instead of
+to `gradle.properties` `xhAppVersion`, `package.json` `version` or the CHANGELOG header - only the
+library specs move. If either version file changed, you derived SNAP from the snap instead of
 the release. Writing all three unconditionally also self-heals any prior drift found in Phase 1.6.
 
 **Then verify the three actually agree - do not trust the edits.** Per invariant #2 a client/server
@@ -693,8 +711,7 @@ read from `package.json` rather than hand-editing a fifth copy of the number.
 doesn't move, so a decoupled client stays accidentally correct and the check passes for the wrong
 reason.
 
-Leave the new CHANGELOG section empty (no category sub-headers) - entries accumulate as new work
-lands.
+Never write entries under the SNAPSHOT header - new work adds fragments in `changelog.d/`.
 
 ### 3. Commit and push (ask first)
 

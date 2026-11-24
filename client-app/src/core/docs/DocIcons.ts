@@ -16,6 +16,8 @@ export function getSourceIcon(source: string): ReactElement {
             return Icon.server();
         case 'hoist-chat-kit':
             return Icon.ai();
+        case 'package-template':
+            return Icon.boxFull();
         default:
             return Icon.folder();
     }

@@ -217,60 +217,20 @@ release range (`^1.0.0`), since its `develop` snapshots carry the next major ver
 unpublished changes to the tool, link it from a sibling checkout instead (`link:../../hoist-docs`,
 after `pnpm install && pnpm build` there).
 
-### GitHub MCP Server (opt-in)
+### GitHub
 
-A Docker-based server providing GitHub API tools (issues, PRs, code search, etc.) via the
-official `github-mcp-server` image. Configured in `.mcp.json` but **not enabled by default** -
-it requires Docker and an authenticated GitHub CLI, which not every developer keeps running.
-
-**To enable:**
-
-1. Install and start **Docker**.
-2. Install the **GitHub CLI** (`brew install gh`) and authenticate with `gh auth login`. The
-   server invokes `gh auth token` at startup to fetch a token from the macOS Keychain (or
-   `gh`'s credential store on other platforms), so no plaintext token needs to live in your
-   shell environment.
-3. Add `"github"` to `enabledMcpjsonServers` in `.claude/settings.local.json` (local settings
-   merge with the shared `settings.json` - enabling locally does not affect other developers):
-   ```json
-   {
-     "enabledMcpjsonServers": ["hoist-react", "hoist-core", "github"]
-   }
-   ```
-
-If Docker is not running or `gh` is not authenticated when the server is enabled, Claude Code
-may show errors on startup - remove `"github"` from your local settings to resolve.
-
-**Fallback when not enabled:** The `gh` CLI provides functionally equivalent access to the same
-operations (`gh pr view`, `gh issue list`, `gh api`, `gh pr create`, etc.). Prefer `gh` over
-crafting raw `curl` calls to the GitHub API.
-
-### idea (opt-in)
-
-IntelliJ registers its own MCP server in `.mcp.json` under the name `idea`, providing tools for
-interacting with the IDE (file navigation, code inspections, refactoring, terminal commands, etc.).
-It requires a running IDE instance with the MCP server enabled in IntelliJ's settings.
-
-**Not enabled by default** - the server fails to connect when no IDE is running, which shows as a
-startup error. Add `"idea"` to `enabledMcpjsonServers` in `.claude/settings.local.json` to enable it
-for yourself (local settings merge with the shared `settings.json`):
-
-```json
-{
-  "enabledMcpjsonServers": ["hoist-react", "hoist-core", "idea"]
-}
-```
-
-A read-only subset of its tools (search, read, symbol lookup, inspections) is pre-approved in the
-shared permissions allowlist, so no extra local config is needed once the server is on. Write and
-execute tools - `apply_patch`, `execute_terminal_command`, `execute_sql_query`, the `xdebug_*`
-family - are deliberately left out and still prompt.
-
-IntelliJ rewrites its own entry in `.mcp.json` on startup. Take its changes rather than reverting
-them, or it will keep prompting. Note that it hardcodes the default port `64342`, so a second IDE
-instance on another port needs a local override.
+Use the GitHub CLI (`gh`) for GitHub operations: `gh pr view`, `gh issue list`, `gh pr create`,
+and `gh api` for anything else. Prefer it over raw `curl` calls to the GitHub API.
 
 ## Plugins
+
+### XH plugin (`xh@hoist-ai`)
+
+The shared `.claude/settings.json` enables XH's `xh@hoist-ai` plugin, but enabling does not
+install it. Each developer should install it once per machine at user scope, which covers every
+repo and worktree and auto-updates. If no `xh:` skills appear in your available skills, tell the
+developer the plugin is missing and give them the command
+`claude plugin install xh@hoist-ai --scope user`. Offer to run it for them.
 
 ### TypeScript LSP (enabled by default)
 
@@ -326,7 +286,8 @@ server only indexes Java source. For navigating into Groovy code, use Grep/Glob 
 
 Package manager: **pnpm** (version pinned via `packageManager` in `package.json`; `pnpm-lock.yaml`
 is the source of truth). Do not run `npm install` or `yarn install` here. If `pnpm` is not on the
-PATH, enable it once via `corepack enable pnpm`. The sibling `../../hoist-react` checkout is also
+PATH, install any recent version (see [pnpm.io/installation](https://pnpm.io/installation)). It
+switches to the pinned version automatically. The sibling `../../hoist-react` checkout is also
 pnpm-managed, and `startWithHoist` installs it with pnpm as well.
 
 ```bash
@@ -619,62 +580,41 @@ that the operator tiers **cannot** perform, by design.
 
 ## Changelog
 
-Toolbox maintains a `CHANGELOG.md` that is parsed at build time by `changelog-parser` (via
-hoist-dev-utils) and displayed in-app to users via Hoist's `ChangelogService`. Write entries for an
-audience of developers and potential clients evaluating Hoist.
+Toolbox maintains a `CHANGELOG.md` that is parsed at build time by hoist-dev-utils and displayed
+in-app to users via Hoist's `ChangelogService`. Write entries for an audience of developers and
+potential clients evaluating Hoist.
 
 The file opens with an HTML comment restating the essentials below. Keep the two in sync.
 
-### Format
+### Where entries go: `changelog.d/`
 
-The file follows the [Keep a Changelog](https://keepachangelog.com/) structure:
+New entries go in a fragment file in `changelog.d/`, never in `CHANGELOG.md`. A release assembles
+the fragments into `CHANGELOG.md` and deletes them. From `client-app/`, add a one-line entry with
+`pnpm changelog add <section> "<text>"`, and run `pnpm changelog check` before you commit. For a
+longer entry, edit the fragment that `add` writes. The fragment format and the other commands are
+in the [hoist-dev-utils README](https://github.com/xh/hoist-dev-utils/blob/master/README.md#changelog-fragments).
 
-```
-# Changelog
+- **Sections**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`, `Libraries`, listed in
+  `changelog.d/config.json` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. `check`
+  rejects any other `###` title.
+- To change an unreleased entry, edit its fragment. To correct a released entry, edit
+  `CHANGELOG.md`.
+- **Version headings** in `CHANGELOG.md`: `## <version> - <date>`, no `v` prefix, date as
+  `YYYY-MM-DD`. The top heading is a bare `## <x.y>-SNAPSHOT - unreleased` for the version in
+  development. Never write entries under it.
+- A release runs `pnpm changelog release <version>` - see the `release-toolbox` skill.
 
-## 9.0-SNAPSHOT - unreleased
+### Wrapping and sub-bullets
 
-### New Features
+hoist-dev-utils parses this file into structured markdown. Each bullet keeps all of its lines, so
+entries follow the library convention:
 
-* Added Weather Dashboard example app backed by the OpenWeatherMap API.
+1. Start bullets and `###` headings at column 0.
+2. Hard-wrap bullets at 100 characters, with two-space indentation for continuation lines.
+   `pnpm changelog check` warns on longer lines in a fragment.
+3. Indent sub-bullets two spaces under their parent. They render as a nested list in-app.
 
-### Libraries
-
-* @xh/hoist `80.0 → 80.1`
-```
-
-- **Version headings**: `## <version> - <date>` - no `v` prefix, date as `YYYY-MM-DD`. Use
-  `## <x.y>-SNAPSHOT - unreleased`, with no date, for the in-development version.
-- **Adding a new SNAPSHOT version**: Before adding a changelog entry, check whether the topmost
-  version in `CHANGELOG.md` has already been released. A version is released if it has a date
-  (e.g. `## 8.1.0 - 2026-02-12`) or a matching `v<version>` git tag exists. If it has been
-  released, create a new `## <next-major>.0-SNAPSHOT` heading above it (with no date) before
-  adding your entry. Bump the major version number from the last release (e.g. after `8.1.0`,
-  create `9.0-SNAPSHOT`).
-- **Recognized categories**: `Breaking Changes`, `New Features`, `Bug Fixes`, `Technical`,
-  `Libraries` - the titles Hoist's `ChangelogDialog` maps to CSS classnames. Use them in that
-  order. Any other `###` title still renders, just without the accent styling.
-
-### Critical: whitespace is load-bearing
-
-The parser is line-based and fails **silently** - a malformed entry is dropped from the parsed
-output while the build still succeeds, so nothing flags the mistake. Two rules follow:
-
-1. **Bullets and `###` headers must start at column 0.** The patterns are `/^[*-]/` and `/^###/`
-   matched against the raw line, so a single leading space drops it. Nested sub-bullets and
-   indented continuation lines are therefore impossible, not merely discouraged.
-2. **Every bullet is exactly one line, however long.** A wrapped bullet keeps its first line and
-   loses the rest. A 300-character single line is correct; a neatly wrapped two-line bullet is
-   broken.
-
-```
-// GOOD - single line, renders completely in-app
-* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap API, featuring a `DashCanvas` layout with multiple chart types.
-
-// BAD - continuation line will be silently dropped
-* Added Weather Dashboard example app - a full-stack weather dashboard backed by the OpenWeatherMap
-  API, featuring a `DashCanvas` layout with multiple chart types.
-```
+Code spans, links and bold text also render in-app.
 
 ### Libraries entries
 
