@@ -60,8 +60,8 @@ export class EditorModel extends HoistModel {
     @bindable @persist accessor designTab: DockTab = 'architect';
     @bindable @persist accessor runTab: DockTab = 'architect';
 
-    /** The blueprint as JSON, to edit. Follows the open blueprint until edited. */
-    @bindable accessor draft: string = '';
+    /** The user's edit of the JSON view, or null while it follows the open blueprint. */
+    @observable accessor jsonEdit: string = null;
 
     /** Why the draft is not JSON, if it isn't. */
     @observable accessor parseError: string = null;
@@ -302,10 +302,8 @@ export class EditorModel extends HoistModel {
         return this.shell.canEdit && mode === 'design' && access === 'write';
     }
 
-    /** False while there is no blueprint, or a failed open left the previous one in the model. */
     get shown(): boolean {
-        const {blueprintModel, openIssues} = this.shell;
-        return !!blueprintModel.blueprint && !openIssues.some(it => it.severity === 'error');
+        return this.shell.isShown;
     }
 
     get dockTabs(): DockTabSpec[] {
@@ -328,9 +326,23 @@ export class EditorModel extends HoistModel {
         return blueprint ? JSON.stringify(blueprint, null, 2) : '';
     }
 
-    @computed
+    /** The blueprint as JSON, to edit. Follows the open blueprint until edited. */
+    get draft(): string {
+        return this.jsonEdit ?? this.currentJson;
+    }
+
+    @action
+    setDraft(json: string) {
+        this.jsonEdit = json === this.currentJson ? null : json;
+    }
+
     get isJsonDirty(): boolean {
-        return this.draft !== this.currentJson;
+        return this.jsonEdit != null;
+    }
+
+    /** True while the dock shows the tab. */
+    isTabShown(id: DockTab): boolean {
+        return this.dockOpen && this.dockTab === id;
     }
 
     /** One line on why the last JSON apply failed, if it did. */
@@ -466,6 +478,7 @@ export class EditorModel extends HoistModel {
 
     @action
     closeCompare() {
+        if (this.compareVersion == null) return;
         this.compareVersion = null;
         this.compareTo = 'open';
         this.diff = [];
@@ -503,11 +516,12 @@ export class EditorModel extends HoistModel {
         const {parseError, issues} = applyJsonEdit(this.shell.blueprintModel, this.draft);
         this.parseError = parseError ?? null;
         this.applyIssues = issues;
+        if (!parseError && !issues.length) this.jsonEdit = null;
     }
 
     @action
     revertDraft() {
-        this.draft = this.currentJson;
+        this.jsonEdit = null;
         this.parseError = null;
         this.applyIssues = [];
     }
@@ -565,13 +579,6 @@ export class EditorModel extends HoistModel {
                 fireImmediately: true
             },
             {
-                track: () => this.currentJson,
-                run: (json, prev) => {
-                    if (this.draft === (prev ?? '')) this.draft = json;
-                },
-                fireImmediately: true
-            },
-            {
                 track: () => blueprintModel.history,
                 run: history => {
                     const now = Date.now(),
@@ -596,16 +603,29 @@ export class EditorModel extends HoistModel {
                 run: () => this.historyGridModel.agApi?.refreshCells({force: true})
             },
             {
-                track: () => [blueprintModel.history, shell.publishes, this.stamps],
-                run: () =>
+                // Each edit adds to the history, so its grid loads only while shown.
+                track: () =>
+                    this.isTabShown('history') && [
+                        blueprintModel.history,
+                        shell.publishes,
+                        this.stamps
+                    ],
+                run: shown => {
+                    if (!shown) return;
                     this.historyGridModel.loadData(
                         historyTimeline(blueprintModel.history, shell.publishes, this.stamps)
-                    ),
+                    );
+                },
                 fireImmediately: true
             },
             {
-                track: () => blueprintModel.variables.map(v => [v, v.value, v.isSet]),
-                run: () => this.valuesGridModel.loadData(blueprintModel.variables.map(toValueRow)),
+                track: () =>
+                    this.isTabShown('values') &&
+                    blueprintModel.variables.map(v => [v, v.value, v.isSet]),
+                run: shown => {
+                    if (shown)
+                        this.valuesGridModel.loadData(blueprintModel.variables.map(toValueRow));
+                },
                 fireImmediately: true
             },
             {

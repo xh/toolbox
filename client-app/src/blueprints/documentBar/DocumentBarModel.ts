@@ -1,7 +1,14 @@
 import type {Blueprint, BlueprintIssue} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';
-import {bindable, compareStructural, computed, observableRef, runInAction} from '@xh/hoist/mobx';
+import {
+    bindable,
+    compareStructural,
+    computed,
+    computedStruct,
+    observableRef,
+    runInAction
+} from '@xh/hoist/mobx';
 import {BlueprintShellModel} from '../BlueprintShellModel';
 import {EditorModel} from '../editor/EditorModel';
 import {libraryStatus} from '../libraryColumns';
@@ -83,6 +90,20 @@ export class DocumentBarModel extends HoistModel {
         this.editorModel?.showTab('history');
     }
 
+    /**
+     * Which items the bar shows: a writer's draft, a writer's publish open, a reader's version, or
+     * none while no blueprint is shown.
+     */
+    @computed
+    get layout(): 'draft' | 'publish' | 'reader' | 'none' {
+        const {shell} = this,
+            doc = shell.documentModel.document;
+        if (!doc || !shell.isShown) return 'none';
+        if (shell.canEdit) return 'draft';
+        return doc.access === 'write' ? 'publish' : 'reader';
+    }
+
+    @computedStruct
     get status(): DocumentStatus {
         const {documentModel, isSaving, saveIssues, chatModel} = this.shell,
             doc = documentModel.document;

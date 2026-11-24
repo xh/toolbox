@@ -330,6 +330,14 @@ export class BlueprintShellModel extends HoistModel {
         this.view = 'blueprint';
     }
 
+    /** False while there is no blueprint, or a failed open left the previous one in the model. */
+    @computed
+    get isShown(): boolean {
+        return (
+            !!this.blueprintModel?.blueprint && !this.openIssues.some(it => it.severity === 'error')
+        );
+    }
+
     /** The open blueprint's issues, or why it could not be opened. */
     @computed
     get issues(): BlueprintIssue[] {
@@ -569,11 +577,15 @@ export class BlueprintShellModel extends HoistModel {
         const {documentModel} = this;
         if (!documentModel?.isDirty || !this.canEdit || documentModel.isStale) return;
         runInAction(() => (this.isSaving = true));
+        let issues: BlueprintIssue[] = null;
         try {
-            const issues = await documentModel.saveDraftAsync();
-            this.afterWrite(issues);
+            issues = await documentModel.saveDraftAsync();
         } finally {
-            runInAction(() => (this.isSaving = false));
+            // One update, so the status chip moves from saving to saved once.
+            runInAction(() => {
+                if (issues) this.afterWrite(issues);
+                this.isSaving = false;
+            });
         }
     }
 

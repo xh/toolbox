@@ -27,17 +27,16 @@ export const documentBar = hoistCmp.factory({
     model: creates(DocumentBarModel),
 
     render({model}) {
-        const {shell, status} = model,
-            {documentModel, blueprintModel, canEdit} = shell,
+        const {shell, layout} = model,
+            {documentModel} = shell,
             doc = documentModel.document,
-            shown = !!blueprintModel.blueprint && !shell.openIssues.some(isError),
             stale = documentModel.isStale;
         let items: ReactNode[] = [filler()];
-        if (shown && status) {
-            if (canEdit) {
+        if (layout !== 'none') {
+            if (layout === 'draft') {
                 items = [
                     statusChip(),
-                    ...(stale ? [] : [toolbarSep(), undoRedo(model)]),
+                    ...(stale ? [] : [toolbarSep(), undoRedo()]),
                     filler(),
                     ...(stale
                         ? []
@@ -47,7 +46,7 @@ export const documentBar = hoistCmp.factory({
                               publishButton({omit: !documentModel.canPublish})
                           ])
                 ];
-            } else if (doc.access === 'write') {
+            } else if (layout === 'publish') {
                 items = [
                     statusChip(),
                     filler(),
@@ -67,17 +66,7 @@ export const documentBar = hoistCmp.factory({
                     copyButton()
                 ];
             } else {
-                items = [
-                    readerChip(),
-                    filler(),
-                    button({
-                        text: 'Back to the blueprint',
-                        icon: Icon.chevronLeft(),
-                        omit: shell.editorView === 'canvas',
-                        onClick: () => (shell.editorView = 'canvas')
-                    }),
-                    copyButton()
-                ];
+                items = [readerChip(), filler(), backButton(), copyButton()];
             }
             items = [...items, blueprintMenu(), toolbarSep(), maximizeButtons()];
         }
@@ -154,6 +143,20 @@ const liveLine = hoistCmp.factory<DocumentBarModel>({
                 count ? span({className: 'tb-docbar__live-dot'}) : null,
                 span({className: 'tb-docbar__live-text', children: text})
             ]
+        });
+    }
+});
+
+/** For a reader in the map or the JSON, the way back to the blueprint. */
+const backButton = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) => {
+        const {shell} = model;
+        return button({
+            text: 'Back to the blueprint',
+            icon: Icon.chevronLeft(),
+            omit: shell.editorView === 'canvas',
+            onClick: () => (shell.editorView = 'canvas')
         });
     }
 });
@@ -274,35 +277,38 @@ function saveIcon(state: DocumentStatus['saveState']) {
     }
 }
 
-// Undo and Redo, as one pair.
-function undoRedo(model: DocumentBarModel) {
-    const {blueprintModel, chatModel} = model.shell,
-        busy = chatModel?.isBusy,
-        canUndo = blueprintModel.canUndo && !busy,
-        canRedo = blueprintModel.canRedo && !busy;
-    return buttonGroup(
-        button({
-            icon: Icon.undo(),
-            minimal: true,
-            disabled: !canUndo,
-            tooltip: busy
-                ? 'Undo waits for the Architect to finish'
-                : canUndo
-                  ? `Undo: ${blueprintModel.undoDescription ?? 'Edit'}`
-                  : 'Nothing to undo',
-            onClick: () => model.undo()
-        }),
-        button({
-            icon: Icon.redo(),
-            minimal: true,
-            disabled: !canRedo,
-            tooltip: canRedo
-                ? `Redo: ${blueprintModel.redoDescription ?? 'Edit'}`
-                : 'Nothing to redo',
-            onClick: () => model.redo()
-        })
-    );
-}
+/** Undo and Redo, as one pair. */
+const undoRedo = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) => {
+        const {blueprintModel, chatModel} = model.shell,
+            busy = chatModel?.isBusy,
+            canUndo = blueprintModel.canUndo && !busy,
+            canRedo = blueprintModel.canRedo && !busy;
+        return buttonGroup(
+            button({
+                icon: Icon.undo(),
+                minimal: true,
+                disabled: !canUndo,
+                tooltip: busy
+                    ? 'Undo waits for the Architect to finish'
+                    : canUndo
+                      ? `Undo: ${blueprintModel.undoDescription ?? 'Edit'}`
+                      : 'Nothing to undo',
+                onClick: () => model.undo()
+            }),
+            button({
+                icon: Icon.redo(),
+                minimal: true,
+                disabled: !canRedo,
+                tooltip: canRedo
+                    ? `Redo: ${blueprintModel.redoDescription ?? 'Edit'}`
+                    : 'Nothing to redo',
+                onClick: () => model.redo()
+            })
+        );
+    }
+});
 
 /** A count of the blueprint's errors, or else its warnings, opening the list. Each selects its target. */
 const issuesChip = hoistCmp.factory<DocumentBarModel>({
@@ -447,8 +453,4 @@ function changesText(lines: string[], last: number): string {
     return changes.length
         ? `Changes since v${last}: ${changes.join(', ')}.`
         : `No changes since v${last}.`;
-}
-
-function isError(issue: {severity: string}): boolean {
-    return issue.severity === 'error';
 }
