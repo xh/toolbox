@@ -82,7 +82,7 @@ function boolOptionsOf(node: EditorNode & {kind: 'boolean'}): {value: boolean; l
         : node.labels;
 }
 
-/** The fewest columns a canvas can have: its widest cell's minimum width. */
+/** The fewest columns a dashboard can have: its widest cell's minimum width. */
 export function minColumns(minWidths: number[]): number {
     return Math.max(1, ...minWidths);
 }

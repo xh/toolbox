@@ -51,7 +51,7 @@ export const CONCEPT_PAGES: ConceptPage[] = [
         id: 'widgets',
         title: 'Widgets',
         paragraphs: [
-            "A widget is a Hoist model and component that the document configures. Each is named after the Hoist component it renders, such as `cubeGrid`, `chart` or `statCard`, so Hoist's docs apply.",
+            "A widget is a Hoist model and component that the document configures. Most are named after the Hoist component they render, such as `cubeGrid`, `chart` or `statCard`, so Hoist's docs apply. The layout containers take plain names, `dashboard` and `panes`.",
             'A widget declares its config schema, its outputs, and the paths presets may control. Its state lives in its config, never hidden in its model.',
             "Apps register their own widgets under dotted names, such as `toolbox.portfolioBuilder`. Each example's Registry lists every widget with a live example."
         ],

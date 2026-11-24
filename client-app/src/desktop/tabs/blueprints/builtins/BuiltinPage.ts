@@ -103,13 +103,13 @@ class BuiltinPageModel extends HoistModel {
         });
     }
 
-    /** The fewest columns the example's canvas can have: its widest cell's minimum width. */
+    /** The fewest columns the example's dashboard can have: its widest cell's minimum width. */
     get minColumns(): number {
         const cells: PlainObject[] = this.root?.children ?? [];
         return minColumns(cells.map(it => this.minWidth(it.id)));
     }
 
-    // An element's widget's minimum width on a canvas, as the Inspector's rescale takes it.
+    // An element's widget's minimum width on a dashboard, as the Inspector's rescale takes it.
     private minWidth(id: string): number {
         const el = this.blueprint?.elements[id];
         return this.registry.widgets[el?.component]?.size?.min?.w ?? 1;
