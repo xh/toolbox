@@ -28,9 +28,7 @@ export const documentBar = hoistCmp.factory({
 
     render({model}) {
         const {shell, layout} = model,
-            {documentModel} = shell,
-            doc = documentModel.document,
-            stale = documentModel.isStale;
+            stale = shell.documentModel.isStale;
         let items: ReactNode[] = [filler()];
         if (layout !== 'none') {
             if (layout === 'draft') {
@@ -38,24 +36,13 @@ export const documentBar = hoistCmp.factory({
                     statusChip(),
                     ...(stale ? [] : [toolbarSep(), undoRedo()]),
                     filler(),
-                    ...(stale
-                        ? []
-                        : [
-                              issuesChip(),
-                              liveLine(),
-                              publishButton({omit: !documentModel.canPublish})
-                          ])
+                    ...(stale ? [] : [issuesChip(), liveLine(), publishButton()])
                 ];
             } else if (layout === 'publish') {
                 items = [
                     statusChip(),
                     filler(),
-                    button({
-                        text: `Restore v${doc.version}`,
-                        tooltip: 'Bring this version into the draft',
-                        icon: Icon.reset(),
-                        onClick: () => shell.restoreVersionAsync(doc.version)
-                    }),
+                    restoreButton(),
                     button({
                         text: 'Back to draft',
                         icon: Icon.edit(),
@@ -130,19 +117,29 @@ const readerChip = hoistCmp.factory<DocumentBarModel>({
 const liveLine = hoistCmp.factory<DocumentBarModel>({
     model: uses(DocumentBarModel),
     render: ({model}) => {
-        const doc = model.shell.documentModel.document,
-            count = model.changeCount,
-            text = !doc.publishedVersion
-                ? 'Not published yet'
-                : `v${doc.publishedVersion} live${count ? ` · ${plural(count, 'change')}` : ''}`;
+        const {text, changed} = model.live;
         return div({
             className: 'tb-docbar__live',
             title: 'Show History',
             onClick: () => model.openHistory(),
             children: [
-                count ? span({className: 'tb-docbar__live-dot'}) : null,
+                changed ? span({className: 'tb-docbar__live-dot'}) : null,
                 span({className: 'tb-docbar__live-text', children: text})
             ]
+        });
+    }
+});
+
+/** For a writer's publish open, bringing it into the draft. */
+const restoreButton = hoistCmp.factory<DocumentBarModel>({
+    model: uses(DocumentBarModel),
+    render: ({model}) => {
+        const version = model.openVersion;
+        return button({
+            text: `Restore v${version}`,
+            tooltip: 'Bring this version into the draft',
+            icon: Icon.reset(),
+            onClick: () => model.shell.restoreVersionAsync(version)
         });
     }
 });
@@ -227,7 +224,7 @@ const quickSwitcher = hoistCmp.factory<DocumentBarModel>({
             position: 'bottom-left',
             children: button({
                 className: 'tb-docbar__name',
-                text: model.shell.selected?.name ?? 'No blueprint',
+                text: model.name,
                 rightIcon: Icon.chevronDown(),
                 minimal: true,
                 tooltip: 'Switch blueprint'
@@ -281,10 +278,9 @@ function saveIcon(state: DocumentStatus['saveState']) {
 const undoRedo = hoistCmp.factory<DocumentBarModel>({
     model: uses(DocumentBarModel),
     render: ({model}) => {
-        const {blueprintModel, chatModel} = model.shell,
-            busy = chatModel?.isBusy,
-            canUndo = blueprintModel.canUndo && !busy,
-            canRedo = blueprintModel.canRedo && !busy;
+        const {undo, redo, busy} = model.undoState,
+            canUndo = undo != null && !busy,
+            canRedo = redo != null && !busy;
         return buttonGroup(
             button({
                 icon: Icon.undo(),
@@ -293,7 +289,7 @@ const undoRedo = hoistCmp.factory<DocumentBarModel>({
                 tooltip: busy
                     ? 'Undo waits for the Architect to finish'
                     : canUndo
-                      ? `Undo: ${blueprintModel.undoDescription ?? 'Edit'}`
+                      ? `Undo: ${undo}`
                       : 'Nothing to undo',
                 onClick: () => model.undo()
             }),
@@ -301,9 +297,7 @@ const undoRedo = hoistCmp.factory<DocumentBarModel>({
                 icon: Icon.redo(),
                 minimal: true,
                 disabled: !canRedo,
-                tooltip: canRedo
-                    ? `Redo: ${blueprintModel.redoDescription ?? 'Edit'}`
-                    : 'Nothing to redo',
+                tooltip: canRedo ? `Redo: ${redo}` : 'Nothing to redo',
                 onClick: () => model.redo()
             })
         );
@@ -354,6 +348,7 @@ const issuesChip = hoistCmp.factory<DocumentBarModel>({
 const publishButton = hoistCmp.factory<DocumentBarModel>({
     model: uses(DocumentBarModel),
     render: ({model}) => {
+        if (!model.canPublish) return null;
         const {disabled, tooltip} = model.publishState;
         return popover({
             isOpen: model.publishOpen,

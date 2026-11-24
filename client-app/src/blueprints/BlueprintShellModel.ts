@@ -412,32 +412,35 @@ export class BlueprintShellModel extends HoistModel {
                 }
             },
             {
-                track: () => [
-                    ...this.summaries.map(it => ({
-                        id: it.id,
-                        group: libraryGroup(it),
-                        name: it.name,
-                        description: it.description,
-                        owner: it.owner === XH.getUsername() ? 'you' : it.owner,
-                        status: it.access,
-                        draftVersion: it.access === 'write' ? it.draftVersion : null,
-                        publishedVersion: it.publishedVersion,
-                        readOnly: it.access === 'read',
-                        global: isGlobal(it),
-                        updated: it.updated
-                    })),
-                    ...(this.summaries.some(it => libraryGroup(it) === 'Yours')
-                        ? []
-                        : [
-                              {
-                                  id: NONE_OF_YOURS,
-                                  group: 'Yours',
-                                  name: 'No blueprints of your own yet. Copy an example or start a new one.',
-                                  placeholder: true
-                              }
-                          ])
-                ],
+                // Each save changes its blueprint's summary, so the list loads only while shown.
+                track: () =>
+                    this.libraryOpen && [
+                        ...this.summaries.map(it => ({
+                            id: it.id,
+                            group: libraryGroup(it),
+                            name: it.name,
+                            description: it.description,
+                            owner: it.owner === XH.getUsername() ? 'you' : it.owner,
+                            status: it.access,
+                            draftVersion: it.access === 'write' ? it.draftVersion : null,
+                            publishedVersion: it.publishedVersion,
+                            readOnly: it.access === 'read',
+                            global: isGlobal(it),
+                            updated: it.updated
+                        })),
+                        ...(this.summaries.some(it => libraryGroup(it) === 'Yours')
+                            ? []
+                            : [
+                                  {
+                                      id: NONE_OF_YOURS,
+                                      group: 'Yours',
+                                      name: 'No blueprints of your own yet. Copy an example or start a new one.',
+                                      placeholder: true
+                                  }
+                              ])
+                    ],
                 run: rows => {
+                    if (!rows) return;
                     this.listGridModel.loadData(rows);
                     // Group rows keep their render while their key holds, so counts would go stale.
                     this.listGridModel.agApi?.redrawRows();
@@ -452,9 +455,9 @@ export class BlueprintShellModel extends HoistModel {
             },
             {track: () => this.view, run: view => this.showPageInAddressBar(view)},
             {
-                track: () => [this.libraryView, this.summaries],
-                run: ([view]) => {
-                    if (view === 'cards') this.loadPreviewsAsync();
+                track: () => this.libraryOpen && [this.libraryView, this.summaries],
+                run: shown => {
+                    if (shown && shown[0] === 'cards') this.loadPreviewsAsync();
                 },
                 fireImmediately: true
             },

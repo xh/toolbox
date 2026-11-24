@@ -6,6 +6,7 @@ import {wait} from '@xh/hoist/promise';
 import {afterAll, beforeAll, describe, expect, it, vi} from 'vitest';
 import {BlueprintShellModel} from './BlueprintShellModel';
 import {PORTFOLIO_TYPE, WEATHER_TYPE} from './blueprintTypes';
+import {libraryGroup} from './libraryColumns';
 import {JsonBlobBlueprintRepository, jsonBlobTypes} from './repository/JsonBlobBlueprintRepository';
 import p1 from './scenarios/p1-one-grid.json';
 import p2 from './scenarios/p2-linked-dashboard.json';
@@ -386,7 +387,7 @@ describe('Blueprints designer', () => {
     it('deletes the blueprint open, with its conversation, and returns to the library', async () => {
         const id = byName('Scratch').id;
         await model.selectAsync(id);
-        expect(groupOf(id)).toBe('Yours');
+        expect(libraryGroup(find(model.summaries, {id}))).toBe('Yours');
         await model.deleteBlueprintAsync();
         expect(find(model.summaries, {id})).toBeUndefined();
         expect(model.libraryOpen).toBe(true);
