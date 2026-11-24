@@ -2,7 +2,8 @@ import type {
     BlueprintDataProvider,
     BlueprintDataRequest,
     BlueprintDataResult,
-    BlueprintDataUpdate
+    BlueprintDataUpdate,
+    BlueprintLoadOptions
 } from '@xh/hoist-chat-kit/blueprint';
 import {XH} from '@xh/hoist/core';
 import type {LoadSpec} from '@xh/hoist/core';
@@ -16,13 +17,37 @@ interface Subscription {
     subscribed: Promise<unknown>;
 }
 
-/** Loads blueprint data from Toolbox's `blueprints/*` endpoints, with live updates. */
+/**
+ * Loads blueprint data from Toolbox's `blueprints/*` endpoints, with live updates. A load reports
+ * how long it has waited, as the server sends no progress of its own, and aborts on its signal.
+ */
 export class ServerDataProvider implements BlueprintDataProvider {
     /** Live subscriptions, by their request without `groupBy`. */
     private subscriptions = new Map<string, Subscription>();
 
-    async loadAsync(req: BlueprintDataRequest, loadSpec?: LoadSpec): Promise<BlueprintDataResult> {
-        return XH.postJson({url: 'blueprints/data', body: req}, {loadSpec});
+    async loadAsync(
+        req: BlueprintDataRequest,
+        loadSpec?: LoadSpec,
+        opts?: BlueprintLoadOptions
+    ): Promise<BlueprintDataResult> {
+        const {signal, onProgress} = opts ?? {},
+            started = Date.now(),
+            report = () => {
+                const secs = Math.floor((Date.now() - started) / 1000);
+                onProgress?.({
+                    message: `Running ${req.dataset} on the server${secs ? `, ${secs}s` : ''}`
+                });
+            },
+            timer = onProgress ? setInterval(report, 1000) : null;
+        report();
+        try {
+            return await XH.postJson(
+                {url: 'blueprints/data', body: req, fetchOpts: {signal}},
+                {loadSpec}
+            );
+        } finally {
+            clearInterval(timer);
+        }
     }
 
     subscribe(req: BlueprintDataRequest, onUpdate: (u: BlueprintDataUpdate) => void): () => void {

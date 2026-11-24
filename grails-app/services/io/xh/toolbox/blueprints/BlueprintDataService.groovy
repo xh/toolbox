@@ -39,6 +39,11 @@ class BlueprintDataService extends BaseService {
     ]
     Map<String, Integer> maxRows = new HashMap(MAX_ROWS)
 
+    // Extra time a dataset takes on the data endpoint, so its demo shows a slow run's progress and
+    // its cancel when a parameter changes.
+    static final Map<String, Long> LATENCY_MS = [hypotheticalPortfolio: 3000L]
+    Map<String, Long> latencyMs = new HashMap(LATENCY_MS)
+
     // Each takes the requested fields, so a dataset computes its costly fields only when asked for.
     private static final Map<String, Closure<List<Map>>> DATASETS = [
         positions  : { PortfolioDatasets ds, Map p, Set<String> fields -> ds.positions(p.asOf, p.fund, fields) },
@@ -110,6 +115,13 @@ class BlueprintDataService extends BaseService {
     /** True for datasets computed from the portfolio, which need a {@link PortfolioDatasets}. */
     boolean isPortfolioDataset(String dataset) {
         DATASETS.containsKey(dataset)
+    }
+
+    /** Answer the data endpoint: {@link #query}, after the dataset's extra latency, if any. */
+    BlueprintResult load(BlueprintRequest req, PortfolioDatasets ds = null) {
+        Long ms = latencyMs[req.dataset]
+        if (ms) Thread.sleep(ms)
+        query(req, ds)
     }
 
     /**

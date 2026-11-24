@@ -26,6 +26,7 @@
         },
         "hypothetical": {
             "dataset": "hypotheticalPortfolio",
+            "live": false,
             "params": {"portfolio": {"$var": "portfolio"}, "asOf": {"$var": "asOf"}},
             "fields": {
                 "shockDown10": {"field": "shockedPnl", "params": {"shock": -0.1}},

@@ -63,6 +63,36 @@ describe('ServerDataProvider', () => {
         expect(hoistCore.requestsTo('blueprints/data').at(-1).json).toEqual(req);
     });
 
+    it('reports how long a load has waited on the server, until it lands', async () => {
+        let release: () => void;
+        hoistCore.route('POST', 'blueprints/data', async () => {
+            await new Promise<void>(resolve => (release = resolve));
+            return {rows: snapshot};
+        });
+        const reports: string[] = [],
+            loaded = provider.loadAsync(req, undefined, {
+                onProgress: p => reports.push(p.message)
+            });
+
+        await vi.waitFor(() => expect(reports).toEqual(['Running positions on the server']));
+        await vi.waitFor(() => expect(reports.length).toBe(2), {timeout: 1500});
+        expect(reports[1]).toBe('Running positions on the server, 1s');
+        release();
+        await loaded;
+        await wait(1100);
+        expect(reports.length).toBe(2);
+        hoistCore.route('POST', 'blueprints/data', () => ({rows: snapshot}));
+    });
+
+    it('aborts a load on its signal', async () => {
+        hoistCore.route('POST', 'blueprints/data', () => new Promise(() => {}));
+        const aborter = new AbortController(),
+            loaded = provider.loadAsync(req, undefined, {signal: aborter.signal});
+        aborter.abort();
+        await expect(loaded).rejects.toMatchObject({isFetchAborted: true});
+        hoistCore.route('POST', 'blueprints/data', () => ({rows: snapshot}));
+    });
+
     it('sends the snapshot as a replace, then held and live pushes in order', async () => {
         const updates: BlueprintDataUpdate[] = [],
             before = subscribeRequests().length;

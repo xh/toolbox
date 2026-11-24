@@ -29,7 +29,7 @@ class BlueprintsController extends BaseController {
 
     def data() {
         def req = blueprintDataService.parseRequest(parseRequestJSON())
-        renderJSON(blueprintDataService.query(req))
+        renderJSON(blueprintDataService.load(req))
     }
 
     def subscribe() {

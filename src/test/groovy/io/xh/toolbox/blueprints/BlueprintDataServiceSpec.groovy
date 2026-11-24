@@ -158,6 +158,26 @@ class BlueprintDataServiceSpec extends Specification implements ServiceUnitTest<
         service.maxRows.prices = BlueprintDataService.MAX_ROWS.prices
     }
 
+    def "the data endpoint's load takes a dataset's latency first, and query does not"() {
+        given:
+        service.latencyMs.positions = 300L
+        def req = service.parseRequest([dataset: 'positions', params: [asOf: D4.toString()], fields: ['symbol']]),
+            ds = datasets()
+
+        when:
+        long start = System.currentTimeMillis()
+        def loaded = service.load(req, ds)
+        long took = System.currentTimeMillis() - start
+
+        then:
+        took >= 300
+        loaded.rows == service.query(req, ds).rows
+        BlueprintDataService.LATENCY_MS == [hypotheticalPortfolio: 3000L]
+
+        cleanup:
+        service.latencyMs.remove('positions')
+    }
+
     def 'a hypothetical portfolio takes {holdings: [{symbol, weight}]}'() {
         expect:
         rows(dataset: 'hypotheticalPortfolio',

@@ -35,7 +35,7 @@ class BlueprintPresetService extends BaseService {
         [type: PORTFOLIO, token: 'morning-report', file: 'p3-morning-report', name: 'P3. A morning report',
          description: 'Day P&L by sector and region, positions in the grouping you choose, and price history.'],
         [type: PORTFOLIO, token: 'risk-report', file: 'p5-risk-report', name: 'P5. A risk and stress report',
-         description: 'Shocked P&L by fund, with a hypothetical portfolio to stress beside the real one.'],
+         description: 'Shocked P&L by fund, beside a hypothetical portfolio whose slow stress run shows progress and cancels on edit.'],
         [type: PORTFOLIO, token: 'portfolio-overview', file: 's1-overview-showcase', name: 'S1. Portfolio overview',
          description: "A fund's NAV, P&L and positions, with its manager and style."],
         [type: PORTFOLIO, token: 'risk-and-time', file: 's2-risk-time-showcase', name: 'S2. Risk and time',
