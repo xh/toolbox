@@ -169,4 +169,22 @@ describe('publishToPmPack action', () => {
         expect(await lookup('Acme')).toEqual([]);
         await expect(lookup(' ')).rejects.toThrow(/company name/);
     });
+
+    it("checks a portfolio variable's literal default against the type's schema", () => {
+        const withDefault = (value: unknown): Blueprint => ({
+                variables: {
+                    portfolio: {type: 'toolbox.portfolio', setBy: 'prompt', default: {value}}
+                },
+                root: 'page',
+                elements: {page: {component: 'panel'}}
+            }),
+            codes = (value: unknown) =>
+                validateBlueprint(withDefault(value), {catalog, registry: createToolboxRegistry()})
+                    .map(it => it.code)
+                    .filter(it => it !== 'variable.noInput');
+
+        expect(codes({holdings: [{symbol: 'AAPL', weight: 1}]})).toEqual([]);
+        expect(codes({holdings: [{symbol: 'AAPL'}]})).toEqual(['variable.badValue']);
+        expect(codes({positions: []})).toEqual(['variable.badValue']);
+    });
 });

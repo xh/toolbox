@@ -30,6 +30,20 @@ export const portfolioType: VariableTypeSpec = {
     guidance:
         'A hypothetical portfolio: {"holdings": [{"symbol": "AAPL", "weight": 0.5}]}, with ' +
         'weights as fractions. A portfolio builder sets it, and sets it to null when empty.',
+    schema: {
+        type: 'object',
+        required: ['holdings'],
+        properties: {
+            holdings: {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    required: ['symbol', 'weight'],
+                    properties: {symbol: {type: 'string'}, weight: {type: 'number'}}
+                }
+            }
+        }
+    },
     checkAsync: async value => {
         const symbols = (value as Portfolio)?.holdings?.map(it => it.symbol) ?? [];
         if (!symbols.length) return null;
