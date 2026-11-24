@@ -35,7 +35,7 @@ export interface PortfolioBuilderConfig {
 const CONFIG_SCHEMA = {
     type: 'object',
     additionalProperties: false,
-    properties: {maxHoldings: {type: 'integer', minimum: 1, maximum: 500}}
+    properties: {maxHoldings: {type: 'integer', minimum: 1, maximum: 500, 'x-group': 'behavior'}}
 } as const satisfies BlueprintSchema;
 
 export interface InstrumentOption {

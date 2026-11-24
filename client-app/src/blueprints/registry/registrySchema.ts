@@ -1,3 +1,4 @@
+import {SETTING_GROUPS} from '@xh/hoist-chat-kit/blueprint';
 import type {PlainObject} from '@xh/hoist/core';
 import {isPlainObject, isString, lowerCase, upperFirst} from 'lodash';
 
@@ -17,6 +18,8 @@ export interface SchemaProp {
     description?: string;
     /** The properties of an object it holds, or of each item of a list it holds. */
     children?: SchemaProp[];
+    /** Its children under the item's `x-groups`, where the item has them. */
+    childGroups?: SchemaSection[];
     /** What the children belong to: `each item` for a list. */
     childrenOf?: string;
 }
@@ -25,12 +28,15 @@ export interface SchemaProp {
 export interface SchemaSection {
     title: string;
     props: SchemaProp[];
+    /** Its advanced properties, under a More heading. */
+    more: SchemaProp[];
 }
 
 /**
- * An object schema's properties in groups: under the sections a widget's Inspector shows, in their
- * order, with any property they leave out under Other, or under one Properties group when there
- * are no sections.
+ * An object schema's properties in groups. Annotated with `x-group`, they fall under the six
+ * setting groups, in order, each with its `x-advanced` properties under More. Otherwise they fall
+ * under the sections a widget's Inspector shows, or one Properties group when there are none. A
+ * property neither names goes under Other.
  *
  * @param presetPaths - config paths that presets set, such as `/columnState`, each marked.
  */
@@ -40,23 +46,51 @@ export function schemaSections(
     presetPaths: string[] = []
 ): SchemaSection[] {
     const props = propsOf(schema, '', presetPaths);
-    if (!sections?.length) return props.length ? [{title: 'Properties', props}] : [];
+    if (props.some(it => it.group)) {
+        return groupSections(
+            props,
+            SETTING_GROUPS.map(id => ({id, label: upperFirst(id)}))
+        );
+    }
+    if (!sections?.length) return props.length ? [section('Properties', props)] : [];
     const byKey = new Map(props.map(it => [it.key, it])),
         named = new Set(sections.flatMap(it => it.keys)),
         ret = sections
-            .map(it => ({
-                title: it.label,
-                props: it.keys.map(key => byKey.get(key)).filter(Boolean)
-            }))
+            .map(it => section(it.label, it.keys.map(key => byKey.get(key)).filter(Boolean)))
             .filter(it => it.props.length),
         other = props.filter(it => !named.has(it.key));
-    return other.length ? [...ret, {title: 'Other', props: other}] : ret;
+    return other.length ? [...ret, section('Other', other)] : ret;
 }
 
 //------------------
 // Implementation
 //------------------
-function propsOf(schema: PlainObject, path: string, presetPaths: string[]): SchemaProp[] {
+type GroupedProp = SchemaProp & {group?: string; advanced?: boolean};
+
+function section(title: string, props: SchemaProp[], more: SchemaProp[] = []): SchemaSection {
+    return {title, props, more};
+}
+
+// Props under the groups given, in their order, with advanced ones under More and the rest under Other.
+function groupSections(
+    props: GroupedProp[],
+    groups: {id: string; label: string}[]
+): SchemaSection[] {
+    const ids = new Set(groups.map(it => it.id)),
+        ret = groups.map(({id, label}) => {
+            const mine = props.filter(it => it.group === id);
+            return section(
+                label,
+                mine.filter(it => !it.advanced),
+                mine.filter(it => it.advanced)
+            );
+        }),
+        other = props.filter(it => !ids.has(it.group));
+    if (other.length) ret.push(section('Other', other));
+    return ret.filter(it => it.props.length || it.more.length);
+}
+
+function propsOf(schema: PlainObject, path: string, presetPaths: string[]): GroupedProp[] {
     if (!isPlainObject(schema?.properties)) return [];
     const required: string[] = schema.required ?? [];
     return Object.entries<PlainObject>(schema.properties).map(([key, s]) =>
@@ -70,7 +104,7 @@ function propOf(
     path: string,
     required: boolean,
     presetPaths: string[]
-): SchemaProp {
+): GroupedProp {
     const alts: PlainObject[] = s.anyOf ?? s.oneOf ?? [s],
         own = objectOf(s),
         item = alts.map(it => objectOf(it.items)).find(Boolean),
@@ -82,7 +116,8 @@ function propOf(
               : entry
                 ? [entry, 'each entry']
                 : [null, null],
-        children = childSchema ? propsOf(childSchema, `${path}/[]`, presetPaths) : [];
+        children = childSchema ? propsOf(childSchema, `${path}/[]`, presetPaths) : [],
+        itemGroups: {id: string; label: string}[] = childSchema?.['x-groups'];
     return {
         key,
         path,
@@ -102,8 +137,13 @@ function propOf(
         ],
         default: s.default === undefined ? undefined : JSON.stringify(s.default),
         description: s.description,
-        ...(children.length ? {children, childrenOf} : {})
-    };
+        ...(children.length ? {children, childrenOf} : {}),
+        ...(children.length && itemGroups
+            ? {childGroups: groupSections(children, itemGroups)}
+            : {}),
+        group: s['x-group'],
+        advanced: s['x-advanced'] === true
+    } as GroupedProp;
 }
 
 // A schema's object form: itself, or the alternative of it, that has properties.
@@ -127,7 +167,7 @@ function typeOf(s: PlainObject): string {
 // Short tags for a property's `x-` annotations, with the full annotation as their title.
 function annotationTags(s: PlainObject): {text: string; title: string}[] {
     return Object.entries(s)
-        .filter(([k]) => k.startsWith('x-'))
+        .filter(([k]) => k.startsWith('x-') && k !== 'x-group' && k !== 'x-advanced')
         .map(([k, v]) => {
             const name = k.slice(2),
                 title = `${k}: ${isString(v) ? v : JSON.stringify(v)}`;

@@ -351,6 +351,15 @@
 
 .tb-card-group {
   margin-bottom: var(--xh-spacing);
+
+  // A heading within a group: a list item's group, or a group's More.
+  &__title {
+    padding: var(--xh-spacing-half) var(--xh-spacing) 2px;
+    // Hoist's muted gray falls under 4.5:1 on white at this size.
+    color: color-mix(in srgb, var(--xh-text-color) 70%, var(--xh-bg));
+    font-size: var(--xh-font-size-small);
+    font-weight: 600;
+  }
 }
 
 // Sticks to the top of its scrolling container as its group passes.

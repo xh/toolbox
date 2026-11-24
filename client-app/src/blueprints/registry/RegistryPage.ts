@@ -14,7 +14,7 @@ import {band, chips, tag} from '../cards';
 import {md} from '../markdown';
 import {anchorProps, topAnchor, useScrollTarget} from '../scrollSpy';
 import {RegistryModel} from './RegistryModel';
-import type {SchemaProp} from './registrySchema';
+import type {SchemaProp, SchemaSection} from './registrySchema';
 import {architectView, entryFacts, exampleBody} from './RegistryViews';
 
 const ANCHORS = 'tb-registry';
@@ -174,13 +174,8 @@ function sectionContent(model: RegistryModel, id: string): ReactNode {
                         key: section.title,
                         className: 'tb-card-group',
                         children: [
-                            band(section.title, section.props.length),
-                            div({
-                                className: 'tb-cards',
-                                children: section.props.map(prop =>
-                                    propCard({key: prop.path, prop})
-                                )
-                            })
+                            band(section.title, section.props.length + section.more.length),
+                            ...sectionCards(section)
                         ]
                     })
                 ),
@@ -274,9 +269,16 @@ const propCard = hoistCmp.factory<PropCardProps>({
                 open
                     ? div({
                           className: 'tb-prop-card__children',
-                          children: prop.children.map(child =>
-                              propCard({key: child.path, prop: child})
-                          )
+                          children: prop.childGroups
+                              ? prop.childGroups.flatMap(group => [
+                                    div({
+                                        key: `${group.title}-title`,
+                                        className: 'tb-card-group__title',
+                                        children: group.title
+                                    }),
+                                    ...sectionCards(group)
+                                ])
+                              : prop.children.map(child => propCard({key: child.path, prop: child}))
                       })
                     : null
             ]
@@ -287,6 +289,24 @@ const propCard = hoistCmp.factory<PropCardProps>({
 //------------------
 // Implementation
 //------------------
+// A section's cards, then its advanced ones under More.
+function sectionCards(section: SchemaSection): ReactNode[] {
+    const {title, props, more} = section,
+        cards = (key: string, list: SchemaProp[]) =>
+            div({
+                key,
+                className: 'tb-cards',
+                children: list.map(prop => propCard({key: prop.path, prop}))
+            });
+    return [
+        props.length ? cards(`${title}-common`, props) : null,
+        more.length
+            ? div({key: `${title}-more`, className: 'tb-card-group__title', children: 'More'})
+            : null,
+        more.length ? cards(`${title}-advanced`, more) : null
+    ];
+}
+
 interface SimpleCardSpec {
     key: string;
     name: string;
