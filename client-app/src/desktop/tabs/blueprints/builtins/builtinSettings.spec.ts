@@ -6,13 +6,15 @@ const registry = createPortfolioRegistry(),
     settingsOf = (name: string) => builtinSettings({...registry.widgets[name], name});
 
 describe('builtinSettings', () => {
-    it("takes a widget's simple settings from its sections, in order", () => {
-        const settings = settingsOf('dashboard').map(it => [it.key, it.kind]);
-        expect(settings.slice(0, 2)).toEqual([
-            ['columns', 'number'],
-            ['rowHeight', 'number']
-        ]);
-        expect(settings.at(-1)).toEqual(['hideHeader', 'bool']);
+    it("takes a widget's simple settings by their x-group, in the setting groups' order", () => {
+        const settings = settingsOf('dashboard'),
+            order = ['Data', 'List', 'Content', 'Appearance', 'Behavior', 'Layout', 'Children'],
+            sections = [...new Set(settings.map(it => it.section))];
+        expect(settings.map(it => it.key)).toEqual(
+            expect.arrayContaining(['columns', 'rowHeight'])
+        );
+        expect(sections).toEqual([...sections].sort((a, b) => order.indexOf(a) - order.indexOf(b)));
+        expect(settings.at(-1)).toMatchObject({key: 'hideHeader', kind: 'bool'});
     });
 
     it('marks settings that apply to each child', () => {
@@ -27,7 +29,7 @@ describe('builtinSettings', () => {
         expect(summary.thumbnails).toBeTruthy();
     });
 
-    it('leaves out field names and bindings to data, and keeps collapsed sections', () => {
+    it('leaves out field names and bindings to data, and keeps advanced settings', () => {
         const keys = settingsOf('cubeGrid').map(it => it.key);
         expect(keys).not.toContain('source');
         expect(keys).not.toContain('groupBy');

@@ -1,11 +1,12 @@
 import type {EditorNode, WidgetSpec} from '@xh/hoist-chat-kit/blueprint';
-import {toEditorSpec} from '@xh/hoist-chat-kit/blueprint';
+import {SETTING_GROUPS, toEditorSpec} from '@xh/hoist-chat-kit/blueprint';
+import {upperFirst} from 'lodash';
 
 /** One of a widget's settings, as a Built-ins page's options rail offers it. */
 export interface BuiltinSetting {
     key: string;
     label: string;
-    /** The Inspector section it belongs to, or `Children` for a child reference's setting. */
+    /** Its setting group, as `Appearance`, or `Children` for a child reference's setting. */
     section: string;
     kind: 'bool' | 'choice' | 'intent' | 'number';
     default?: unknown;
@@ -23,13 +24,17 @@ export interface BuiltinSetting {
 
 /**
  * A widget's settings to try, read from its schema as its Inspector reads it: the booleans,
- * choices, intents and numbers of its sections, in section order, then the booleans of each child
- * reference. Field names and data bindings are left out.
+ * choices, intents and numbers of each setting group, in the groups' order, then the booleans of
+ * each child reference. Field names and data bindings are left out.
  */
 export function builtinSettings(spec: WidgetSpec): BuiltinSetting[] {
-    const nodes = new Map(toEditorSpec(spec.config).map(it => [it.key, it])),
-        own = (spec.sections ?? []).flatMap(section =>
-            section.keys.map(key => settingOf(nodes.get(key), section.label)).filter(Boolean)
+    const nodes = toEditorSpec(spec.config),
+        groupOf = (key: string) => spec.config?.properties?.[key]?.['x-group'],
+        own = SETTING_GROUPS.flatMap(group =>
+            nodes
+                .filter(it => groupOf(it.key) === group)
+                .map(it => settingOf(it, upperFirst(group)))
+                .filter(Boolean)
         ),
         perChild = toEditorSpec(spec.children?.schema)
             .filter(it => it.kind === 'boolean')

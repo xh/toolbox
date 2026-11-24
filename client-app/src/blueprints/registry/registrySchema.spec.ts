@@ -5,7 +5,7 @@ import {schemaSections} from './registrySchema';
 const registry = createPortfolioRegistry(),
     sectionsOf = (name: string) => {
         const spec = registry.widgets[name];
-        return schemaSections(spec.config, spec.sections, spec.presetPaths);
+        return schemaSections(spec.config, spec.presetPaths);
     },
     propOf = (name: string, key: string) =>
         sectionsOf(name)
@@ -77,18 +77,7 @@ describe('schemaSections', () => {
         ]);
     });
 
-    it('puts properties no section names under Other', () => {
-        const sections = schemaSections(
-            {type: 'object', properties: {a: {type: 'string'}, b: {type: 'number'}}},
-            [{label: 'Main', keys: ['a']}]
-        );
-        expect(sections.map(it => [it.title, it.props.map(p => p.key)])).toEqual([
-            ['Main', ['a']],
-            ['Other', ['b']]
-        ]);
-    });
-
-    it('gives one Properties group to a schema with no sections', () => {
+    it('gives one Properties group to a schema with no x-group', () => {
         const sections = schemaSections({type: 'object', properties: {a: {type: 'string'}}});
         expect(sections.map(it => it.title)).toEqual(['Properties']);
     });

@@ -34,32 +34,18 @@ export interface SchemaSection {
 
 /**
  * An object schema's properties in groups. Annotated with `x-group`, they fall under the six
- * setting groups, in order, each with its `x-advanced` properties under More. Otherwise they fall
- * under the sections a widget's Inspector shows, or one Properties group when there are none. A
- * property neither names goes under Other.
+ * setting groups, in order, each with its `x-advanced` properties under More, and any property
+ * without one under Other. Otherwise they make one Properties group.
  *
  * @param presetPaths - config paths that presets set, such as `/columnState`, each marked.
  */
-export function schemaSections(
-    schema: PlainObject,
-    sections?: {label: string; keys: string[]}[],
-    presetPaths: string[] = []
-): SchemaSection[] {
+export function schemaSections(schema: PlainObject, presetPaths: string[] = []): SchemaSection[] {
     const props = propsOf(schema, '', presetPaths);
-    if (props.some(it => it.group)) {
-        return groupSections(
-            props,
-            SETTING_GROUPS.map(id => ({id, label: upperFirst(id)}))
-        );
-    }
-    if (!sections?.length) return props.length ? [section('Properties', props)] : [];
-    const byKey = new Map(props.map(it => [it.key, it])),
-        named = new Set(sections.flatMap(it => it.keys)),
-        ret = sections
-            .map(it => section(it.label, it.keys.map(key => byKey.get(key)).filter(Boolean)))
-            .filter(it => it.props.length),
-        other = props.filter(it => !named.has(it.key));
-    return other.length ? [...ret, section('Other', other)] : ret;
+    if (!props.some(it => it.group)) return props.length ? [section('Properties', props)] : [];
+    return groupSections(
+        props,
+        SETTING_GROUPS.map(id => ({id, label: upperFirst(id)}))
+    );
 }
 
 //------------------

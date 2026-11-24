@@ -209,7 +209,7 @@ export class RegistryModel extends HoistModel {
         const {spec} = entry;
         return entry.kind === 'action'
             ? schemaSections(spec.params)
-            : schemaSections(spec.config, spec.sections, spec.presetPaths);
+            : schemaSections(spec.config, spec.presetPaths);
     }
 
     @action
