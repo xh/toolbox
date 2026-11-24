@@ -23,7 +23,6 @@ import {
     raw
 } from '../../../common/Demo';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
-import {useEffect, useRef} from 'react';
 import './SortableListPanel.scss';
 
 interface Entry {
@@ -340,18 +339,11 @@ const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; chosen
     model: false,
     render({add, chosen}) {
         const options = [...DIMS, ...MORE_DIMS]
-                .filter(d => !chosen.some(it => it.id === d.id))
-                .map(d => ({value: d.id, label: d.name})),
-            justAdded = useRef(false);
-
-        useEffect(() => {
-            justAdded.current = false;
-        });
-
+            .filter(d => !chosen.some(it => it.id === d.id))
+            .map(d => ({value: d.id, label: d.name}));
         return select({
-            // A new key on each add clears the typed text. The remount drops focus, so take it back.
+            // A new key on each add clears the typed text. The list refocuses it after the add.
             key: options.length,
-            autoFocus: justAdded.current,
             className: 'tb-sortable-list-panel__dim-picker',
             options,
             placeholder: options.length ? 'Add dimension...' : 'All dimensions added',
@@ -362,10 +354,7 @@ const dimPicker = hoistCmp.factory<HoistProps & {add: (e: Entry) => void; chosen
             enableFilter: true,
             hideDropdownIndicator: true,
             hideSelectedOptionCheck: true,
-            onChange: id => {
-                justAdded.current = true;
-                add([...DIMS, ...MORE_DIMS].find(d => d.id === id));
-            }
+            onChange: id => add([...DIMS, ...MORE_DIMS].find(d => d.id === id))
         });
     }
 });
