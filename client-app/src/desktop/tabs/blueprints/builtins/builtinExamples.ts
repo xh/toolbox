@@ -1,5 +1,5 @@
 import type {Blueprint, BlueprintRegistry, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
-import {exampleBlueprintOf} from '@xh/hoist-chat-kit/blueprint';
+import {exampleBlueprintOf} from '@xh/hoist-chat-kit/blueprint/demo';
 import type {PlainObject} from '@xh/hoist/core';
 import {withPromptInputs} from '../../../../blueprints/withPromptInputs';
 

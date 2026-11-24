@@ -4,10 +4,10 @@ import {
     ARCHITECT_TOOLS,
     architectPrompt,
     BlueprintModel,
-    exampleBlueprintOf,
     registryUsages,
     variableLabel
 } from '@xh/hoist-chat-kit/blueprint';
+import {exampleBlueprintOf} from '@xh/hoist-chat-kit/blueprint/demo';
 import type {ArchitectTarget, BlueprintSelection} from '@xh/hoist-chat-kit/blueprint';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, lookup, managed, XH} from '@xh/hoist/core';

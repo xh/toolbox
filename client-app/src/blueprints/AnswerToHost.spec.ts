@@ -1,6 +1,7 @@
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintModel, DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
+import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
+import {FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint/demo';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import {chatMessageList} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {

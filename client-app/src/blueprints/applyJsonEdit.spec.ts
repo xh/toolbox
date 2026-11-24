@@ -1,5 +1,6 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {BlueprintModel, DataCatalog, FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint';
+import {BlueprintModel, DataCatalog} from '@xh/hoist-chat-kit/blueprint';
+import {FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint/demo';
 import type {PlainObject} from '@xh/hoist/core';
 import {initTestAppAsync} from '@xh/hoist/test-support';
 import {cloneDeep} from 'lodash';

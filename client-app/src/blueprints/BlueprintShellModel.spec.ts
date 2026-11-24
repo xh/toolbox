@@ -1,4 +1,5 @@
-import {DataCatalog, FakeBlueprintDataProvider, isGlobal} from '@xh/hoist-chat-kit/blueprint';
+import {DataCatalog, isGlobal} from '@xh/hoist-chat-kit/blueprint';
+import {FakeBlueprintDataProvider} from '@xh/hoist-chat-kit/blueprint/demo';
 import {XH} from '@xh/hoist/core';
 import {hoistCore, initTestAppAsync} from '@xh/hoist/test-support';
 import {find, get} from 'lodash';

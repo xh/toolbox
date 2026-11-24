@@ -1,10 +1,6 @@
 import type {Blueprint} from '@xh/hoist-chat-kit/blueprint';
-import {
-    DataCatalog,
-    exampleBlueprintOf,
-    registryUsages,
-    validateBlueprint
-} from '@xh/hoist-chat-kit/blueprint';
+import {DataCatalog, registryUsages, validateBlueprint} from '@xh/hoist-chat-kit/blueprint';
+import {exampleBlueprintOf} from '@xh/hoist-chat-kit/blueprint/demo';
 import {chatUiStackSpec, chatUiTextSpec} from '@xh/hoist-chat-kit/desktop/cmp/genui';
 import {ChatUiCatalog} from '@xh/hoist-chat-kit/genui';
 import {describe, expect, it} from 'vitest';
