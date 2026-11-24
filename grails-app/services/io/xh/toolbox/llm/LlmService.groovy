@@ -62,8 +62,8 @@ import static java.nio.charset.StandardCharsets.UTF_8
  *
  * Tracking - each call is tracked in category `LLM`, with its token counts, and at WARN if it
  * failed. A refused request - a limit hit, or a request the policy rejects - is tracked at WARN,
- * so admins can see it in the Admin Console's Activity tab. Both carry the `app`, `feature` and
- * `blueprintId` the client sends in the `X-Llm-Context` header - see {@link #parseContext}.
+ * so admins can see it in the Admin Console's Activity tab. Both carry the context the client
+ * sends in the `X-Llm-Context` header, unverified - see {@link #parseContext}.
  *
  * Errors - expected failures throw routine exceptions, which log at DEBUG and which the client does
  * not report as errors: a rate limit hit, a rejected request, a full connection pool, and an
@@ -143,8 +143,7 @@ class LlmService extends BaseService {
      * @param request - Anthropic Messages request body, as built by the kit's `AnthropicCodec`.
      *      Checked and filtered as described in the class doc.
      * @param user - the authenticated user, for limits.
-     * @param context - the client's `app`, `feature` and `blueprintId`, from {@link #parseContext},
-     *      added to what is tracked.
+     * @param context - the client's context, from {@link #parseContext}, added to what is tracked.
      * @param onEvent - called with the JSON payload of each SSE `data:` field, in order. Return
      *      false to stop - e.g. when the client has disconnected. The upstream connection is
      *      then aborted, so no further tokens are generated or billed.
@@ -224,14 +223,15 @@ class LlmService extends BaseService {
     /**
      * The client's context for a call, from the `X-Llm-Context` header: JSON with any of `app`,
      * `feature` and `blueprintId`, each a string of at most 100 characters. Anything else, or a
-     * malformed header, is dropped, as the context is only tracked.
+     * malformed header, is dropped, as the context is only tracked. Nothing checks it, so the
+     * blueprint id is tracked as `clientBlueprintId`.
      */
     Map parseContext(String header) {
         if (!header) return [:]
         try {
             return JSONParser.parseObject(header)
-                .subMap(CONTEXT_KEYS)
-                .findAll { k, v -> v instanceof String && v.length() <= 100 }
+                .findAll { k, v -> k in CONTEXT_KEYS && v instanceof String && v.length() <= 100 }
+                .collectEntries { k, v -> [CONTEXT_KEYS[k], v] }
         } catch (Exception ignored) {
             return [:]
         }
@@ -562,8 +562,8 @@ class LlmService extends BaseService {
         ]
     }
 
-    /** Keys of the client's context, tracked with each call. */
-    private static final List<String> CONTEXT_KEYS = ['app', 'feature', 'blueprintId']
+    /** Keys of the client's context, to the keys each is tracked under. */
+    private static final Map<String, String> CONTEXT_KEYS = [app: 'app', feature: 'feature', blueprintId: 'clientBlueprintId']
 
     /** Request keys forwarded from the client. */
     private static final List<String> CLIENT_KEYS = ['system', 'messages', 'tools', 'tool_choice']

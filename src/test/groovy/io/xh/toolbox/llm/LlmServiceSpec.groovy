@@ -198,13 +198,13 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
         ]
     }
 
-    def 'the context header keeps only app, feature and blueprintId, as short strings'() {
+    def 'the context header keeps only app, feature and blueprintId, as short strings, and tracks the id as client-reported'() {
         expect:
         service.parseContext(header) == expected
 
         where:
         header                                                                        || expected
-        '{"app": "weather", "feature": "architect", "blueprintId": "bp1", "x": 1}'    || [app: 'weather', feature: 'architect', blueprintId: 'bp1']
+        '{"app": "weather", "feature": "architect", "blueprintId": "bp1", "x": 1}'    || [app: 'weather', feature: 'architect', clientBlueprintId: 'bp1']
         '{"app": 42, "feature": "answer"}'                                            || [feature: 'answer']
         "{\"app\": \"${'a' * 101}\"}"                                                  || [:]
         'not json'                                                                    || [:]
@@ -250,7 +250,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
         testTrackService.lastTracked.msg == 'LLM call'
         testTrackService.lastTracked.severity == 'WARN'
         testTrackService.lastTracked.data.error == 'The model is busy.'
-        testTrackService.lastTracked.data.subMap('app', 'feature', 'blueprintId') == CONTEXT
+        testTrackService.lastTracked.data.subMap('app', 'feature', 'clientBlueprintId') == CONTEXT
 
         when: 'both of the user slots are free'
         2.times { service.reserveCall(unlimited, [:]) }
@@ -347,7 +347,7 @@ class LlmServiceSpec extends Specification implements ServiceUnitTest<LlmService
     //------------------
     // Implementation
     //------------------
-    static final Map CONTEXT = [app: 'weather', feature: 'architect', blueprintId: 'bp1']
+    static final Map CONTEXT = [app: 'weather', feature: 'architect', clientBlueprintId: 'bp1']
 
     private static long now() { System.currentTimeMillis() }
 

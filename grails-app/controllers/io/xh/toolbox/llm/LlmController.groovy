@@ -21,7 +21,8 @@ class LlmController extends BaseController {
      * POST /llm/stream
      * Body: Anthropic Messages request body, as built by the kit's `AnthropicCodec`. See LlmService
      *      for the keys it accepts - the server sets `model`, `max_tokens` and `stream`.
-     * Header: optional `X-Llm-Context`, JSON `{app, feature, blueprintId}`, tracked with the call.
+     * Header: optional `X-Llm-Context`, JSON `{app, feature, blueprintId}`, client-reported and
+     *      tracked with the call - see LlmService.parseContext.
      * Returns: NDJSON - one Anthropic stream event per line, flushed as each arrives.
      *
      * Hoist's `renderNDJSON` buffers its output, which holds back a token stream, so this action
