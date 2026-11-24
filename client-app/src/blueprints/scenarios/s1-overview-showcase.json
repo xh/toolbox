@@ -33,12 +33,12 @@
             "component": "dashboard",
             "children": [
                 {"id": "intro", "x": 0, "y": 0, "w": 12, "h": 2},
-                {"id": "headline", "x": 0, "y": 2, "w": 9, "h": 3},
-                {"id": "headlineNote", "x": 9, "y": 2, "w": 3, "h": 3},
-                {"id": "mapPanel", "x": 0, "y": 5, "w": 5, "h": 8},
-                {"id": "gridPanel", "x": 5, "y": 5, "w": 7, "h": 8},
-                {"id": "mapNote", "x": 0, "y": 13, "w": 5, "h": 2},
-                {"id": "gridNote", "x": 5, "y": 13, "w": 7, "h": 2}
+                {"id": "headline", "x": 0, "y": 2, "w": 9, "h": 4},
+                {"id": "headlineNote", "x": 9, "y": 2, "w": 3, "h": 4},
+                {"id": "mapPanel", "x": 0, "y": 6, "w": 5, "h": 8},
+                {"id": "gridPanel", "x": 5, "y": 6, "w": 7, "h": 8},
+                {"id": "mapNote", "x": 0, "y": 14, "w": 5, "h": 3},
+                {"id": "gridNote", "x": 5, "y": 14, "w": 7, "h": 3}
             ]
         },
         "intro": {
