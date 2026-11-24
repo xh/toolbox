@@ -5,6 +5,25 @@
   min-height: 0;
 }
 
+// The Docked width option: the chat in a narrow frame at the right, beside a stand-in for the
+// app's own content.
+.tb-chatkit-docked {
+  align-self: stretch;
+  min-height: 0;
+  min-width: 0;
+
+  &__app {
+    flex: 1;
+    min-width: 0;
+    background-color: var(--xh-bg-alt);
+  }
+
+  &__frame {
+    flex: none;
+    border-left: var(--xh-border-width) solid var(--xh-border-color);
+  }
+}
+
 // Overview page.
 .tb-chatkit-overview {
   &__prose {

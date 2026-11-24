@@ -34,7 +34,7 @@ import {
 } from '../../../common/Demo';
 import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {chatKitPage} from '../ChatKitCatalog';
-import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
+import {DOCKED_WIDTH, KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
 import {createSampleConversation} from '../common/sampleConversation';
 import {arrayLiteral, markdown, rawObject, snippet} from '../common/ChatDemoUtils';
 import './ChatPanelPanel.scss';
@@ -155,13 +155,9 @@ export const chatPanelPanel = hoistCmp.factory({
                             control: switchInput({bind: 'citationMarkers'})
                         }),
                         wrapperOption({
-                            label: 'Compact density',
-                            info: span(
-                                'Adds ',
-                                code('xh-chat--compact'),
-                                ' to the panel, for a narrow host.'
-                            ),
-                            control: switchInput({bind: 'compact'})
+                            label: 'Docked width',
+                            info: `Narrows the playground to ${DOCKED_WIDTH} px, as a side panel. The kit compacts a chat this narrow.`,
+                            control: switchInput({bind: 'docked'})
                         }),
                         wrapperOption({
                             label: 'Reduced motion',
@@ -195,7 +191,7 @@ export const chatPanelPanel = hoistCmp.factory({
                         title: 'Playground',
                         intent: 'primary',
                         children: demoPlayground({
-                            instanceWidth: 560,
+                            instanceWidth: model.docked ? DOCKED_WIDTH : 560,
                             caption:
                                 'Send a message, or load the sample conversation, to see the message list options.',
                             config: model.configSnippet,
@@ -219,7 +215,7 @@ export const chatPanelPanel = hoistCmp.factory({
                         note: 'A Hoist panel with a PanelModel holds the chat. Drag its edge, or collapse it.',
                         children: demoFrame({
                             label: 'Side panel',
-                            info: "panel({modelConfig: {side: 'right', defaultSize: 420, minSize: 320}}), at compact density",
+                            info: "panel({modelConfig: {side: 'right', defaultSize: 380, minSize: 320}}), compact while 380 px or narrower",
                             children: hframe({
                                 className: 'tb-chatkit-chat-panel__side-host',
                                 children: [
@@ -230,10 +226,9 @@ export const chatPanelPanel = hoistCmp.factory({
                                     panel({
                                         modelConfig: {
                                             side: 'right',
-                                            defaultSize: 420,
+                                            defaultSize: 380,
                                             minSize: 320
                                         },
-                                        className: 'xh-chat--compact',
                                         children: chatPanel({
                                             model: model.sideChatModel,
                                             flex: 1,
@@ -321,7 +316,7 @@ class ChatPanelPanelModel extends HoistModel {
     @bindable accessor placeholder = 'Ask about your portfolio...';
     @bindable accessor composerLayout: 'stacked' | 'inline' = 'stacked';
     @bindable accessor citationMarkers = true;
-    @bindable accessor compact = false;
+    @bindable accessor docked = false;
     @bindable accessor reducedMotion = false;
 
     get allEmpty(): boolean {
@@ -379,10 +374,7 @@ class ChatPanelPanelModel extends HoistModel {
     }
 
     private get densityClasses(): string {
-        return classNames(
-            this.compact && 'xh-chat--compact',
-            this.reducedMotion && 'xh-chat--reduced-motion'
-        );
+        return classNames(this.reducedMotion && 'xh-chat--reduced-motion');
     }
 
     private get chatModels(): ChatModel[] {

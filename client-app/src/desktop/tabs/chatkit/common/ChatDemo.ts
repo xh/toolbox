@@ -2,7 +2,7 @@ import type {ChatModelConfig} from '@xh/hoist-chat-kit/core';
 import {ChatModel} from '@xh/hoist-chat-kit/core';
 import type {ChatSuggestion} from '@xh/hoist-chat-kit/desktop/cmp/chat';
 import {chatClearButton, chatPanel} from '@xh/hoist-chat-kit/desktop/cmp/chat';
-import {code, span} from '@xh/hoist/cmp/layout';
+import {box, code, div, hframe, span} from '@xh/hoist/cmp/layout';
 import type {HoistProps} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed, uses} from '@xh/hoist/core';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -139,8 +139,8 @@ export class ChatDemoModel extends HoistModel {
     @bindable accessor assistantName: string;
     /** `ChatMessageListProps.showMessageHeader`. */
     @bindable accessor showMessageHeader = true;
-    /** True to add `xh-chat--compact` above the chat, for a narrow host. */
-    @bindable accessor compact = false;
+    /** True to show the chat in a narrow frame docked to the right, as an app's side panel. */
+    @bindable accessor docked = false;
     /** True to add `xh-chat--reduced-motion` above the chat, for the static twins of its cues. */
     @bindable accessor reducedMotion = false;
 
@@ -159,7 +159,7 @@ export const chatDemoPage = hoistCmp.factory<HoistProps<ChatDemoModel>>({
     model: uses(ChatDemoModel),
 
     render({model}) {
-        const {spec, page, chatModel, assistantName, showMessageHeader, compact, reducedMotion} =
+        const {spec, page, chatModel, assistantName, showMessageHeader, docked, reducedMotion} =
                 model,
             title = page.title,
             icon = page.icon();
@@ -193,13 +193,9 @@ export const chatDemoPage = hoistCmp.factory<HoistProps<ChatDemoModel>>({
                             control: switchInput({bind: 'showMessageHeader'})
                         }),
                         wrapperOption({
-                            label: 'Compact density',
-                            info: span(
-                                'Adds ',
-                                code('xh-chat--compact'),
-                                ' to a parent of the chat.'
-                            ),
-                            control: switchInput({bind: 'compact'})
+                            label: 'Docked width',
+                            info: `Shows the chat in a ${DOCKED_WIDTH} px frame at the right, as a side panel of an app. The kit compacts a chat this narrow.`,
+                            control: switchInput({bind: 'docked'})
                         }),
                         wrapperOption({
                             label: 'Reduced motion',
@@ -220,31 +216,60 @@ export const chatDemoPage = hoistCmp.factory<HoistProps<ChatDemoModel>>({
                     onClick: () => chatModel.clear()
                 })
             ],
-            children: chatPanel({
-                model: chatModel,
-                className: classNames(
-                    'tb-chatkit-demo',
-                    compact && 'xh-chat--compact',
-                    reducedMotion && 'xh-chat--reduced-motion'
-                ),
-                testId: `chatkit-${spec.pageId}`,
-                // The Wrapper centers its demo region's child, so fill it explicitly.
-                width: '100%',
-                height: '100%',
-                title,
-                icon,
-                compactHeader: true,
-                headerItems: [
-                    chatClearButton({
-                        chatModel,
-                        tooltip: 'Clear the conversation, to run the demo again'
-                    })
-                ],
-                emptyStateProps: {icon: null, title: spec.heading, text: spec.intro},
-                suggestions: spec.suggestions,
-                composerProps: {placeholder: spec.placeholder},
-                messageListProps: {assistantName, showMessageHeader}
+            children: dockedFrame({
+                docked,
+                children: chatPanel({
+                    model: chatModel,
+                    className: classNames(
+                        'tb-chatkit-demo',
+                        reducedMotion && 'xh-chat--reduced-motion'
+                    ),
+                    testId: `chatkit-${spec.pageId}`,
+                    // The Wrapper centers its demo region's child, so fill it explicitly.
+                    width: '100%',
+                    height: '100%',
+                    title,
+                    icon,
+                    compactHeader: true,
+                    headerItems: [
+                        chatClearButton({
+                            chatModel,
+                            tooltip: 'Clear the conversation, to run the demo again'
+                        })
+                    ],
+                    emptyStateProps: {icon: null, title: spec.heading, text: spec.intro},
+                    suggestions: spec.suggestions,
+                    composerProps: {placeholder: spec.placeholder},
+                    messageListProps: {assistantName, showMessageHeader}
+                })
             })
+        });
+    }
+});
+
+/** Width of the docked frame, at or under the width where the kit compacts a chat. */
+export const DOCKED_WIDTH = 380;
+
+/**
+ * The demo region's content, or with `docked` the same content in a narrow frame at the right,
+ * as a side panel beside an app's own content.
+ */
+export const dockedFrame = hoistCmp.factory<HoistProps & {docked: boolean}>({
+    displayName: 'ChatDockedFrame',
+    model: false,
+
+    render({docked, children}) {
+        if (!docked) return children;
+        return hframe({
+            className: 'tb-chatkit-docked',
+            children: [
+                div({className: 'tb-chatkit-docked__app'}),
+                box({
+                    className: 'tb-chatkit-docked__frame',
+                    width: DOCKED_WIDTH,
+                    children
+                })
+            ]
         });
     }
 });

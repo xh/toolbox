@@ -12,7 +12,7 @@ import type {CSSProperties} from 'react';
 import {demoPanel, demoPlayground, demoSection} from '../../../common/Demo';
 import {wrapper, wrapperAction, wrapperOption, wrapperOptionGroup} from '../../../common/Wrapper';
 import {chatKitPage} from '../ChatKitCatalog';
-import {KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
+import {DOCKED_WIDTH, KIT_LINKS, tabSourceLink} from '../common/ChatDemo';
 import {createSampleConversation} from '../common/sampleConversation';
 import {markdown} from '../common/ChatDemoUtils';
 import './ThemingPanel.scss';
@@ -24,7 +24,7 @@ export const themingPanel = hoistCmp.factory({
     model: creates(() => ThemingPanelModel),
 
     render({model}) {
-        const {chatModel, cssVars, scss, compact, reducedMotion} = model;
+        const {chatModel, cssVars, scss, docked, reducedMotion} = model;
         return wrapper({
             title: PAGE.title,
             icon: PAGE.icon(),
@@ -33,8 +33,8 @@ export const themingPanel = hoistCmp.factory({
                 "variables, so the chat follows the app's light or dark theme with nothing to set.",
                 "To change one, set it on `body.xh-app`, with its unit, as with Hoist's variables.",
                 '',
-                'Two classes change the chat without a variable: `xh-chat--compact` on a parent',
-                "sets a narrow host's padding, bubble width and chart height, and",
+                'Two things change the chat without a variable. A chat 380 px wide or narrower',
+                'is compact, with tighter padding, wider bubbles and shorter charts. And',
                 "`xh-chat--reduced-motion` shows the static twin of every moving cue. The browser's",
                 'own reduced-motion setting does the same, and `xh-chat--motion` overrides it.',
                 '',
@@ -145,13 +145,13 @@ export const themingPanel = hoistCmp.factory({
                     ]
                 }),
                 wrapperOptionGroup({
-                    label: 'Classes',
-                    info: "Added to the preview's container.",
+                    label: 'Preview',
+                    info: 'How the preview is hosted.',
                     children: [
                         wrapperOption({
-                            label: 'Compact density',
-                            propName: 'xh-chat--compact',
-                            control: switchInput({bind: 'compact'})
+                            label: 'Docked width',
+                            info: `Narrows the preview to ${DOCKED_WIDTH} px, as a side panel. The kit compacts a chat this narrow.`,
+                            control: switchInput({bind: 'docked'})
                         }),
                         wrapperOption({
                             label: 'Reduced motion',
@@ -178,7 +178,7 @@ export const themingPanel = hoistCmp.factory({
                         title: 'Playground',
                         intent: 'primary',
                         children: demoPlayground({
-                            instanceWidth: 620,
+                            instanceWidth: docked ? DOCKED_WIDTH : 620,
                             showValue: false,
                             caption:
                                 'The same conversation, with the variables from the rail. Send a message to see the live cues.',
@@ -186,7 +186,6 @@ export const themingPanel = hoistCmp.factory({
                             children: div({
                                 className: classNames(
                                     'tb-chatkit-theming__preview',
-                                    compact && 'xh-chat--compact',
                                     reducedMotion && 'xh-chat--reduced-motion'
                                 ),
                                 style: cssVars as CSSProperties,
@@ -255,7 +254,7 @@ class ThemingPanelModel extends HoistModel {
     @bindable accessor userBg = DEFAULTS.userBg;
     @bindable accessor userBorderRadius = DEFAULTS.userBorderRadius;
     @bindable accessor metaColor = DEFAULTS.metaColor;
-    @bindable accessor compact = false;
+    @bindable accessor docked = false;
     @bindable accessor reducedMotion = false;
 
     @managed readonly chatModel = new ChatModel({
