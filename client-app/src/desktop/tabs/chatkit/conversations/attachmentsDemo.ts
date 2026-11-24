@@ -14,7 +14,8 @@ const DEMO: ChatDemoSpec = {
     description: [
         'Attachments are a model setting: `composer: {enableAttachments: true}` on the',
         '`ChatModelConfig`, with `accept`, `maxFiles` and `maxFileSize`. The user then attaches',
-        'files with the paperclip, a drop on the composer, or a paste.',
+        'files with the paperclip, a paste, or a drop anywhere on the chat panel. While files are',
+        'dragged over the panel, a hint covers it.',
         '',
         'Files show as chips above the input until sent, and travel with the message as',
         '`file` parts. A file the rules leave out is named under the chips. The scripted reply',
@@ -32,14 +33,16 @@ const DEMO: ChatDemoSpec = {
     heading: 'Send a file with your message',
     intro:
         'Attach files with the paperclip, drop them on the chat or paste them into the ' +
-        'composer. Images, PDFs and CSVs up to 5 MB are accepted, at most four at a time.',
-    suggestions: [{text: 'What can you do with attachments?'}],
-    placeholder: 'Attach a file and ask about it...',
+        'composer. This demo has no model behind it - the reply just lists the files that ' +
+        'arrive. Images, PDFs, CSVs, text and markdown files up to 5 MB are accepted, at most ' +
+        'four at a time.',
+    suggestions: [{text: 'How do I send you a file?'}],
+    placeholder: 'Attach a file and send it...',
     createChatConfig: () => ({
         transport: new ScriptedChatTransport({delayMs: 15, respond: createResponse}),
         composer: {
             enableAttachments: true,
-            accept: ['image/*', 'application/pdf', '.csv'],
+            accept: ['image/*', 'application/pdf', '.csv', '.txt', '.md', '.markdown'],
             maxFiles: 4,
             maxFileSize: 5 * 1024 * 1024
         }
@@ -59,7 +62,7 @@ function createResponse(request: ChatRunRequest, {userMessage}: ScriptedRequestC
 function describeFiles(files: ChatFilePart[]): string {
     const rows = files.map(
         ({name, mediaType, size}) =>
-            `| ${name} | \`${mediaType || 'unknown'}\` | ${fmtSize(size)} |`
+            `| ${codeCell(name)} | ${codeCell(mediaType || 'unknown')} | ${fmtSize(size)} |`
     );
     return [
         `I received **${files.length === 1 ? 'one file' : `${files.length} files`}** with your message:`,
@@ -69,8 +72,21 @@ function describeFiles(files: ChatFilePart[]): string {
         ...rows,
         '',
         'A real model would read them now - an image or a PDF goes to Claude as a content ' +
-            'block, and a CSV as text. This demo only lists them.'
+            'block, and a CSV, text or markdown file as text.'
     ].join('\n');
+}
+
+/**
+ * Text as a code span for a table cell, so that markdown leaves it as written. A file name such
+ * as `logo@2x.png` would otherwise render as an email link. The fence is longer than any run of
+ * backticks in the text, and pipes are escaped so that they do not split the cell.
+ */
+function codeCell(text: string): string {
+    const longest = Math.max(0, ...(text.match(/`+/g) ?? []).map(it => it.length)),
+        fence = '`'.repeat(longest + 1),
+        pad = text.startsWith('`') || text.endsWith('`') ? ' ' : '',
+        body = text.replace(/[\r\n]+/g, ' ').replace(/\|/g, '\\|');
+    return `${fence}${pad}${body}${pad}${fence}`;
 }
 
 function fmtSize(size: number): string {

@@ -154,7 +154,7 @@ export const CHAT_KIT_PAGES: ChatKitPage[] = [
     },
     {
         id: 'attachments',
-        title: 'Attachments',
+        title: 'File Attachments',
         group: 'conversations',
         description: 'Files attached with the paperclip, dropped on the chat, or pasted.',
         icon: () => Icon.paperclip()
