@@ -460,7 +460,8 @@ export class RegistryModel extends HoistModel {
                         state = XH.routerState;
                     if (!id || state?.name !== route || state.params?.entry === id) return;
                     XH.navigate(route, {...state.params, entry: id}, {replace: true});
-                }
+                },
+                fireImmediately: true
             }
         );
     }
