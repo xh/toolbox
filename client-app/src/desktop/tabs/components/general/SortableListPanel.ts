@@ -244,7 +244,7 @@ export const sortableListPanel = hoistCmp.factory({
                                 addText: 'Add dimension...',
                                 addRenderer:
                                     model.addMode === 'picker'
-                                        ? ({add, items}) => dimPicker({add, chosen: items})
+                                        ? ({add, value}) => dimPicker({add, chosen: value})
                                         : null
                             })
                         })
@@ -454,7 +454,7 @@ class SortableListPanelModel extends HoistModel {
             addText: addMode === 'button' ? 'Add dimension...' : undefined,
             addRenderer:
                 addMode === 'picker'
-                    ? raw('({add, items}) => dimPicker({add, chosen: items})')
+                    ? raw('({add, value}) => dimPicker({add, chosen: value})')
                     : undefined
         };
     }
