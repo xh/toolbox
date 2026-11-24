@@ -81,9 +81,6 @@ const MAX_RECENT = 5;
 // The id of the library's hint row, shown in Yours when the user has none of their own.
 export const NONE_OF_YOURS = '__noneOfYours';
 
-// The local library this designer kept before blueprints moved to the server. Dropped on load.
-const OLD_LIBRARY_KEY = 'blueprints.designer.library';
-
 /** The editor's view: the canvas, the Map, the JSON, or Preview, the reader's view. */
 export type EditorView = 'canvas' | 'map' | 'json' | 'preview';
 
@@ -555,7 +552,6 @@ export class BlueprintShellModel extends HoistModel {
             });
         });
         this.refreshUsageAsync();
-        dropOldLibrary();
 
         await this.refreshSummariesAsync();
         const {name, params} = XH.routerState ?? {};
@@ -1178,14 +1174,6 @@ export class BlueprintShellModel extends HoistModel {
             confirmProps: {text: action, intent: 'primary'}
         });
         return name ? name.trim() : null;
-    }
-}
-
-function dropOldLibrary() {
-    try {
-        XH.localStorageService.remove(OLD_LIBRARY_KEY);
-    } catch (e) {
-        XH.handleException(e, {showAlert: false});
     }
 }
 
