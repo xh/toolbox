@@ -18,6 +18,10 @@
 
 * Added the docs of the `@xh/package-template` companion package to the Docs tab, to show how a custom package ships docs for the viewer and for AI coding agents.
 
+### Bug Fixes
+
+* Fixed `portfolio/closingPriceHistory` failing with a server error when called with a `daysBack` parameter.
+
 ### Technical
 
 * Removed the custom build config for `@xh/package-template`. Run Toolbox against a local checkout of the package with `XH_INLINE_PACKAGES=@xh/package-template`.

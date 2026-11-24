@@ -59,7 +59,7 @@ class PortfolioController extends BaseController {
 
     def closingPriceHistory() {
         def symbols = params.list('symbols')
-        int daysBack = params.daysBack ?: 30
+        int daysBack = params.int('daysBack', 30)
         renderJSON(portfolioService.getClosingPriceHistory(symbols, daysBack))
     }
 
