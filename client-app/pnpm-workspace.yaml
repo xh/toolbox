@@ -29,14 +29,6 @@ minimumReleaseAgeExclude:
   - '@xh/*'
   - eslint@10.9.1
 
-# Keep pnpm-lock.yaml a single YAML document. By default pnpm 12 records the pinned pnpm version in
-# a leading lockfile document, and GitHub's dependency graph reads only that first document - so it
-# sees none of our real deps and Dependabot raises no security alerts. With `ignore`, pnpm runs
-# whatever version is installed rather than switching to the `packageManager` pin. CI still installs
-# the pinned version via pnpm/setup. Remove once GitHub parses multi-document lockfiles - see
-# https://github.com/dependabot/dependabot-core/issues/15904.
-pmOnFail: ignore
-
 overrides:
   # Rspack 2.3.2 and 2.3.3 have SWC minifier bugs that break production builds when
   # `keep_classnames` is set, as hoist-dev-utils does. 2.3.2 emits invalid static class

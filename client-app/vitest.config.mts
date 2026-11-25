@@ -12,7 +12,6 @@
  */
 import configureVitest from '@xh/hoist-dev-utils/configureVitest';
 import {createRequire} from 'node:module';
-import path from 'node:path';
 import {defineConfig} from 'vitest/config';
 
 const require = createRequire(import.meta.url),
@@ -23,8 +22,6 @@ export default defineConfig(
         appCode: 'toolbox',
         appName: 'Toolbox',
         appVersion: pkg.version,
-        // Compile the custom package as the build does - see rsbuild.config.mjs.
-        extraIncludePaths: [path.resolve('node_modules/@xh/package-template')],
         setupFiles: ['./src/test-support/setup.ts']
     })
 );
