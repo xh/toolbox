@@ -202,14 +202,14 @@ class BootStrap implements LogSupport {
                 valueType: 'pwd',
                 defaultValue: 'UNCONFIGURED',
                 groupName: 'Toolbox - Example Apps',
-                note: 'Anthropic API key for the LLM relay used by the Live Model demo on the Chat Kit tab (https://console.anthropic.com/). In local development, APP_TOOLBOX_LLM_API_KEY in .env overrides it.'
+                note: 'Anthropic API key for the LLM relay used by the Live Model demo on the Chat Kit tab (https://console.anthropic.com/).'
             ),
             new ConfigSpec(
                 name: 'llmConfig',
                 valueType: 'json',
                 typedClass: LlmConfig,
                 groupName: 'Toolbox - Example Apps',
-                note: 'Settings for the LLM relay used by the Live Model demo on the Chat Kit tab - model, token and rate limits, request params and server tools. See LlmConfig for each key.'
+                note: 'Settings for the LLM relay used by the Live Model demo on the Chat Kit tab - model, request params and limits. See LlmConfig for each key.'
             ),
             new ConfigSpec(
                 name: 'newsRefreshMins',

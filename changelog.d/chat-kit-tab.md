@@ -9,8 +9,9 @@
 ### Technical
 
 * Added `LlmService` and a `/llm/stream` endpoint that relay the Anthropic Messages API for the
-  Live Model demo. Access needs the `TOOLBOX_LLM_USER` role. An hourly limit applies unless the user
-  has `TOOLBOX_LLM_UNLIMITED`. Configure it with the `llmApiKey` and `llmConfig` configs.
+  Live Model demo. Access needs the `ACCESS_LLM_FEATURES` role. An hourly limit applies unless the
+  user has `ACCESS_LLM_FEATURES_UNLIMITED`. Configure it with the `llmApiKey` and `llmConfig`
+  configs.
 
 ### Libraries
 

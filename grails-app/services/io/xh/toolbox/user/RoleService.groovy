@@ -4,10 +4,6 @@ import io.xh.hoist.directory.DirectoryService
 import io.xh.hoist.role.provided.DefaultRoleService
 import io.xh.hoist.role.provided.RoleSpec
 
-import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
-import static io.xh.hoist.util.Utils.isLocalDevelopment
-import static io.xh.hoist.util.Utils.isProduction
-
 /**
  * Toolbox leverages Hoist's built-in, database-backed Role management and its associated Admin Console UI.
  *
@@ -17,40 +13,6 @@ import static io.xh.hoist.util.Utils.isProduction
 class RoleService extends DefaultRoleService {
 
     MockDirectoryService mockDirectoryService
-
-    // TEMPORARY - remove this field, init() and getRolesForUser() once hoist-core grants the
-    // bootstrap admin the roles that inherit from its admin roles. DefaultRoleService adds those
-    // admin roles by name only, after inheritance has been resolved, so the bootstrap admin gets no
-    // role that lists HOIST_ADMIN as a member. This patches one Toolbox role and is not a long-term
-    // fix. Named apart from DefaultRoleService.bootstrapAdminUser, which this would otherwise shadow.
-    private String llmBootstrapUser = null
-
-    /**
-     * Note the local bootstrap admin, with the same local development guard that Hoist applies
-     * when it grants that user its admin roles.
-     */
-    void init() {
-        super.init()
-        if (isLocalDevelopment && !isProduction) {
-            llmBootstrapUser = getInstanceConfig('bootstrapAdminUser')?.toLowerCase()
-        }
-    }
-
-    /**
-     * Give the local bootstrap admin TOOLBOX_LLM_USER, so an agent on a throwaway database can
-     * test the Live Model demo. Hoist grants that user its admin roles by name, so it gets no role
-     * that lists HOIST_ADMIN as a member. The hourly limit on model calls still applies.
-     *
-     * TEMPORARY - see the note on llmBootstrapUser above.
-     */
-    @Override
-    Set<String> getRolesForUser(String username) {
-        def ret = super.getRolesForUser(username)
-        if (llmBootstrapUser && llmBootstrapUser == username.toLowerCase()) {
-            ret += 'TOOLBOX_LLM_USER'
-        }
-        ret
-    }
 
     /**
      * Use a real directory service when one is enabled - in particular EntraIdService against the
@@ -64,24 +26,25 @@ class RoleService extends DefaultRoleService {
     }
 
     /**
-     * Create the roles for the Live Model demo on the Chat Kit tab - see LlmService. HOIST_ADMIN
-     * members get both. Grant TOOLBOX_LLM_USER to users or directory groups in the Admin Console.
+     * Create the roles Toolbox defines itself, beyond those Hoist provides. Today these are the
+     * roles for the Live Model demo on the Chat Kit tab - see LlmService. HOIST_ADMIN members get
+     * both. Grant ACCESS_LLM_FEATURES to users or directory groups in the Admin Console.
      */
     @Override
     protected void ensureRequiredConfigAndRolesCreated() {
         super.ensureRequiredConfigAndRolesCreated()
         ensureRequiredRolesCreated([
             new RoleSpec(
-                name: 'TOOLBOX_LLM_UNLIMITED',
+                name: 'ACCESS_LLM_FEATURES_UNLIMITED',
                 category: 'Toolbox',
                 notes: 'Can use the Live Model demo on the Chat Kit tab, with no hourly limit on model calls.',
                 roles: ['HOIST_ADMIN']
             ),
             new RoleSpec(
-                name: 'TOOLBOX_LLM_USER',
+                name: 'ACCESS_LLM_FEATURES',
                 category: 'Toolbox',
                 notes: 'Can use the Live Model demo on the Chat Kit tab.',
-                roles: ['TOOLBOX_LLM_UNLIMITED']
+                roles: ['ACCESS_LLM_FEATURES_UNLIMITED']
             )
         ])
     }

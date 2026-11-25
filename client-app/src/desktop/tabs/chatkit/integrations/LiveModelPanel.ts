@@ -121,7 +121,7 @@ export const liveModelPanel = hoistCmp.factory({
         const page = chatKitPage('liveModel'),
             title = page.title,
             icon = page.icon(),
-            hasAccess = XH.getUser().hasRole('TOOLBOX_LLM_USER'),
+            hasAccess = XH.getUser().hasRole('ACCESS_LLM_FEATURES'),
             {chatModel, assistantName} = model;
 
         return wrapper({
@@ -211,7 +211,7 @@ const DESCRIPTION = [
     'toast once you approve it, and read the app version and current user. It has no live data,',
     'so it answers with sample figures.',
     '',
-    'Access needs the `TOOLBOX_LLM_USER` role. The server limits each user to the `rateLimit` set',
+    'Access needs the `ACCESS_LLM_FEATURES` role. The server limits each user to the `rateLimit` set',
     'in the `llmConfig` config, in model calls an hour, and a tool loop makes one call per step.',
     'The server needs an Anthropic key in the `llmApiKey` config.'
 ];

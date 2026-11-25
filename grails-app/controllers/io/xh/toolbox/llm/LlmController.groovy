@@ -12,7 +12,7 @@ import static java.nio.charset.StandardCharsets.UTF_8
  * built on `@xh/hoist-chat-kit`. LlmService holds the API key, checks each request and applies the
  * limits.
  */
-@AccessRequiresRole('TOOLBOX_LLM_USER')
+@AccessRequiresRole('ACCESS_LLM_FEATURES')
 class LlmController extends BaseController {
 
     LlmService llmService
