@@ -94,7 +94,6 @@ ModuleRegistry.registerModules([
 import {
     CellSelectionModule,
     ClipboardModule,
-    FindModule,
     MenuModule,
     RowGroupingModule,
     TreeDataModule
@@ -102,7 +101,6 @@ import {
 ModuleRegistry.registerModules([
     CellSelectionModule,
     ClipboardModule,
-    FindModule,
     MenuModule,
     RowGroupingModule,
     TreeDataModule

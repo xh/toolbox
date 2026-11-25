@@ -4,9 +4,9 @@ import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import type {FilterMatchMode} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import type {GridFindFieldProps} from '@xh/hoist/desktop/cmp/grid';
-import {gridCellFindField, gridFindField} from '@xh/hoist/desktop/cmp/grid';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import type {GridFindFieldMode, GridFindFieldProps} from '@xh/hoist/desktop/cmp/grid';
+import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -39,7 +39,10 @@ export const gridFindFieldPanel = hoistCmp.factory({
                 '`groupBy` field) unless `includeFields` or `excludeFields` say otherwise.',
                 '',
                 'The field shows a match count with previous and next buttons. Enter and the',
-                'down arrow step forward, and Shift+Enter and the up arrow step back.'
+                'down arrow step forward, and Shift+Enter and the up arrow step back.',
+                '',
+                "With `mode: 'cells'`, it finds matching column headers and cells instead, and",
+                "moves between them like Excel's Find, without changing row selection."
             ],
             links: [
                 {
@@ -53,6 +56,19 @@ export const gridFindFieldPanel = hoistCmp.factory({
                 icon: Icon.experiment(),
                 intent: 'primary',
                 children: [
+                    wrapperOption({
+                        label: 'Mode',
+                        propName: 'GridFindFieldProps.mode',
+                        info:
+                            "'rows' selects matching rows. 'cells' moves between matching " +
+                            'headers and cells, like Excel Find, and leaves selection alone.',
+                        control: select({
+                            bind: 'mode',
+                            enableFilter: false,
+                            width: 130,
+                            options: ['rows', 'cells']
+                        })
+                    }),
                     wrapperOption({
                         label: 'Match mode',
                         propName: 'GridFindFieldProps.matchMode',
@@ -73,6 +89,12 @@ export const gridFindFieldPanel = hoistCmp.factory({
                             width: 130,
                             options: [0, 200, 500, 1000]
                         })
+                    }),
+                    wrapperOption({
+                        label: 'Ctrl+F hotkey',
+                        propName: 'GridFindFieldProps.enableHotkey',
+                        info: "Ctrl+F (Cmd+F) focuses the field in place of the browser's find.",
+                        control: switchInput({bind: 'enableHotkey'})
                     })
                 ]
             }),
@@ -83,18 +105,30 @@ export const gridFindFieldPanel = hoistCmp.factory({
                         intent: 'primary',
                         children: demoPlayground({
                             showValue: false,
-                            caption: 'Try "boston", then press Enter to step through matches.',
+                            caption:
+                                model.mode === 'cells'
+                                    ? 'Try "boston" or "volume", then press Enter to step through ' +
+                                      'matches. Click a cell to step on from there.'
+                                    : 'Try "boston", then press Enter to step through matches.',
                             config: fmtDemoConfig<GridFindFieldProps>('gridFindField', {
                                 gridModel: raw('gridModel'),
+                                mode: model.mode === 'rows' ? undefined : model.mode,
                                 matchMode:
-                                    model.matchMode === 'startWord' ? undefined : model.matchMode,
+                                    model.matchMode === defaultMatchMode(model.mode)
+                                        ? undefined
+                                        : model.matchMode,
                                 queryBuffer:
-                                    model.queryBuffer === 200 ? undefined : model.queryBuffer
+                                    model.queryBuffer === 200 ? undefined : model.queryBuffer,
+                                enableHotkey: model.enableHotkey || undefined
                             }),
+                            // The field reads `mode` once, when it mounts - remount it on change.
                             children: gridFindField({
+                                key: model.mode,
                                 gridModel: model.gridModel,
+                                mode: model.mode,
                                 matchMode: model.matchMode,
                                 queryBuffer: model.queryBuffer,
+                                enableHotkey: model.enableHotkey,
                                 width: '100%'
                             })
                         })
@@ -105,7 +139,11 @@ export const gridFindFieldPanel = hoistCmp.factory({
                         children: tradesGridFrame({
                             gridModel: model.gridModel,
                             label: 'gridModel: gridModel',
-                            info: 'Matches are selected - the row count stays the same.',
+                            info:
+                                model.mode === 'cells'
+                                    ? 'Matching cells are tinted and the active match is ' +
+                                      'outlined - selection is not changed.'
+                                    : 'Matches are selected - the row count stays the same.',
                             mask: [model.loadObserver]
                         })
                     }),
@@ -117,22 +155,6 @@ export const gridFindFieldPanel = hoistCmp.factory({
                             children: gridFindField({
                                 gridModel: model.gridModel,
                                 includeFields: ['company'],
-                                width: 260
-                            })
-                        })
-                    }),
-                    demoSection({
-                        title: 'Find in Headers and Cells',
-                        note: 'Requires ag-Grid FindModule (Enterprise).',
-                        children: demoRow({
-                            label: 'gridCellFindField',
-                            info:
-                                'Like Excel Find - matching headers first, then cells, starting ' +
-                                'from the focused cell. Row selection is not changed. Esc focuses ' +
-                                'the match. enableHotkey: Ctrl+F focuses it.',
-                            children: gridCellFindField({
-                                gridModel: model.gridModel,
-                                enableHotkey: true,
                                 width: 260
                             })
                         })
@@ -163,10 +185,25 @@ function toolbarItems(gridModel: GridModel): ReactNode[] {
 class GridFindFieldPanelModel extends HoistModel {
     @managed gridModel: GridModel = createTradesGridModel();
 
+    @bindable accessor mode: GridFindFieldMode = 'rows';
     @bindable accessor matchMode: FilterMatchMode = 'startWord';
     @bindable accessor queryBuffer = 200;
+    @bindable accessor enableHotkey = false;
+
+    constructor() {
+        super();
+        // Each mode has its own default match mode.
+        this.addReaction({
+            track: () => this.mode,
+            run: mode => (this.matchMode = defaultMatchMode(mode))
+        });
+    }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         await loadTradesAsync(this.gridModel);
     }
+}
+
+function defaultMatchMode(mode: GridFindFieldMode): FilterMatchMode {
+    return mode === 'cells' ? 'any' : 'startWord';
 }
