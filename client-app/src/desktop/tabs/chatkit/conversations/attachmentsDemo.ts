@@ -80,12 +80,19 @@ function describeFiles(files: ChatFilePart[]): string {
  * Text as a code span for a table cell, so that markdown leaves it as written. A file name such
  * as `logo@2x.png` would otherwise render as an email link. The fence is longer than any run of
  * backticks in the text, and pipes are escaped so that they do not split the cell.
+ *
+ * A backslash in a code span shows as written, so backslashes are not escaped. The one exception
+ * is a backslash just before a pipe: the table would read the two as an escaped backslash and
+ * split the cell at the pipe. A zero-width space between them keeps the cell whole.
  */
 function codeCell(text: string): string {
     const longest = Math.max(0, ...(text.match(/`+/g) ?? []).map(it => it.length)),
         fence = '`'.repeat(longest + 1),
         pad = text.startsWith('`') || text.endsWith('`') ? ' ' : '',
-        body = text.replace(/[\r\n]+/g, ' ').replace(/\|/g, '\\|');
+        body = text
+            .replace(/[\r\n]+/g, ' ')
+            .replace(/\\(?=\|)/g, '\\​')
+            .replace(/\|/g, '\\|');
     return `${fence}${pad}${body}${pad}${fence}`;
 }
 
