@@ -45,7 +45,9 @@ export const portfolioType: VariableTypeSpec = {
         }
     },
     checkAsync: async value => {
-        const symbols = (value as Portfolio)?.holdings?.map(it => it.symbol) ?? [];
+        // A blank symbol is the schema's to flag, as a new holding starts blank.
+        const symbols =
+            (value as Portfolio)?.holdings?.map(it => it.symbol?.trim()).filter(Boolean) ?? [];
         if (!symbols.length) return null;
         const known = new Set((await fetchInstrumentsAsync()).map(it => it.symbol)),
             unknown = symbols.filter(it => !known.has(it));

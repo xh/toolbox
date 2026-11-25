@@ -153,6 +153,9 @@ describe('publishToPmPack action', () => {
                 message: expect.stringContaining('ZZZZ')
             }
         ]);
+        expect(await runAsyncChecksAsync(null, withDefault(['AAPL', '', ' ']), registry)).toEqual(
+            []
+        );
     });
 
     it('offers the Architect a client tool that looks up tickers by company name', async () => {
