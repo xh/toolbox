@@ -12,6 +12,10 @@
  *   2. Otherwise, the docs of the build Toolbox runs: the index inside its installed @xh/hoist and
  *      @xh/hoist-chat-kit, and hoist-core's `docs-index` Maven artifact for `hoistCoreVersion`.
  *
+ * Any other installed package that ships a Hoist Docs index (a `hoistDocs` entry in its
+ * package.json) is exported from its installed build too. @xh/package-template does, to show how a
+ * companion package publishes its docs to the viewers and to agents.
+ *
  * Never fails the build or dev server: if docs cannot be written, it warns, and the viewers show
  * that docs are unavailable.
  *

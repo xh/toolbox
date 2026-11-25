@@ -16,9 +16,9 @@ export const customPackagePanel = hoistCmp.factory(() =>
             'The styled panel below, and the model behind its click counter, are imported from',
             'that package.',
             '',
-            "Note that this package is referenced within Toolbox's own",
-            '`client-app/rsbuild.config.mjs` to ensure its codebase is processed at build time',
-            'in the same manner as the app codebase and Hoist React itself.'
+            'Like Hoist React, the package ships its TypeScript source, and the app build compiles',
+            'it with the app code. It also ships docs that AI coding agents can read through Hoist',
+            "Docs, next to Hoist's own. Toolbox's Docs tab shows them too."
         ],
         links: [
             {
@@ -27,9 +27,9 @@ export const customPackagePanel = hoistCmp.factory(() =>
                 notes: 'GitHub repo for an extremely simple TS package project.'
             },
             {
-                url: '$TB/client-app/rsbuild.config.mjs',
-                text: 'rsbuild.config.mjs',
-                notes: 'Rsbuild config for Toolbox, with special handling for our custom package.'
+                url: 'https://github.com/xh/package-template/blob/main/docs/package-structure.md',
+                text: 'Package Structure',
+                notes: 'How the package is laid out, published, documented, and tested.'
             }
         ],
         children: customPanel({width: 700})

@@ -7,21 +7,19 @@
  * `readCliEnv()` helper, or through Rsbuild's own `--env-mode` flag as mapped below. Per-developer
  * defaults such as `XH_DEV_HOST` belong in a gitignored `.env.local`, which Rsbuild loads on every run.
  *
- * Toolbox demonstrates the use of a custom TS package (@xh/package-template) that is transpiled
- * and processed alongside the app and hoist-react code. Like hoist-react, this sample package is
- * left unbundled/uncompiled when published to npm so it can be processed in one shot and with the
- * same tooling as the app - hence the `extraIncludePaths` entry below. Apps that do NOT make use of
- * such a custom package do NOT need it.
+ * Toolbox demonstrates the use of a custom TS package (@xh/package-template) that is compiled
+ * alongside the app and hoist-react code. Like hoist-react, this sample package is published to npm
+ * as uncompiled source. Rsbuild compiles TypeScript from node_modules by default, so the package
+ * needs no build config here. To run Toolbox against a local checkout of the package, start it with
+ * `XH_INLINE_PACKAGES=@xh/package-template pnpm start` - see the hoist-dev-utils README.
  */
 import configureRsbuild, {readCliEnv} from '@xh/hoist-dev-utils/configureRsbuild';
 import {createRequire} from 'node:module';
-import path from 'node:path';
 
 const require = createRequire(import.meta.url),
     // Single source of truth for the app version - keep in sync with `xhAppVersion` in
     // gradle.properties. Release builds override this via `XH_APP_VERSION`.
-    pkg = require('./package.json'),
-    customPkgPath = path.resolve('node_modules/@xh/package-template');
+    pkg = require('./package.json');
 
 export default ({envMode}) => {
     return configureRsbuild({
@@ -33,8 +31,6 @@ export default ({envMode}) => {
         preloadBackgroundColor: '#f7931c',
         // Use React prod mode, primarily to avoid console warnings for react 18
         reactProdMode: false,
-        // Include custom package for transpiling for both packaged and inline use cases.
-        extraIncludePaths: [customPkgPath],
         // `rsbuild build --env-mode prod` / `rsbuild dev --env-mode inlineHoist`
         prodBuild: envMode === 'prod',
         inlineHoist: envMode === 'inlineHoist',
