@@ -4,7 +4,6 @@ import {hoistCmp, uses} from '@xh/hoist/core';
 import {
     colAutosizeButton,
     colChooserButton,
-    expandCycleButton,
     expandToLevelButton,
     exportButton,
     refreshButton
@@ -25,7 +24,6 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 refreshButton({target: model}),
                 toolbarSep(),
                 groupingChooser(),
-                expandCycleButton(),
                 expandToLevelButton(),
                 filler(),
                 gridCountLabel({includeChildren: true}),

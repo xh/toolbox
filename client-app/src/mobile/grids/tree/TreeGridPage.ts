@@ -5,7 +5,6 @@ import {Icon} from '@xh/hoist/icon';
 import {
     colAutosizeButton,
     colChooserButton,
-    expandCycleButton,
     expandToLevelButton
 } from '@xh/hoist/mobile/cmp/button';
 import {groupingChooser} from '@xh/hoist/mobile/cmp/grouping';
@@ -73,7 +72,6 @@ export const treeGridPage = hoistCmp.factory({
                 tbar: [
                     groupingChooser({maxWidth: 250}),
                     filler(),
-                    expandCycleButton(),
                     expandToLevelButton(),
                     colAutosizeButton(),
                     colChooserButton()
