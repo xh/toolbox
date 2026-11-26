@@ -3,7 +3,12 @@ import {filler, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import type {BoxProps, HoistProps} from '@xh/hoist/core';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {colAutosizeButton, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
+import {
+    colAutosizeButton,
+    colChooserButton,
+    expandCycleButton,
+    exportButton
+} from '@xh/hoist/desktop/cmp/button';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -67,6 +72,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             ),
             tbar: [
                 groupingChooser({icon: Icon.treeList(), emptyText: 'Ungrouped', minWidth: 200}),
+                expandCycleButton(),
                 filler(),
                 gridCountLabel({unit: 'companies'}),
                 '-',
