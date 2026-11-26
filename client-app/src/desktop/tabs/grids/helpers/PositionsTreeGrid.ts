@@ -20,7 +20,8 @@ const DIMS = ['fund', 'sector', 'trader'];
 
 /**
  * Tree grid over the mock portfolio, grouped by fund, sector and trader. It starts collapsed, so a
- * find that matches a nested row has to expand the tree to show it.
+ * find that matches a nested row has to expand the tree to show it. Commission sits in a collapsed
+ * Costs column group, for the same reason.
  */
 export function createPositionsTreeGridModel(): GridModel {
     return new GridModel({
@@ -34,8 +35,12 @@ export function createPositionsTreeGridModel(): GridModel {
             mktValCol,
             pnlCol,
             dayPnlCol,
-            costCol,
-            commissionCol
+            {
+                groupId: 'costs',
+                headerName: 'Costs',
+                collapsed: true,
+                children: [costCol, {...commissionCol, groupShowMode: 'expanded'}]
+            }
         ]
     });
 }

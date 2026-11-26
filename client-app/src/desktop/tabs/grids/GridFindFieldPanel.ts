@@ -45,8 +45,9 @@ export const gridFindFieldPanel = hoistCmp.factory({
                 'The field shows a match count with previous and next buttons. Enter and the',
                 'down arrow step forward, and Shift+Enter and the up arrow step back.',
                 '',
-                "With `mode: 'cells'`, it finds matching column headers and cells instead, and",
-                "moves between them like Excel's Find, without changing row selection."
+                "With `mode: 'cells'`, it finds matching cells instead and moves between them",
+                "like Excel's Find, selecting the row of each match. Set `includeHeaders` to",
+                'find column headers too.'
             ],
             links: [
                 {
@@ -65,12 +66,21 @@ export const gridFindFieldPanel = hoistCmp.factory({
                         propName: 'GridFindFieldProps.mode',
                         info:
                             "'rows' selects matching rows. 'cells' moves between matching " +
-                            'headers and cells, like Excel Find, and leaves selection alone.',
+                            'cells, like Excel Find, and selects the row of each.',
                         control: select({
                             bind: 'mode',
                             enableFilter: false,
                             width: 130,
                             options: ['rows', 'cells']
+                        })
+                    }),
+                    wrapperOption({
+                        label: 'Headers',
+                        propName: 'GridFindFieldProps.includeHeaders',
+                        info: "Also find column headers. Mode 'cells' only.",
+                        control: switchInput({
+                            bind: 'includeHeaders',
+                            disabled: model.mode !== 'cells'
                         })
                     }),
                     wrapperOption({
@@ -111,12 +121,15 @@ export const gridFindFieldPanel = hoistCmp.factory({
                             showValue: false,
                             caption:
                                 model.mode === 'cells'
-                                    ? 'Try "energy" or "p&l", then press Enter to step through ' +
-                                      'matches. Click a cell to step on from there.'
+                                    ? 'Try "energy", then press Enter to step through matches. ' +
+                                      'Click a cell to step on from there. With headers on, ' +
+                                      'try "p&l". A commission match expands the Costs group.'
                                     : 'Try "klecko", then press Enter to step through matches.',
                             config: fmtDemoConfig<GridFindFieldProps>('gridFindField', {
                                 gridModel: raw('gridModel'),
                                 mode: model.mode === 'rows' ? undefined : model.mode,
+                                includeHeaders:
+                                    (model.mode === 'cells' && model.includeHeaders) || undefined,
                                 matchMode:
                                     model.matchMode === defaultMatchMode(model.mode)
                                         ? undefined
@@ -130,6 +143,7 @@ export const gridFindFieldPanel = hoistCmp.factory({
                                 key: model.mode,
                                 gridModel: model.gridModel,
                                 mode: model.mode,
+                                includeHeaders: model.includeHeaders,
                                 matchMode: model.matchMode,
                                 queryBuffer: model.queryBuffer,
                                 enableHotkey: model.enableHotkey,
@@ -190,6 +204,7 @@ class GridFindFieldPanelModel extends HoistModel {
     @managed gridModel: GridModel = createPositionsTreeGridModel();
 
     @bindable accessor mode: GridFindFieldMode = 'rows';
+    @bindable accessor includeHeaders = false;
     @bindable accessor matchMode: FilterMatchMode = 'startWord';
     @bindable accessor queryBuffer = 200;
     @bindable accessor enableHotkey = false;
