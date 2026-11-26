@@ -15,7 +15,7 @@ export function getSourceIcon(source: string): ReactElement {
         case 'hoist-core':
             return Icon.server();
         case 'hoist-chat-kit':
-            return Icon.comment();
+            return Icon.ai();
         case 'package-template':
             return Icon.boxFull();
         default:

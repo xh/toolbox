@@ -62,7 +62,7 @@ jobs:
               release_re='^[0-9]+\.[0-9]+\.[0-9]+$'
               failed=0
 
-              for pkg in @xh/hoist @xh/hoist-dev-utils; do
+              for pkg in @xh/hoist @xh/hoist-dev-utils @xh/hoist-chat-kit; do
                   spec=$(jq -r --arg p "$pkg" '.dependencies[$p] // .devDependencies[$p] // "missing"' client-app/package.json)
                   if [[ ! "$spec" =~ $release_re ]]; then
                       echo "::error file=client-app/package.json::$pkg is '$spec', not an exact release version."

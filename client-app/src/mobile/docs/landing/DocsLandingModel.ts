@@ -16,7 +16,8 @@ export interface CorpusCard {
 /** One-line taglines for the landing cards (phone-specific copy). */
 const TAGLINES: Record<string, string> = {
     'hoist-react': 'TypeScript + React front-end',
-    'hoist-core': 'Java + Grails server'
+    'hoist-core': 'Java + Grails server',
+    'hoist-chat-kit': 'AI chat components'
 };
 
 /**

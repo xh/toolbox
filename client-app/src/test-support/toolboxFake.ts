@@ -12,6 +12,7 @@ export function installToolboxFake(core: FakeHoistCore) {
         jsLicenses: {agGrid: null},
         sourceUrls: {
             hoistReact: 'https://github.com/xh/hoist-react/tree/develop',
+            hoistChatKit: 'https://github.com/xh/hoist-chat-kit/tree/develop',
             toolbox: 'https://github.com/xh/toolbox/tree/develop'
         },
         cubeTestDefaultDims: [
