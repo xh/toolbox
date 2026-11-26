@@ -76,7 +76,7 @@ class PortfolioController extends BaseController {
     private PositionQuery parsePositionQuery(Map params) {
         List<String> dims = params.dims.split(',') as List<String>
         Integer maxCount = params.maxPositions as Integer
-        Boolean returnAllGroups = params.returnAllGroups as Boolean
+        Boolean returnAllGroups = params.boolean('returnAllGroups')
         return new PositionQuery(
                 dims: dims,
                 maxCount: maxCount,

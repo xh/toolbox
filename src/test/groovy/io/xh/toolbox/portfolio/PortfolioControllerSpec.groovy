@@ -26,4 +26,25 @@ class PortfolioControllerSpec extends Specification implements ControllerUnitTes
         '90'     || 90
         null     || 30
     }
+
+    def 'positions reads returnAllGroups from the query string'() {
+        given:
+        def positionService = Mock(PositionService)
+        controller.positionService = positionService
+        params.dims = 'fund,model'
+        if (returnAllGroups != null) params.returnAllGroups = returnAllGroups
+
+        when:
+        controller.positions()
+
+        then:
+        1 * positionService.getPositions({ it.returnAllGroups == expected }) >> new PositionResultSet()
+        response.status == 200
+
+        where:
+        returnAllGroups || expected
+        'true'          || true
+        'false'         || false
+        null            || null
+    }
 }
