@@ -1,12 +1,13 @@
 import {filler, hbox} from '@xh/hoist/cmp/layout';
-import type {Intent} from '@xh/hoist/core';
-import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
-import type {ButtonProps} from '@xh/hoist/desktop/cmp/button';
-import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
+import type {ComponentSize, Intent} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, TaskObserver, XH} from '@xh/hoist/core';
+import type {ButtonProps} from '@xh/hoist/cmp/button';
+import {button, buttonGroup, splitButton} from '@xh/hoist/cmp/button';
 import {intentInput, segmentedControl, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
+import {wait} from '@xh/hoist/promise';
 import type {ReactNode} from 'react';
 import type {DemoConfigProps} from '../../../common/Demo';
 import {
@@ -30,6 +31,13 @@ const STYLE_PROPS: Record<ButtonStyle, Pick<ButtonProps, 'minimal' | 'outlined'>
     outlined: {outlined: true}
 };
 
+const SIZES: ComponentSize[] = ['compact', 'standard', 'large'];
+
+const SAVE_MENU_ITEMS = [
+    {text: 'Save As...', icon: Icon.copy(), actionFn: () => XH.toast({message: 'Save As...'})},
+    {text: 'Save a Copy', icon: Icon.add(), actionFn: () => XH.toast({message: 'Saved a copy'})}
+];
+
 /** The four Hoist intents, in their conventional order. */
 const INTENTS: Intent[] = ['primary', 'success', 'warning', 'danger'];
 
@@ -43,19 +51,25 @@ export const buttonsPanel = hoistCmp.factory({
             title: 'Buttons',
             icon: Icon.checkCircle(),
             description: [
-                'Hoist desktop Buttons wrap the Blueprint button and accept all of its props,',
-                'adding layout support and a `minimal` default for reduced chrome.',
+                'Hoist Buttons are shared by desktop and mobile, with layout support and a `minimal`',
+                'default on desktop for reduced chrome.',
                 '',
                 'Three looks are available: `minimal` (the default), standard (`minimal: false`)',
-                'and `outlined`. Each pairs with an optional `intent`.'
+                'and `outlined`. Each pairs with an optional `intent`, and comes in three sizes.',
+                '`loading` shows a spinner while a task runs, and `splitButton` joins a primary',
+                'action to a menu of related ones.'
             ],
             links: [
                 {
                     url: '$TB/client-app/src/desktop/tabs/components/general/ButtonsPanel.ts',
                     notes: 'This example.'
                 },
-                {url: '$HR/desktop/cmp/button/Button.ts', notes: 'Hoist component.'},
-                {url: '$HR/desktop/cmp/button/ButtonGroup.ts', notes: 'Joins adjacent buttons.'},
+                {url: '$HR/cmp/button/Button.ts', notes: 'Hoist component.'},
+                {url: '$HR/cmp/button/ButtonGroup.ts', notes: 'Joins adjacent buttons.'},
+                {
+                    url: '$HR/cmp/button/SplitButton.ts',
+                    notes: 'A button with a menu of related actions.'
+                },
                 {
                     url: '$HR/desktop/cmp/input/ButtonGroupInput.ts',
                     notes: 'Bindable input that groups buttons into a single-select control.'
@@ -82,6 +96,25 @@ export const buttonsPanel = hoistCmp.factory({
                             label: 'Intent',
                             propName: 'ButtonProps.intent',
                             control: intentInput({bind: 'pgIntent', enableClear: true})
+                        }),
+                        wrapperOption({
+                            label: 'Size',
+                            propName: 'ButtonProps.size',
+                            control: segmentedControl({
+                                bind: 'pgSize',
+                                fill: false,
+                                compact: true,
+                                options: [
+                                    {value: 'compact', label: 'Compact'},
+                                    {value: 'standard', label: 'Standard'},
+                                    {value: 'large', label: 'Large'}
+                                ]
+                            })
+                        }),
+                        wrapperOption({
+                            label: 'Loading',
+                            propName: 'ButtonProps.loading',
+                            control: switchInput({bind: 'pgLoading'})
                         }),
                         wrapperOption({
                             label: 'Style',
@@ -128,6 +161,8 @@ export const buttonsPanel = hoistCmp.factory({
                                 text: model.pgText || undefined,
                                 icon: model.pgIcon ? raw('Icon.check()') : undefined,
                                 intent: model.pgIntent || undefined,
+                                size: model.pgSize !== 'standard' ? model.pgSize : undefined,
+                                loading: model.pgLoading || undefined,
                                 ...styleSnippetProps(pgStyle),
                                 ...ambientSnippetProps
                             }),
@@ -137,6 +172,8 @@ export const buttonsPanel = hoistCmp.factory({
                                 text: model.pgText,
                                 icon: model.pgIcon ? Icon.check() : null,
                                 intent: model.pgIntent,
+                                size: model.pgSize,
+                                loading: model.pgLoading,
                                 onClick: () => XH.toast({message: 'Clicked!'})
                             })
                         })
@@ -200,6 +237,88 @@ export const buttonsPanel = hoistCmp.factory({
                                                 ...STYLE_PROPS.outlined,
                                                 active: true,
                                                 text: 'Outlined'
+                                            })
+                                        )
+                                    }),
+                                    demoRow({
+                                        label: 'Sizes',
+                                        info: "size: 'compact', 'standard' (the default) or 'large'",
+                                        children: buttonRow(
+                                            ...SIZES.map(size =>
+                                                button({
+                                                    ...ambientProps,
+                                                    ...STYLE_PROPS.standard,
+                                                    size,
+                                                    icon: Icon.checkCircle(),
+                                                    text: capitalize(size)
+                                                })
+                                            )
+                                        )
+                                    }),
+                                    demoRow({
+                                        label: 'Loading',
+                                        info: 'loading: true or a TaskObserver - the spinner takes the icon, or covers the content',
+                                        children: buttonRow(
+                                            button({
+                                                ...ambientProps,
+                                                ...STYLE_PROPS.standard,
+                                                intent: 'primary',
+                                                icon: Icon.check(),
+                                                text: 'Save',
+                                                loading: model.saveTask,
+                                                onClick: () => model.saveAsync()
+                                            }),
+                                            button({
+                                                ...ambientProps,
+                                                ...STYLE_PROPS.outlined,
+                                                text: 'Submit',
+                                                loading: model.saveTask,
+                                                onClick: () => model.saveAsync()
+                                            }),
+                                            button({
+                                                ...ambientProps,
+                                                icon: Icon.refresh(),
+                                                tooltip: 'Refresh',
+                                                loading: model.saveTask,
+                                                onClick: () => model.saveAsync()
+                                            })
+                                        )
+                                    }),
+                                    demoRow({
+                                        label: 'SplitButton',
+                                        info: 'splitButton joins a primary action to a menu of related ones',
+                                        children: buttonRow(
+                                            splitButton({
+                                                ...ambientProps,
+                                                icon: Icon.check(),
+                                                text: 'Save',
+                                                onClick: () => model.saveAsync(),
+                                                loading: model.saveTask,
+                                                menuItems: SAVE_MENU_ITEMS
+                                            }),
+                                            splitButton({
+                                                ...ambientProps,
+                                                ...STYLE_PROPS.standard,
+                                                intent: 'primary',
+                                                icon: Icon.check(),
+                                                text: 'Save',
+                                                onClick: () => model.saveAsync(),
+                                                loading: model.saveTask,
+                                                menuItems: SAVE_MENU_ITEMS
+                                            }),
+                                            splitButton({
+                                                ...ambientProps,
+                                                ...STYLE_PROPS.outlined,
+                                                text: 'Export',
+                                                icon: Icon.download(),
+                                                onClick: () => XH.toast({message: 'Exported'}),
+                                                menuItems: [
+                                                    {
+                                                        text: 'Export to Excel',
+                                                        icon: Icon.fileExcel()
+                                                    },
+                                                    {text: 'Export to CSV', icon: Icon.fileCsv()}
+                                                ]
                                             })
                                         )
                                     }),
@@ -318,6 +437,16 @@ class ButtonsModel extends HoistModel {
     @bindable accessor pgIcon = true;
     @bindable accessor pgIntent: Intent = 'primary';
     @bindable accessor pgStyle: ButtonStyle = 'minimal';
+    @bindable accessor pgSize: ComponentSize = 'standard';
+    @bindable accessor pgLoading = false;
+
+    /** Tracks the demo save, so the Loading buttons show their spinner while it runs. */
+    saveTask = TaskObserver.trackLast();
+
+    async saveAsync() {
+        await wait(2000).linkTo(this.saveTask);
+        XH.toast({message: 'Saved'});
+    }
 
     /** Ambient - applied to every button on the page. */
     @bindable accessor disabled = false;

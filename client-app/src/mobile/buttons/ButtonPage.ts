@@ -1,7 +1,7 @@
 import {div, hbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {button} from '@xh/hoist/mobile/cmp/button';
+import {button, splitButton} from '@xh/hoist/mobile/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import classNames from 'classnames';
@@ -28,12 +28,14 @@ export const buttonPage = hoistCmp.factory({
             ],
             links: [
                 {url: '$TB/client-app/src/mobile/buttons/ButtonPage.ts', notes: 'This example.'},
-                {url: '$HR/mobile/cmp/button/Button.ts', text: 'Button source'}
+                {url: '$HR/cmp/button/Button.ts', text: 'Button source - shared with desktop'},
+                {url: '$HR/cmp/button/SplitButton.ts', text: 'SplitButton source'}
             ],
             children: panel({
                 scrollable: true,
                 className: 'tb-page tb-button-page xh-tiled-bg',
                 children: [
+                    featurePanel(),
                     buttonPanel(),
                     buttonPanel({intent: 'primary'}),
                     buttonPanel({intent: 'success'}),
@@ -43,6 +45,52 @@ export const buttonPage = hoistCmp.factory({
             })
         });
     }
+});
+
+/** Sizes, the loading state and a SplitButton - each shared with desktop. */
+const featurePanel = hoistCmp.factory<ButtonPageModel>(({model}) => {
+    const {disabled, active} = model;
+    return div({
+        className: 'tb-card tb-button-page__panel',
+        children: [
+            div({className: 'tb-card__title', children: 'Sizes, loading and SplitButton'}),
+            hbox({
+                className: 'tb-button-page__row',
+                children: [
+                    button({text: 'Compact', size: 'compact', disabled, active}),
+                    button({text: 'Standard', disabled, active}),
+                    button({text: 'Large', size: 'large', disabled, active})
+                ]
+            }),
+            hbox({
+                className: 'tb-button-page__row',
+                children: [
+                    button({
+                        text: 'Save',
+                        icon: Icon.check(),
+                        intent: 'primary',
+                        loading: model.saveTask,
+                        disabled,
+                        onClick: () => model.saveAsync()
+                    }),
+                    splitButton({
+                        text: 'Save',
+                        intent: 'primary',
+                        loading: model.saveTask,
+                        disabled,
+                        onClick: () => model.saveAsync(),
+                        menuItems: [
+                            {text: 'Save As...', actionFn: () => XH.toast({message: 'Save As...'})},
+                            {
+                                text: 'Save a Copy',
+                                actionFn: () => XH.toast({message: 'Saved a copy'})
+                            }
+                        ]
+                    })
+                ]
+            })
+        ]
+    });
 });
 
 const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
