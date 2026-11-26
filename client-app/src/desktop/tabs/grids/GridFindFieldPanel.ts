@@ -22,7 +22,11 @@ import {
 } from '../../common/Demo';
 import {wrapper, wrapperOption, wrapperOptionGroup} from '../../common/Wrapper';
 import {MATCH_MODE_OPTIONS} from './helpers/MatchModes';
-import {createTradesGridModel, loadTradesAsync, tradesGridFrame} from './helpers/TradesGrid';
+import {
+    createPositionsTreeGridModel,
+    loadPositionsAsync,
+    positionsTreeGridFrame
+} from './helpers/PositionsTreeGrid';
 
 export const gridFindFieldPanel = hoistCmp.factory({
     displayName: 'GridFindFieldPanel',
@@ -107,9 +111,9 @@ export const gridFindFieldPanel = hoistCmp.factory({
                             showValue: false,
                             caption:
                                 model.mode === 'cells'
-                                    ? 'Try "boston" or "volume", then press Enter to step through ' +
+                                    ? 'Try "energy" or "p&l", then press Enter to step through ' +
                                       'matches. Click a cell to step on from there.'
-                                    : 'Try "boston", then press Enter to step through matches.',
+                                    : 'Try "klecko", then press Enter to step through matches.',
                             config: fmtDemoConfig<GridFindFieldProps>('gridFindField', {
                                 gridModel: raw('gridModel'),
                                 mode: model.mode === 'rows' ? undefined : model.mode,
@@ -136,25 +140,25 @@ export const gridFindFieldPanel = hoistCmp.factory({
                     demoSection({
                         title: 'Searched Grid',
                         note: 'Every field on this page searches this grid.',
-                        children: tradesGridFrame({
+                        children: positionsTreeGridFrame({
                             gridModel: model.gridModel,
                             label: 'gridModel: gridModel',
                             info:
-                                model.mode === 'cells'
-                                    ? 'Matching cells are tinted and the active match is ' +
-                                      'outlined - selection is not changed.'
-                                    : 'Matches are selected - the row count stays the same.',
+                                'A tree grid that starts collapsed. Find expands it to show ' +
+                                (model.mode === 'cells'
+                                    ? 'the active match, which is outlined, and selects its row.'
+                                    : 'each match, which is selected.'),
                             mask: [model.loadObserver]
                         })
                     }),
                     demoSection({
                         title: 'Variants',
                         children: demoRow({
-                            label: 'Company names only',
-                            info: "includeFields: ['company'] - a city name finds nothing here.",
+                            label: 'Names only',
+                            info: "includeFields: ['name'] - a P&L figure finds nothing here.",
                             children: gridFindField({
                                 gridModel: model.gridModel,
-                                includeFields: ['company'],
+                                includeFields: ['name'],
                                 width: 260
                             })
                         })
@@ -183,7 +187,7 @@ function toolbarItems(gridModel: GridModel): ReactNode[] {
 }
 
 class GridFindFieldPanelModel extends HoistModel {
-    @managed gridModel: GridModel = createTradesGridModel();
+    @managed gridModel: GridModel = createPositionsTreeGridModel();
 
     @bindable accessor mode: GridFindFieldMode = 'rows';
     @bindable accessor matchMode: FilterMatchMode = 'startWord';
@@ -200,7 +204,7 @@ class GridFindFieldPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        await loadTradesAsync(this.gridModel);
+        await loadPositionsAsync(this.gridModel);
     }
 }
 
