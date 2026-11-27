@@ -2,7 +2,7 @@ import type {GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import type {LoadSpec} from '@xh/hoist/core';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import type {FilterMatchMode} from '@xh/hoist/data';
+import type {FilterMatchMode, FilterMatchOn} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import type {GridFindFieldMode, GridFindFieldProps} from '@xh/hoist/desktop/cmp/grid';
 import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
@@ -94,6 +94,19 @@ export const gridFindFieldPanel = hoistCmp.factory({
                         })
                     }),
                     wrapperOption({
+                        label: 'Match on',
+                        propName: 'GridFindFieldProps.matchOn',
+                        info:
+                            "'value' matches raw values. 'rendered' matches the text shown, such " +
+                            "as Mkt Value in millions, and suits small grids. 'all' matches either.",
+                        control: select({
+                            bind: 'matchOn',
+                            enableFilter: false,
+                            width: 130,
+                            options: ['value', 'rendered', 'all']
+                        })
+                    }),
+                    wrapperOption({
                         label: 'Query buffer',
                         propName: 'GridFindFieldProps.queryBuffer',
                         info: 'Delay in ms before searching. 0 searches on every keystroke.',
@@ -134,6 +147,7 @@ export const gridFindFieldPanel = hoistCmp.factory({
                                     model.matchMode === defaultMatchMode(model.mode)
                                         ? undefined
                                         : model.matchMode,
+                                matchOn: model.matchOn === 'value' ? undefined : model.matchOn,
                                 queryBuffer:
                                     model.queryBuffer === 200 ? undefined : model.queryBuffer,
                                 enableHotkey: model.enableHotkey || undefined
@@ -145,6 +159,7 @@ export const gridFindFieldPanel = hoistCmp.factory({
                                 mode: model.mode,
                                 includeHeaders: model.includeHeaders,
                                 matchMode: model.matchMode,
+                                matchOn: model.matchOn,
                                 queryBuffer: model.queryBuffer,
                                 enableHotkey: model.enableHotkey,
                                 width: '100%'
@@ -206,6 +221,7 @@ class GridFindFieldPanelModel extends HoistModel {
     @bindable accessor mode: GridFindFieldMode = 'rows';
     @bindable accessor includeHeaders = false;
     @bindable accessor matchMode: FilterMatchMode = 'startWord';
+    @bindable accessor matchOn: FilterMatchOn = 'value';
     @bindable accessor queryBuffer = 200;
     @bindable accessor enableHotkey = false;
 
