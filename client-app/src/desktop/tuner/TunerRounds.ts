@@ -1942,6 +1942,18 @@ export const ROUNDS: TunerRound[] = [
                     '--tn-on-warning': 'var(--tn-11)'
                 },
                 css: AMBER_LABEL_CSS
+            },
+            {
+                id: 'vivid',
+                label: 'Vivid orange',
+                note: 'Halfway between shipped and burnt, at full strength. A white label is 4.2:1.',
+                vars: intentVars('warning', 'light', 'oklch(0.6 0.16 48)')
+            },
+            {
+                id: 'ember',
+                label: 'Ember',
+                note: 'The brightest orange that holds a white label at 4.5:1. A little redder to stay vivid.',
+                vars: intentVars('warning', 'light', 'oklch(0.58 0.165 45)')
             }
         ],
         watch: intentWatch('warning', ON_WARNING)
@@ -2069,6 +2081,12 @@ export const ROUNDS: TunerRound[] = [
                     '--tn-on-warning': 'var(--tn-0)'
                 },
                 css: AMBER_LABEL_CSS
+            },
+            {
+                id: 'ember',
+                label: 'Ember',
+                note: 'Between shipped and burnt, at full strength. A white label is 4.5:1.',
+                vars: intentVars('warning', 'dark', 'oklch(0.585 0.165 46)')
             }
         ],
         watch: intentWatch('warning', ON_WARNING)
