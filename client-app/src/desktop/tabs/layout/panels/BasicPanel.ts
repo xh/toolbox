@@ -150,6 +150,20 @@ export const basicPanel = hoistCmp.factory({
                                     items: ['Sub Item 1', 'Sub Item 2', 'Sub Item 3'].map(it => ({
                                         text: it
                                     }))
+                                },
+                                '-',
+                                // An item with an `href` is a link - right-click it for the
+                                // browser's own menu, to open it in a new tab or window.
+                                {
+                                    text: 'Check Weather',
+                                    icon: Icon.sun(),
+                                    href: '/weather/'
+                                },
+                                {
+                                    text: 'Visit xh.io',
+                                    icon: Icon.globe(),
+                                    href: 'https://xh.io',
+                                    target: '_blank'
                                 }
                             ]
                         })
