@@ -62,6 +62,7 @@ import {standardGridPanel} from './tabs/grids/StandardGridPanel';
 import {treeGridPanel} from './tabs/grids/TreeGridPanel';
 import {treeGridWithCheckboxPanel} from './tabs/grids/TreeGridWithCheckboxPanel';
 import {cubeGridPanel} from './tabs/grids/CubeGridPanel';
+import {ThemeTunerModel} from './tuner/ThemeTunerModel';
 import {zoneGridPanel} from './tabs/grids/ZoneGridPanel';
 import {homeTab} from './tabs/home/HomeTab';
 import {cardPanel} from './tabs/layout/CardPanel';
@@ -121,6 +122,10 @@ export class AppModel extends BaseAppModel {
 
     @managed
     tabModel: TabContainerModel = this.createTabContainerModel();
+
+    /** Dev-only tool for tuning Hoist theme colors. Null in production builds. */
+    @managed
+    themeTunerModel: ThemeTunerModel = XH.isDevelopmentMode ? new ThemeTunerModel() : null;
 
     override async initAsync(ctx: InitContext) {
         await super.initAsync(ctx);

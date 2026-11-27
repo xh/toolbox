@@ -1,12 +1,13 @@
-import {img} from '@xh/hoist/cmp/layout';
+import {hframe, img} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
 import type {HoistUser} from '@xh/hoist/core';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
-import {themeToggleButton} from '@xh/hoist/desktop/cmp/button';
+import {button, themeToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dynamicTabSwitcher} from '@xh/hoist/desktop/cmp/tab';
+import {Icon} from '@xh/hoist/icon';
 import {profilePic} from '../core/cmp/ProfilePic';
 import {welcomeMsg} from '../core/cmp/WelcomeMsg';
 import xhLogo from '../core/img/xh-toolbox-logo.png';
@@ -14,6 +15,7 @@ import '../core/Toolbox.scss';
 import './App.scss';
 import {AppModel} from './AppModel';
 import {moduleMenuItems} from './ModuleMenu';
+import {themeTunerPanel} from './tuner/ThemeTunerPanel';
 
 export const AppComponent = hoistCmp({
     displayName: 'App',
@@ -21,8 +23,9 @@ export const AppComponent = hoistCmp({
 
     render({model}) {
         const renderWithUserProfile = model.renderWithUserProfile
-            ? (user: HoistUser) => profilePic({user})
-            : false;
+                ? (user: HoistUser) => profilePic({user})
+                : false,
+            tuner = model.themeTunerModel;
 
         return panel({
             tbar: appBar({
@@ -32,6 +35,13 @@ export const AppComponent = hoistCmp({
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator(),
+                    button({
+                        omit: !tuner,
+                        icon: Icon.magic(),
+                        active: tuner?.open,
+                        tooltip: 'Theme tuner (dev only)',
+                        onClick: () => (tuner.open = !tuner.open)
+                    }),
                     themeToggleButton()
                 ],
                 hideRefreshButton: false,
@@ -52,12 +62,15 @@ export const AppComponent = hoistCmp({
                     onKeyDown: () => model.goHome()
                 }
             ],
-            children: tabContainer({
-                switcher: false,
-                childContainerProps: {
-                    switcher: {orientation: 'left', className: 'tb-switcher', animate: true}
-                }
-            }),
+            children: hframe(
+                tabContainer({
+                    switcher: false,
+                    childContainerProps: {
+                        switcher: {orientation: 'left', className: 'tb-switcher', animate: true}
+                    }
+                }),
+                themeTunerPanel({omit: !tuner, model: tuner})
+            ),
             mask: 'onLoad'
         });
     }

@@ -1,0 +1,154 @@
+/* Theme tuner output for the picks in 2026-11-26-atm.json. Light block first, then dark.
+   The --tn-* vars are the tuner's neutral ramp. The --xh-* vars are the Hoist theme values. */
+body.xh-app:not(.xh-dark) {
+    --tn-h: 232;
+    --tn-c: 1;
+    --tn-1: oklch(0.985 calc(0.002 * var(--tn-c)) var(--tn-h));
+    --tn-2: oklch(0.968 calc(0.004 * var(--tn-c)) var(--tn-h));
+    --tn-3: oklch(0.94 calc(0.006 * var(--tn-c)) var(--tn-h));
+    --tn-4: oklch(0.915 calc(0.007 * var(--tn-c)) var(--tn-h));
+    --tn-5: oklch(0.87 calc(0.009 * var(--tn-c)) var(--tn-h));
+    --tn-6: oklch(0.8 calc(0.012 * var(--tn-c)) var(--tn-h));
+    --tn-7: oklch(0.63 calc(0.016 * var(--tn-c)) var(--tn-h));
+    --tn-8: oklch(0.53 calc(0.02 * var(--tn-c)) var(--tn-h));
+    --tn-9: oklch(0.45 calc(0.025 * var(--tn-c)) var(--tn-h));
+    --tn-10: oklch(0.31 calc(0.02 * var(--tn-c)) var(--tn-h));
+    --tn-11: oklch(0.24 calc(0.018 * var(--tn-c)) var(--tn-h));
+    --xh-bg-alt: var(--tn-2);
+    --xh-panel-collapsed-strip-bg: var(--tn-2);
+    --xh-panel-collapsed-strip-hover-bg: var(--tn-4);
+    --xh-resizable-bg: var(--tn-2);
+    --xh-resizable-border-color: var(--tn-5);
+    --xh-loading-indicator-bg: var(--tn-4);
+    --xh-input-placeholder-text-color: var(--tn-7);
+    --xh-neutral-val-color: var(--tn-8);
+    --xh-menu-heading-text-color: var(--tn-9);
+    --xh-separator-label-text-color: var(--tn-9);
+    --xh-property-table-label-text-color: var(--tn-9);
+    --xh-property-table-empty-text-color: var(--tn-9);
+    --xh-panel-collapsed-strip-icon-color: var(--tn-9);
+    --xh-loading-indicator-text-color: var(--tn-9);
+    --xh-text-color-muted: var(--tn-8);
+    --xh-text-color: var(--tn-10);
+    --xh-text-color-highlight: var(--tn-11);
+    --xh-appbar-title-text-color: var(--tn-9);
+    --xh-border-color: var(--tn-5);
+    --xh-toolbar-border-color: var(--tn-5);
+    --xh-toolbar-separator-color: var(--tn-6);
+    --xh-grid-border-color: var(--tn-4);
+    --xh-grid-pinned-column-border-color: var(--tn-5);
+    --xh-scrollbar-bg: var(--tn-2);
+    --xh-scrollbar-thumb-color: oklch(0.72 calc(0.026 * var(--tn-c)) var(--tn-h));
+    --xh-grid-odd-row-bg: oklch(0.97 calc(0.003 * var(--tn-c)) var(--tn-h));
+    --xh-grid-group-bg: oklch(0.91 calc(0.01 * var(--tn-c)) var(--tn-h));
+    --xh-grid-group-border-color: var(--tn-5);
+    --xh-grid-row-hover-bg: oklch(0.945 0.026 245);
+    --xh-bg-highlight: oklch(0.92 0.042 245);
+    --xh-grid-tree-group-bg: oklch(0.955 0.02 245);
+    --xh-chart-color-1: #257de0;
+    --xh-chart-color-2: #f47230;
+    --xh-chart-color-3: #00b894;
+    --xh-chart-color-4: #f2a600;
+    --xh-chart-color-5: #ee7fac;
+    --xh-chart-color-6: #008a17;
+    --xh-chart-color-7: #6a4ce2;
+    --xh-chart-color-8: #ec4647;
+    --xh-chart-color-9: #257de0;
+    --xh-chart-color-10: #f47230;
+    --xh-form-field-box-shadow-color-top: oklch(0.78 calc(0.016 * var(--tn-c)) var(--tn-h));
+    --xh-form-field-box-shadow-color-bottom: oklch(0.78 calc(0.016 * var(--tn-c)) var(--tn-h));
+    --xh-grid-group-text-color: var(--tn-11);
+    --xh-scrollbar-thumb-border-radius: 10px;
+    --xh-scrollbar-thumb-inset: 2px;
+    --xh-scrollbar-thumb-hover-color: color-mix(
+        in oklch,
+        var(--xh-scrollbar-thumb-color),
+        var(--xh-text-color) 30%
+    );
+    --xh-dash-canvas-widget-title-bg: oklch(0.92 calc(0.007 * var(--tn-c)) var(--tn-h));
+    --xh-dash-canvas-widget-title-text-color: oklch(0.38 calc(0.02 * var(--tn-c)) var(--tn-h));
+}
+body.xh-app.xh-dark {
+    --tn-h: 232;
+    --tn-c: 1;
+    --tn-d: 0;
+    --tn-0: oklch(calc(0.155 + var(--tn-d)) calc(0.008 * var(--tn-c)) var(--tn-h));
+    --tn-1: oklch(calc(0.19 + var(--tn-d)) calc(0.01 * var(--tn-c)) var(--tn-h));
+    --tn-2: oklch(calc(0.215 + var(--tn-d)) calc(0.011 * var(--tn-c)) var(--tn-h));
+    --tn-3: oklch(calc(0.245 + var(--tn-d)) calc(0.013 * var(--tn-c)) var(--tn-h));
+    --tn-4: oklch(calc(0.285 + var(--tn-d)) calc(0.015 * var(--tn-c)) var(--tn-h));
+    --tn-5: oklch(calc(0.33 + var(--tn-d)) calc(0.016 * var(--tn-c)) var(--tn-h));
+    --tn-6: oklch(calc(0.39 + var(--tn-d)) calc(0.018 * var(--tn-c)) var(--tn-h));
+    --tn-7: oklch(calc(0.55 + var(--tn-d)) calc(0.02 * var(--tn-c)) var(--tn-h));
+    --tn-8: oklch(0.72 calc(0.018 * var(--tn-c)) var(--tn-h));
+    --tn-9: oklch(0.8 calc(0.015 * var(--tn-c)) var(--tn-h));
+    --tn-10: oklch(0.94 calc(0.008 * var(--tn-c)) var(--tn-h));
+    --tn-11: oklch(0.98 calc(0.004 * var(--tn-c)) var(--tn-h));
+    --xh-bg: var(--tn-1);
+    --xh-bg-alt: var(--tn-3);
+    --xh-toolbar-bg: var(--tn-3);
+    --xh-grid-odd-row-bg: var(--tn-2);
+    --xh-panel-collapsed-strip-bg: var(--tn-3);
+    --xh-panel-collapsed-strip-hover-bg: var(--tn-4);
+    --xh-resizable-bg: var(--tn-4);
+    --xh-resizable-border-color: var(--tn-3);
+    --xh-dash-canvas-grid-cell-color: var(--tn-0);
+    --xh-loading-indicator-bg: var(--tn-5);
+    --xh-text-color-muted: var(--tn-8);
+    --xh-input-placeholder-text-color: oklch(0.64 calc(0.018 * var(--tn-c)) var(--tn-h));
+    --xh-menu-heading-text-color: var(--tn-9);
+    --xh-loading-indicator-text-color: var(--tn-9);
+    --xh-panel-collapsed-strip-icon-color: var(--tn-8);
+    --xh-panel-splitter-button-icon-color: var(--tn-9);
+    --xh-text-color: var(--tn-10);
+    --xh-text-color-highlight: var(--tn-11);
+    --xh-appbar-title-text-color: var(--tn-10);
+    --xh-border-color: var(--tn-5);
+    --xh-toolbar-border-color: var(--tn-5);
+    --xh-appbar-border-color: var(--tn-5);
+    --xh-toolbar-separator-color: var(--tn-6);
+    --xh-grid-border-color: var(--tn-3);
+    --xh-grid-pinned-column-border-color: var(--tn-5);
+    --xh-scrollbar-bg: var(--tn-1);
+    --xh-scrollbar-thumb-color: oklch(
+        calc(0.39 + var(--tn-d)) calc(0.025 * var(--tn-c)) var(--tn-h)
+    );
+    --xh-grid-row-hover-bg: oklch(calc(0.265 + var(--tn-d)) 0.03 245);
+    --xh-bg-highlight: oklch(calc(0.34 + var(--tn-d)) 0.065 245);
+    --xh-grid-tree-group-bg: oklch(calc(0.25 + var(--tn-d)) 0.03 245);
+    --xh-grid-group-bg: oklch(calc(0.3 + var(--tn-d)) calc(0.024 * var(--tn-c)) var(--tn-h));
+    --xh-grid-group-border-color: var(--tn-6);
+    --xh-chart-color-1: #338ced;
+    --xh-chart-color-2: #e76624;
+    --xh-chart-color-3: #00a888;
+    --xh-chart-color-4: #d28e05;
+    --xh-chart-color-5: #e24d8b;
+    --xh-chart-color-6: #0aac23;
+    --xh-chart-color-7: #9887ef;
+    --xh-chart-color-8: #eb6263;
+    --xh-chart-color-9: #338ced;
+    --xh-chart-color-10: #e76624;
+    --xh-form-field-box-shadow-color-top: oklch(
+        calc(0.41 + var(--tn-d)) calc(0.018 * var(--tn-c)) var(--tn-h)
+    );
+    --xh-form-field-box-shadow-color-bottom: oklch(
+        calc(0.41 + var(--tn-d)) calc(0.018 * var(--tn-c)) var(--tn-h)
+    );
+    --xh-grid-group-text-color: var(--tn-10);
+    --xh-title-bg: oklch(calc(0.33 + var(--tn-d)) calc(0.035 * var(--tn-c)) var(--tn-h));
+    --xh-title-text-color: var(--tn-10);
+    --xh-scrollbar-thumb-border-radius: 10px;
+    --xh-scrollbar-thumb-inset: 2px;
+    --xh-scrollbar-thumb-hover-color: color-mix(
+        in oklch,
+        var(--xh-scrollbar-thumb-color),
+        var(--xh-text-color) 30%
+    );
+    --xh-grid-tree-group-level-0-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 235);
+    --xh-grid-tree-group-level-1-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 275);
+    --xh-grid-tree-group-level-2-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 320);
+    --xh-grid-tree-group-level-3-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 5);
+    --xh-grid-tree-group-level-4-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 50);
+    --xh-grid-tree-group-level-5-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 105);
+    --xh-panel-title-border-color: var(--xh-bg);
+}

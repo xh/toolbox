@@ -1,0 +1,284 @@
+{
+  "savedOn": "2026-11-26",
+  "note": "Theme tuner picks. \"key\" is the option hotkey: 1 is Shipped. Rounds with no pick use the Shipped look.",
+  "restore": "In the browser console: localStorage.setItem('toolbox.' + XH.getUsername() + '.themeTuner', JSON.stringify(state)), then reload.",
+  "state": {
+    "picks": {
+      "light-grid": "calm",
+      "dark-inputs": "soft",
+      "dark-grid": "calm",
+      "dark-scrollbar-shape": "pill",
+      "light-scrollbar-shape": "pill",
+      "dark-scrollbars": "quiet",
+      "light-tree": "open",
+      "dark-tree": "open",
+      "dark-headers": "ink",
+      "light-widget-headers": "cool",
+      "light-neutrals": "slate",
+      "light-secondary-text": "aa",
+      "light-text": "same",
+      "light-borders": "quiet",
+      "light-scrollbars": "balanced",
+      "light-stripes": "same",
+      "dark-depth": "deep",
+      "dark-text": "soft",
+      "dark-borders": "quiet",
+      "light-charts": "validated",
+      "dark-charts": "validated",
+      "light-inputs": "soft",
+      "light-group-rows": "band",
+      "dark-group-rows": "band",
+      "dark-tree-colors": "calm",
+      "dark-header-edge": "cut"
+    },
+    "tweaks": {
+      "light": {},
+      "dark": {}
+    }
+  },
+  "summary": [
+    {
+      "round": 1,
+      "id": "light-neutrals",
+      "theme": "Light",
+      "title": "One neutral family",
+      "key": 2,
+      "pick": "slate",
+      "label": "Cool slate"
+    },
+    {
+      "round": 2,
+      "id": "light-secondary-text",
+      "theme": "Light",
+      "title": "Secondary text you can read",
+      "key": 2,
+      "pick": "aa",
+      "label": "AA floor"
+    },
+    {
+      "round": 3,
+      "id": "light-text",
+      "theme": "Light",
+      "title": "Body text",
+      "key": 2,
+      "pick": "same",
+      "label": "Same weight"
+    },
+    {
+      "round": 4,
+      "id": "light-borders",
+      "theme": "Light",
+      "title": "Borders",
+      "key": 2,
+      "pick": "quiet",
+      "label": "Quiet frames"
+    },
+    {
+      "round": 5,
+      "id": "light-scrollbars",
+      "theme": "Light",
+      "title": "Scrollbars",
+      "key": 3,
+      "pick": "balanced",
+      "label": "Balanced"
+    },
+    {
+      "round": 6,
+      "id": "light-stripes",
+      "theme": "Light",
+      "title": "Grid stripes",
+      "key": 2,
+      "pick": "same",
+      "label": "Same weight"
+    },
+    {
+      "round": 7,
+      "id": "light-grid",
+      "theme": "Light",
+      "title": "Grid row states",
+      "key": 2,
+      "pick": "calm",
+      "label": "Calm blue"
+    },
+    {
+      "round": 8,
+      "id": "dark-depth",
+      "theme": "Dark",
+      "title": "How dark is dark",
+      "key": 2,
+      "pick": "deep",
+      "label": "Deep"
+    },
+    {
+      "round": 9,
+      "id": "dark-text",
+      "theme": "Dark",
+      "title": "Text on dark",
+      "key": 2,
+      "pick": "soft",
+      "label": "Soft white"
+    },
+    {
+      "round": 10,
+      "id": "dark-borders",
+      "theme": "Dark",
+      "title": "Borders",
+      "key": 2,
+      "pick": "quiet",
+      "label": "Quiet frames"
+    },
+    {
+      "round": 11,
+      "id": "dark-scrollbars",
+      "theme": "Dark",
+      "title": "Scrollbars",
+      "key": 2,
+      "pick": "quiet",
+      "label": "Quiet"
+    },
+    {
+      "round": 12,
+      "id": "dark-grid",
+      "theme": "Dark",
+      "title": "Grid row states",
+      "key": 2,
+      "pick": "calm",
+      "label": "Calm blue"
+    },
+    {
+      "round": 13,
+      "id": "light-charts",
+      "theme": "Light",
+      "title": "Chart series colors",
+      "key": 2,
+      "pick": "validated",
+      "label": "Balanced eight"
+    },
+    {
+      "round": 14,
+      "id": "dark-charts",
+      "theme": "Dark",
+      "title": "Chart series colors",
+      "key": 2,
+      "pick": "validated",
+      "label": "Balanced eight"
+    },
+    {
+      "round": 15,
+      "id": "light-inputs",
+      "theme": "Light",
+      "title": "Input outlines",
+      "key": 2,
+      "pick": "soft",
+      "label": "Soft"
+    },
+    {
+      "round": 16,
+      "id": "dark-inputs",
+      "theme": "Dark",
+      "title": "Input outlines",
+      "key": 2,
+      "pick": "soft",
+      "label": "Soft"
+    },
+    {
+      "round": 17,
+      "id": "light-group-rows",
+      "theme": "Light",
+      "title": "Group rows",
+      "key": 2,
+      "pick": "band",
+      "label": "Light band"
+    },
+    {
+      "round": 18,
+      "id": "dark-group-rows",
+      "theme": "Dark",
+      "title": "Group rows",
+      "key": 2,
+      "pick": "band",
+      "label": "Low band"
+    },
+    {
+      "round": 19,
+      "id": "light-tree",
+      "theme": "Light",
+      "title": "Tree grid highlights",
+      "key": 2,
+      "pick": "open",
+      "label": "Calm blue"
+    },
+    {
+      "round": 20,
+      "id": "dark-tree",
+      "theme": "Dark",
+      "title": "Tree grid highlights",
+      "key": 2,
+      "pick": "open",
+      "label": "Calm blue"
+    },
+    {
+      "round": 21,
+      "id": "light-headers",
+      "theme": "Light",
+      "title": "Panel headers",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 22,
+      "id": "dark-headers",
+      "theme": "Dark",
+      "title": "Panel headers",
+      "key": 3,
+      "pick": "ink",
+      "label": "Deep slate"
+    },
+    {
+      "round": 23,
+      "id": "light-scrollbar-shape",
+      "theme": "Light",
+      "title": "Scrollbar shape",
+      "key": 2,
+      "pick": "pill",
+      "label": "Pill"
+    },
+    {
+      "round": 24,
+      "id": "dark-scrollbar-shape",
+      "theme": "Dark",
+      "title": "Scrollbar shape",
+      "key": 2,
+      "pick": "pill",
+      "label": "Pill"
+    },
+    {
+      "round": 25,
+      "id": "light-widget-headers",
+      "theme": "Light",
+      "title": "Dashboard widget headers",
+      "key": 3,
+      "pick": "cool",
+      "label": "Cool gray"
+    },
+    {
+      "round": 26,
+      "id": "dark-tree-colors",
+      "theme": "Dark",
+      "title": "Tree color groups",
+      "key": 2,
+      "pick": "calm",
+      "label": "Calm"
+    },
+    {
+      "round": 27,
+      "id": "dark-header-edge",
+      "theme": "Dark",
+      "title": "Panel header edge",
+      "key": 2,
+      "pick": "cut",
+      "label": "Dark cut"
+    }
+  ]
+}

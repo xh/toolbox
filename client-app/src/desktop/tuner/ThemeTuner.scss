@@ -1,0 +1,224 @@
+// The tuner reads Hoist theme vars like any other panel, so it restyles along with the app.
+// Contrast grades use fixed colors, so a tuned intent color cannot change how a grade reads.
+.tb-tuner {
+  --tb-tuner-pass: #2e9e52;
+  --tb-tuner-fail: #e5484d;
+
+  font-size: var(--xh-font-size-small);
+
+  &__scroll {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    overflow-y: auto;
+  }
+
+  &__eyebrow {
+    color: var(--xh-text-color-muted);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  &__why {
+    line-height: 1.5;
+  }
+
+  &__look {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    color: var(--xh-text-color-muted);
+    line-height: 1.4;
+  }
+
+  &__options {
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  &__option {
+    gap: 10px;
+    align-items: center;
+    padding: 9px 10px;
+    border: 1px solid var(--xh-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      background: var(--xh-bg-alt);
+    }
+
+    &--selected {
+      border-color: var(--xh-intent-primary);
+      box-shadow: inset 0 0 0 1px var(--xh-intent-primary);
+    }
+  }
+
+  &__option-label {
+    font-size: var(--xh-font-size);
+    font-weight: 600;
+  }
+
+  &__option-note {
+    color: var(--xh-text-color-muted);
+    line-height: 1.35;
+  }
+
+  &__badge {
+    margin-left: 8px;
+    color: var(--xh-intent-primary-text-color);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  &__key {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 6px;
+    padding: 0 5px;
+    border: 1px solid var(--xh-border-color);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    color: var(--xh-text-color-muted);
+    font-family: var(--xh-font-family-mono);
+    font-size: 11px;
+  }
+
+  &__option &__key {
+    margin-left: 0;
+  }
+
+  &__watch {
+    margin-top: 6px;
+    border-top: 1px solid var(--xh-border-color);
+  }
+
+  &__watch-row {
+    display: grid;
+    grid-template-columns: 1fr 48px 48px 48px;
+    gap: 6px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--xh-grid-border-color);
+    font-variant-numeric: tabular-nums;
+
+    span:not(:first-child) {
+      text-align: right;
+    }
+
+    &--head {
+      color: var(--xh-text-color-muted);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  }
+
+  &__ratio {
+    font-weight: 600;
+
+    &--pass {
+      color: var(--tb-tuner-pass);
+    }
+
+    &--fail {
+      color: var(--tb-tuner-fail);
+    }
+  }
+
+  &__seeds {
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  &__seed-label {
+    font-weight: 600;
+  }
+
+  &__seed-value {
+    min-width: 44px;
+    color: var(--xh-text-color-muted);
+    font-family: var(--xh-font-family-mono);
+    font-size: 11px;
+    text-align: right;
+  }
+
+  &__hint {
+    color: var(--xh-text-color-muted);
+  }
+
+  &__swatches {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    height: 100%;
+  }
+
+  &__chip {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 16px;
+    border: 1px solid var(--xh-border-color);
+    border-radius: 3px;
+
+    &--sample {
+      width: 30px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+    }
+  }
+
+  &__chip-dot {
+    width: 12px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  &__editor {
+    flex: none;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--xh-border-color);
+  }
+
+  &__editor-name {
+    margin-left: 8px;
+    font-family: var(--xh-font-family-mono);
+    font-weight: 600;
+  }
+
+  &__channel-label {
+    width: 16px;
+    color: var(--xh-text-color-muted);
+    font-family: var(--xh-font-family-mono);
+  }
+
+  &__export {
+    flex: 1;
+    padding: 10px 12px;
+    overflow: auto;
+    font-family: var(--xh-font-family-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    white-space: pre;
+    user-select: text;
+  }
+}
