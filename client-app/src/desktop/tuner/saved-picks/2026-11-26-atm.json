@@ -1,10 +1,9 @@
 {
   "savedOn": "2026-11-26",
-  "note": "Theme tuner picks. \"key\" is the option hotkey: 1 is Shipped. Rounds with no pick use the Shipped look.",
+  "note": "Theme tuner picks. \"key\" is the option hotkey: 1 is Shipped. Rounds with no pick use the Shipped look. Rounds 28 and up were added after these picks and are not yet reviewed.",
   "restore": "In the browser console: localStorage.setItem('toolbox.' + XH.getUsername() + '.themeTuner', JSON.stringify(state)), then reload.",
   "state": {
     "picks": {
-      "light-grid": "calm",
       "dark-inputs": "soft",
       "dark-grid": "calm",
       "dark-scrollbar-shape": "pill",
@@ -29,18 +28,21 @@
       "light-group-rows": "band",
       "dark-group-rows": "band",
       "dark-tree-colors": "calm",
-      "dark-header-edge": "cut"
+      "dark-header-edge": "cut",
+      "light-grid": "cool-hover"
     },
     "tweaks": {
       "light": {},
-      "dark": {}
+      "dark": {
+        "--tn-d": "-0.02"
+      }
     }
   },
   "summary": [
     {
       "round": 1,
       "id": "light-neutrals",
-      "theme": "Light",
+      "theme": "light",
       "title": "One neutral family",
       "key": 2,
       "pick": "slate",
@@ -49,7 +51,7 @@
     {
       "round": 2,
       "id": "light-secondary-text",
-      "theme": "Light",
+      "theme": "light",
       "title": "Secondary text you can read",
       "key": 2,
       "pick": "aa",
@@ -58,7 +60,7 @@
     {
       "round": 3,
       "id": "light-text",
-      "theme": "Light",
+      "theme": "light",
       "title": "Body text",
       "key": 2,
       "pick": "same",
@@ -67,7 +69,7 @@
     {
       "round": 4,
       "id": "light-borders",
-      "theme": "Light",
+      "theme": "light",
       "title": "Borders",
       "key": 2,
       "pick": "quiet",
@@ -76,7 +78,7 @@
     {
       "round": 5,
       "id": "light-scrollbars",
-      "theme": "Light",
+      "theme": "light",
       "title": "Scrollbars",
       "key": 3,
       "pick": "balanced",
@@ -85,7 +87,7 @@
     {
       "round": 6,
       "id": "light-stripes",
-      "theme": "Light",
+      "theme": "light",
       "title": "Grid stripes",
       "key": 2,
       "pick": "same",
@@ -94,16 +96,16 @@
     {
       "round": 7,
       "id": "light-grid",
-      "theme": "Light",
+      "theme": "light",
       "title": "Grid row states",
-      "key": 2,
-      "pick": "calm",
-      "label": "Calm blue"
+      "key": 4,
+      "pick": "cool-hover",
+      "label": "Cool hover"
     },
     {
       "round": 8,
       "id": "dark-depth",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "How dark is dark",
       "key": 2,
       "pick": "deep",
@@ -112,7 +114,7 @@
     {
       "round": 9,
       "id": "dark-text",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Text on dark",
       "key": 2,
       "pick": "soft",
@@ -121,7 +123,7 @@
     {
       "round": 10,
       "id": "dark-borders",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Borders",
       "key": 2,
       "pick": "quiet",
@@ -130,7 +132,7 @@
     {
       "round": 11,
       "id": "dark-scrollbars",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Scrollbars",
       "key": 2,
       "pick": "quiet",
@@ -139,7 +141,7 @@
     {
       "round": 12,
       "id": "dark-grid",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Grid row states",
       "key": 2,
       "pick": "calm",
@@ -148,7 +150,7 @@
     {
       "round": 13,
       "id": "light-charts",
-      "theme": "Light",
+      "theme": "light",
       "title": "Chart series colors",
       "key": 2,
       "pick": "validated",
@@ -157,7 +159,7 @@
     {
       "round": 14,
       "id": "dark-charts",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Chart series colors",
       "key": 2,
       "pick": "validated",
@@ -166,7 +168,7 @@
     {
       "round": 15,
       "id": "light-inputs",
-      "theme": "Light",
+      "theme": "light",
       "title": "Input outlines",
       "key": 2,
       "pick": "soft",
@@ -175,7 +177,7 @@
     {
       "round": 16,
       "id": "dark-inputs",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Input outlines",
       "key": 2,
       "pick": "soft",
@@ -184,7 +186,7 @@
     {
       "round": 17,
       "id": "light-group-rows",
-      "theme": "Light",
+      "theme": "light",
       "title": "Group rows",
       "key": 2,
       "pick": "band",
@@ -193,7 +195,7 @@
     {
       "round": 18,
       "id": "dark-group-rows",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Group rows",
       "key": 2,
       "pick": "band",
@@ -202,7 +204,7 @@
     {
       "round": 19,
       "id": "light-tree",
-      "theme": "Light",
+      "theme": "light",
       "title": "Tree grid highlights",
       "key": 2,
       "pick": "open",
@@ -211,7 +213,7 @@
     {
       "round": 20,
       "id": "dark-tree",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Tree grid highlights",
       "key": 2,
       "pick": "open",
@@ -220,7 +222,7 @@
     {
       "round": 21,
       "id": "light-headers",
-      "theme": "Light",
+      "theme": "light",
       "title": "Panel headers",
       "key": 1,
       "pick": null,
@@ -229,7 +231,7 @@
     {
       "round": 22,
       "id": "dark-headers",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Panel headers",
       "key": 3,
       "pick": "ink",
@@ -238,7 +240,7 @@
     {
       "round": 23,
       "id": "light-scrollbar-shape",
-      "theme": "Light",
+      "theme": "light",
       "title": "Scrollbar shape",
       "key": 2,
       "pick": "pill",
@@ -247,7 +249,7 @@
     {
       "round": 24,
       "id": "dark-scrollbar-shape",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Scrollbar shape",
       "key": 2,
       "pick": "pill",
@@ -256,7 +258,7 @@
     {
       "round": 25,
       "id": "light-widget-headers",
-      "theme": "Light",
+      "theme": "light",
       "title": "Dashboard widget headers",
       "key": 3,
       "pick": "cool",
@@ -265,7 +267,7 @@
     {
       "round": 26,
       "id": "dark-tree-colors",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Tree color groups",
       "key": 2,
       "pick": "calm",
@@ -274,11 +276,146 @@
     {
       "round": 27,
       "id": "dark-header-edge",
-      "theme": "Dark",
+      "theme": "dark",
       "title": "Panel header edge",
       "key": 2,
       "pick": "cut",
       "label": "Dark cut"
+    },
+    {
+      "round": 28,
+      "id": "light-intent-primary",
+      "theme": "light",
+      "title": "Primary intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 29,
+      "id": "light-intent-success",
+      "theme": "light",
+      "title": "Success intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 30,
+      "id": "light-intent-warning",
+      "theme": "light",
+      "title": "Warning intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 31,
+      "id": "light-intent-danger",
+      "theme": "light",
+      "title": "Danger intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 32,
+      "id": "dark-intent-primary",
+      "theme": "dark",
+      "title": "Primary intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 33,
+      "id": "dark-intent-success",
+      "theme": "dark",
+      "title": "Success intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 34,
+      "id": "dark-intent-warning",
+      "theme": "dark",
+      "title": "Warning intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 35,
+      "id": "dark-intent-danger",
+      "theme": "dark",
+      "title": "Danger intent",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 36,
+      "id": "toasts",
+      "theme": "both",
+      "title": "Toasts follow the intents",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 37,
+      "id": "form-labels",
+      "theme": "both",
+      "title": "Form field labels",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 38,
+      "id": "form-rhythm",
+      "theme": "both",
+      "title": "Field spacing and messages",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 39,
+      "id": "form-invalid",
+      "theme": "both",
+      "title": "Invalid fields",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 40,
+      "id": "form-input-shape",
+      "theme": "both",
+      "title": "Input outline shape",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 41,
+      "id": "form-focus",
+      "theme": "both",
+      "title": "Focus ring",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
+    },
+    {
+      "round": 42,
+      "id": "brand-seeds",
+      "theme": "both",
+      "title": "One more thing: a theme from two numbers",
+      "key": 1,
+      "pick": null,
+      "label": "Shipped"
     }
   ]
 }

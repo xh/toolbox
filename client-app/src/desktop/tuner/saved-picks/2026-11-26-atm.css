@@ -42,7 +42,7 @@ body.xh-app:not(.xh-dark) {
     --xh-grid-odd-row-bg: oklch(0.97 calc(0.003 * var(--tn-c)) var(--tn-h));
     --xh-grid-group-bg: oklch(0.91 calc(0.01 * var(--tn-c)) var(--tn-h));
     --xh-grid-group-border-color: var(--tn-5);
-    --xh-grid-row-hover-bg: oklch(0.945 0.026 245);
+    --xh-grid-row-hover-bg: oklch(0.943 0.015 240);
     --xh-bg-highlight: oklch(0.92 0.042 245);
     --xh-grid-tree-group-bg: oklch(0.955 0.02 245);
     --xh-chart-color-1: #257de0;
@@ -71,7 +71,7 @@ body.xh-app:not(.xh-dark) {
 body.xh-app.xh-dark {
     --tn-h: 232;
     --tn-c: 1;
-    --tn-d: 0;
+    --tn-d: -0.02;
     --tn-0: oklch(calc(0.155 + var(--tn-d)) calc(0.008 * var(--tn-c)) var(--tn-h));
     --tn-1: oklch(calc(0.19 + var(--tn-d)) calc(0.01 * var(--tn-c)) var(--tn-h));
     --tn-2: oklch(calc(0.215 + var(--tn-d)) calc(0.011 * var(--tn-c)) var(--tn-h));
@@ -151,4 +151,8 @@ body.xh-app.xh-dark {
     --xh-grid-tree-group-level-4-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 50);
     --xh-grid-tree-group-level-5-bg: oklch(calc(0.27 + var(--tn-d)) 0.04 105);
     --xh-panel-title-border-color: var(--xh-bg);
+}
+body.xh-app:not(.xh-dark) {
+}
+body.xh-app.xh-dark {
 }
