@@ -1,6 +1,6 @@
 {
   "savedOn": "2026-11-27",
-  "note": "Picks after a full pass through all 43 rounds. No pick means the shipped value stays, as in form-focus (round 41). brand-seeds 'forest' and caps-style 'labels' were the options on screen at the end of the pass. Both rounds are demos, so confirm before treating them as choices.",
+  "note": "Picks after a full pass through all 43 rounds. No pick means the shipped value stays: form-focus (41), brand-seeds (42) and caps-style (43) have none.",
   "restore": "In the browser console: localStorage.setItem('toolbox.' + XH.getUsername() + '.themeTuner', JSON.stringify(state)), then reload.",
   "state": {
     "picks": {
@@ -42,9 +42,7 @@
       "form-labels": "medium",
       "form-rhythm": "messages",
       "form-invalid": "sets",
-      "form-input-shape": "hover",
-      "brand-seeds": "forest",
-      "caps-style": "labels"
+      "form-input-shape": "hover"
     },
     "tweaks": {
       "light": {},

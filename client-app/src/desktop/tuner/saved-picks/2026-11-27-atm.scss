@@ -1,43 +1,42 @@
 // Theme Tuner export for the picks in 2026-11-27-atm.json.
 // A var that reads the neutral ramp keeps its reference, so the theme follows --xh-neutral-hue and
 // --xh-neutral-tint. Options that inject CSS rules are not in this file.
-// light theme - 82 vars
+// light theme - 79 vars
 body {
-  --xh-neutral-hue: 146;
-  --xh-bg-alt: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 146)
-  --xh-panel-collapsed-strip-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 146)
-  --xh-panel-collapsed-strip-hover-bg: var(--xh-neutral-4); // was #cfd8dc | oklch(91.5% 0.007 146)
-  --xh-resizable-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 146)
-  --xh-resizable-border-color: var(--xh-neutral-5); // was #cfd8dc | oklch(87% 0.009 146)
-  --xh-loading-indicator-bg: var(--xh-neutral-4); // was #cfd8dc | oklch(91.5% 0.007 146)
-  --xh-input-placeholder-text-color: var(--xh-neutral-7); // was #afb7bf | oklch(63% 0.016 146)
-  --xh-neutral-val-color: var(--xh-neutral-8); // was #9e9e9e | oklch(53% 0.02 146)
-  --xh-menu-heading-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
-  --xh-separator-label-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
-  --xh-property-table-label-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
-  --xh-property-table-empty-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
-  --xh-panel-collapsed-strip-icon-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
-  --xh-loading-indicator-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
-  --xh-text-color-muted: var(--xh-neutral-8); // was #9e9e9e | oklch(53% 0.02 146)
-  --xh-text-color: var(--xh-neutral-10); // was #263238 | oklch(31% 0.02 146)
-  --xh-text-color-highlight: var(--xh-neutral-11); // was #37474f | oklch(24% 0.018 146)
-  --xh-appbar-title-text-color: var(--xh-neutral-9); // was #455a64 | oklch(45% 0.025 146)
-  --xh-border-color: var(--xh-neutral-5); // was #bdbdbd | oklch(87% 0.009 146)
-  --xh-toolbar-border-color: var(--xh-neutral-5); // was #bdbdbd | oklch(87% 0.009 146)
-  --xh-toolbar-separator-color: var(--xh-neutral-6); // was #bdbdbd | oklch(80% 0.012 146)
-  --xh-grid-border-color: var(--xh-neutral-4); // was #eeeeee | oklch(91.5% 0.007 146)
-  --xh-grid-pinned-column-border-color: var(--xh-neutral-5); // was #e0e0e0 | oklch(87% 0.009 146)
-  --xh-scrollbar-bg: var(--xh-neutral-2); // was #cfd8dc | oklch(96.8% 0.004 146)
+  --xh-bg-alt: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
+  --xh-panel-collapsed-strip-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
+  --xh-panel-collapsed-strip-hover-bg: var(--xh-neutral-4); // was #cfd8dc | oklch(91.5% 0.007 232)
+  --xh-resizable-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
+  --xh-resizable-border-color: var(--xh-neutral-5); // was #cfd8dc | oklch(87% 0.009 232)
+  --xh-loading-indicator-bg: var(--xh-neutral-4); // was #cfd8dc | oklch(91.5% 0.007 232)
+  --xh-input-placeholder-text-color: var(--xh-neutral-7); // was #afb7bf | oklch(63% 0.016 232)
+  --xh-neutral-val-color: var(--xh-neutral-8); // was #9e9e9e | oklch(53% 0.02 232)
+  --xh-menu-heading-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 232)
+  --xh-separator-label-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 232)
+  --xh-property-table-label-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 232)
+  --xh-property-table-empty-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 232)
+  --xh-panel-collapsed-strip-icon-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 232)
+  --xh-loading-indicator-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 232)
+  --xh-text-color-muted: var(--xh-neutral-8); // was #9e9e9e | oklch(53% 0.02 232)
+  --xh-text-color: var(--xh-neutral-10); // was #263238 | oklch(31% 0.02 232)
+  --xh-text-color-highlight: var(--xh-neutral-11); // was #37474f | oklch(24% 0.018 232)
+  --xh-appbar-title-text-color: var(--xh-neutral-9); // was #455a64 | oklch(45% 0.025 232)
+  --xh-border-color: var(--xh-neutral-5); // was #bdbdbd | oklch(87% 0.009 232)
+  --xh-toolbar-border-color: var(--xh-neutral-5); // was #bdbdbd | oklch(87% 0.009 232)
+  --xh-toolbar-separator-color: var(--xh-neutral-6); // was #bdbdbd | oklch(80% 0.012 232)
+  --xh-grid-border-color: var(--xh-neutral-4); // was #eeeeee | oklch(91.5% 0.007 232)
+  --xh-grid-pinned-column-border-color: var(--xh-neutral-5); // was #e0e0e0 | oklch(87% 0.009 232)
+  --xh-scrollbar-bg: var(--xh-neutral-2); // was #cfd8dc | oklch(96.8% 0.004 232)
   --xh-scrollbar-thumb-color: oklch(
     0.72 calc(0.026 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #90a4ae | oklch(72% 0.026 146)
+  ); // was #90a4ae | oklch(72% 0.026 232)
   --xh-grid-odd-row-bg: oklch(
     0.97 calc(0.003 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #f5f5f5 | oklch(97% 0.003 146)
+  ); // was #f5f5f5 | oklch(97% 0.003 232)
   --xh-grid-group-bg: oklch(
     0.91 calc(0.01 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #78909c | oklch(91% 0.01 146)
-  --xh-grid-group-border-color: var(--xh-neutral-5); // was #b0bec5 | oklch(87% 0.009 146)
+  ); // was #78909c | oklch(91% 0.01 232)
+  --xh-grid-group-border-color: var(--xh-neutral-5); // was #b0bec5 | oklch(87% 0.009 232)
   --xh-grid-row-hover-bg: #e4eef5; // was #d0e9fb | oklch(94.3% 0.015 240)
   --xh-bg-highlight: #cee8ff; // was #b8def9 | oklch(92% 0.042 245)
   --xh-grid-tree-group-bg: #e6f2fd; // was #e3f2fd | oklch(95.5% 0.02 245)
@@ -53,18 +52,18 @@ body {
   --xh-chart-color-10: #f47230; // was #91e8e1 | oklch(69.8% 0.177 44)
   --xh-form-field-box-shadow-color-top: oklch(
     0.78 calc(0.016 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was rgb(207 216 220 / 0.85) | oklch(78% 0.016 146)
+  ); // was rgb(207 216 220 / 0.85) | oklch(78% 0.016 232)
   --xh-form-field-box-shadow-color-bottom: oklch(
     0.78 calc(0.016 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was rgb(207 216 220 / 0.8) | oklch(78% 0.016 146)
-  --xh-grid-group-text-color: var(--xh-neutral-11); // was #ffffff | oklch(24% 0.018 146)
-  --xh-scrollbar-thumb-hover-color: #768377; // was #90a4ae | oklch(59.7% 0.024 146)
+  ); // was rgb(207 216 220 / 0.8) | oklch(78% 0.016 232)
+  --xh-grid-group-text-color: var(--xh-neutral-11); // was #ffffff | oklch(24% 0.018 232)
+  --xh-scrollbar-thumb-hover-color: #71828b; // was #90a4ae | oklch(59.7% 0.024 232)
   --xh-dash-canvas-widget-title-bg: oklch(
     0.92 calc(0.007 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #546e7a | oklch(92% 0.007 146)
+  ); // was #546e7a | oklch(92% 0.007 232)
   --xh-dash-canvas-widget-title-text-color: oklch(
     0.38 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #eceff1 | oklch(38% 0.02 146)
+  ); // was #eceff1 | oklch(38% 0.02 232)
   --xh-intent-primary-darker: #004889; // was #004b85 | oklch(40.4% 0.124 253)
   --xh-intent-primary-darkest: #003a79; // was #004275 | oklch(35.7% 0.121 256)
   --xh-intent-primary-lighter: #b5d5f6; // was #b3deff | oklch(86% 0.058 250)
@@ -112,46 +111,43 @@ body {
     176 28 29 / 0.3
   ); // was rgb(176 28 28 / 0.3) | oklch(48.8% 0.182 27 / 0.3)
   --xh-intent-danger-text-color: #ad181b; // was #841515 | oklch(48% 0.182 27)
-  --xh-form-field-label-text-color: #656f65; // was #263238 | oklch(53% 0.02 146)
-  --xh-title-bg: #004912; // was #546e7a | oklch(35.3% 0.108 146)
-  --xh-title-text-color: #ffffff; // was #eceff1 | oklch(100% 0 0)
+  --xh-form-field-label-text-color: var(--xh-neutral-9); // was #263238 | oklch(45% 0.025 232)
 }
 
-// dark theme - 90 vars
+// dark theme - 89 vars
 body:where(.xh-dark) {
-  --xh-neutral-hue: 146;
   --xh-neutral-depth: -0.02;
-  --xh-bg: var(--xh-neutral-1); // was #13181b | oklch(17% 0.01 146)
-  --xh-bg-alt: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
-  --xh-toolbar-bg: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
-  --xh-grid-odd-row-bg: var(--xh-neutral-2); // was #151e23 | oklch(19.5% 0.011 146)
-  --xh-panel-collapsed-strip-bg: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
-  --xh-panel-collapsed-strip-hover-bg: var(--xh-neutral-4); // was #37474f | oklch(26.5% 0.015 146)
-  --xh-resizable-bg: var(--xh-neutral-4); // was #37474f | oklch(26.5% 0.015 146)
-  --xh-resizable-border-color: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
-  --xh-dash-canvas-grid-cell-color: var(--xh-neutral-0); // was #111518 | oklch(13.5% 0.008 146)
-  --xh-loading-indicator-bg: var(--xh-neutral-5); // was #455a64 | oklch(31% 0.016 146)
-  --xh-text-color-muted: var(--xh-neutral-8); // was #9e9e9e | oklch(72% 0.018 146)
+  --xh-bg: var(--xh-neutral-1); // was #13181b | oklch(17% 0.01 232)
+  --xh-bg-alt: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 232)
+  --xh-toolbar-bg: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 232)
+  --xh-grid-odd-row-bg: var(--xh-neutral-2); // was #151e23 | oklch(19.5% 0.011 232)
+  --xh-panel-collapsed-strip-bg: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 232)
+  --xh-panel-collapsed-strip-hover-bg: var(--xh-neutral-4); // was #37474f | oklch(26.5% 0.015 232)
+  --xh-resizable-bg: var(--xh-neutral-4); // was #37474f | oklch(26.5% 0.015 232)
+  --xh-resizable-border-color: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 232)
+  --xh-dash-canvas-grid-cell-color: var(--xh-neutral-0); // was #111518 | oklch(13.5% 0.008 232)
+  --xh-loading-indicator-bg: var(--xh-neutral-5); // was #455a64 | oklch(31% 0.016 232)
+  --xh-text-color-muted: var(--xh-neutral-8); // was #9e9e9e | oklch(72% 0.018 232)
   --xh-input-placeholder-text-color: oklch(
     0.64 calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #afb7bf | oklch(64% 0.018 146)
-  --xh-menu-heading-text-color: var(--xh-neutral-9); // was #b0bec5 | oklch(80% 0.015 146)
-  --xh-loading-indicator-text-color: var(--xh-neutral-9); // was #b0bec5 | oklch(80% 0.015 146)
-  --xh-panel-collapsed-strip-icon-color: var(--xh-neutral-8); // was #90a4ae | oklch(72% 0.018 146)
-  --xh-panel-splitter-button-icon-color: var(--xh-neutral-9); // was #cfd8dc | oklch(80% 0.015 146)
-  --xh-text-color: var(--xh-neutral-10); // was #ffffff | oklch(94% 0.008 146)
-  --xh-text-color-highlight: var(--xh-neutral-11); // was #ffffff | oklch(98% 0.004 146)
-  --xh-appbar-title-text-color: var(--xh-neutral-10); // was #eceff1 | oklch(94% 0.008 146)
-  --xh-border-color: var(--xh-neutral-5); // was #37474f | oklch(31% 0.016 146)
-  --xh-toolbar-border-color: var(--xh-neutral-5); // was #37474f | oklch(31% 0.016 146)
-  --xh-appbar-border-color: var(--xh-neutral-5); // was #455a64 | oklch(31% 0.016 146)
-  --xh-toolbar-separator-color: var(--xh-neutral-6); // was #546e7a | oklch(37% 0.018 146)
-  --xh-grid-border-color: var(--xh-neutral-3); // was #293233 | oklch(22.5% 0.013 146)
-  --xh-grid-pinned-column-border-color: var(--xh-neutral-5); // was #424242 | oklch(31% 0.016 146)
-  --xh-scrollbar-bg: var(--xh-neutral-1); // was #13181b | oklch(17% 0.01 146)
+  ); // was #afb7bf | oklch(64% 0.018 232)
+  --xh-menu-heading-text-color: var(--xh-neutral-9); // was #b0bec5 | oklch(80% 0.015 232)
+  --xh-loading-indicator-text-color: var(--xh-neutral-9); // was #b0bec5 | oklch(80% 0.015 232)
+  --xh-panel-collapsed-strip-icon-color: var(--xh-neutral-8); // was #90a4ae | oklch(72% 0.018 232)
+  --xh-panel-splitter-button-icon-color: var(--xh-neutral-9); // was #cfd8dc | oklch(80% 0.015 232)
+  --xh-text-color: var(--xh-neutral-10); // was #ffffff | oklch(94% 0.008 232)
+  --xh-text-color-highlight: var(--xh-neutral-11); // was #ffffff | oklch(98% 0.004 232)
+  --xh-appbar-title-text-color: var(--xh-neutral-10); // was #eceff1 | oklch(94% 0.008 232)
+  --xh-border-color: var(--xh-neutral-5); // was #37474f | oklch(31% 0.016 232)
+  --xh-toolbar-border-color: var(--xh-neutral-5); // was #37474f | oklch(31% 0.016 232)
+  --xh-appbar-border-color: var(--xh-neutral-5); // was #455a64 | oklch(31% 0.016 232)
+  --xh-toolbar-separator-color: var(--xh-neutral-6); // was #546e7a | oklch(37% 0.018 232)
+  --xh-grid-border-color: var(--xh-neutral-3); // was #293233 | oklch(22.5% 0.013 232)
+  --xh-grid-pinned-column-border-color: var(--xh-neutral-5); // was #424242 | oklch(31% 0.016 232)
+  --xh-scrollbar-bg: var(--xh-neutral-1); // was #13181b | oklch(17% 0.01 232)
   --xh-scrollbar-thumb-color: oklch(
     calc(0.39 + var(--xh-neutral-depth)) calc(0.025 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #263238 | oklch(37% 0.025 146)
+  ); // was #263238 | oklch(37% 0.025 232)
   --xh-grid-row-hover-bg: oklch(
     calc(0.265 + var(--xh-neutral-depth)) 0.03 245
   ); // was #1c4154 | oklch(24.5% 0.03 245)
@@ -163,8 +159,8 @@ body:where(.xh-dark) {
   ); // was #173645 | oklch(23% 0.03 245)
   --xh-grid-group-bg: oklch(
     calc(0.3 + var(--xh-neutral-depth)) calc(0.024 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #37474f | oklch(28% 0.024 146)
-  --xh-grid-group-border-color: var(--xh-neutral-6); // was #455a64 | oklch(37% 0.018 146)
+  ); // was #37474f | oklch(28% 0.024 232)
+  --xh-grid-group-border-color: var(--xh-neutral-6); // was #455a64 | oklch(37% 0.018 232)
   --xh-chart-color-1: #338ced; // was #2b908f | oklch(63.6% 0.168 254)
   --xh-chart-color-2: #e76624; // was #90ee7e | oklch(66.1% 0.177 44)
   --xh-chart-color-3: #00a888; // was #f45b5b | oklch(65.2% 0.126 173)
@@ -177,16 +173,16 @@ body:where(.xh-dark) {
   --xh-chart-color-10: #e76624; // was #7798bf | oklch(66.1% 0.177 44)
   --xh-form-field-box-shadow-color-top: oklch(
     calc(0.41 + var(--xh-neutral-depth)) calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was rgb(55 71 79 / 0.85) | oklch(39% 0.018 146)
+  ); // was rgb(55 71 79 / 0.85) | oklch(39% 0.018 232)
   --xh-form-field-box-shadow-color-bottom: oklch(
     calc(0.41 + var(--xh-neutral-depth)) calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was rgb(55 71 79 / 0.8) | oklch(39% 0.018 146)
-  --xh-grid-group-text-color: var(--xh-neutral-10); // was #ffffff | oklch(94% 0.008 146)
+  ); // was rgb(55 71 79 / 0.8) | oklch(39% 0.018 232)
+  --xh-grid-group-text-color: var(--xh-neutral-10); // was #ffffff | oklch(94% 0.008 232)
   --xh-title-bg: oklch(
     calc(0.33 + var(--xh-neutral-depth)) calc(0.035 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
-  ); // was #546e7a | oklch(31% 0.035 146)
-  --xh-title-text-color: var(--xh-neutral-10); // was #eceff1 | oklch(94% 0.008 146)
-  --xh-scrollbar-thumb-hover-color: #687268; // was #263238 | oklch(54.1% 0.02 146)
+  ); // was #546e7a | oklch(31% 0.035 232)
+  --xh-title-text-color: var(--xh-neutral-10); // was #eceff1 | oklch(94% 0.008 232)
+  --xh-scrollbar-thumb-hover-color: #647179; // was #263238 | oklch(54.1% 0.02 232)
   --xh-grid-tree-group-level-0-bg: oklch(
     calc(0.27 + var(--xh-neutral-depth)) 0.04 235
   ); // was #0d2a3f | oklch(25% 0.04 235)
@@ -205,7 +201,7 @@ body:where(.xh-dark) {
   --xh-grid-tree-group-level-5-bg: oklch(
     calc(0.27 + var(--xh-neutral-depth)) 0.04 105
   ); // was #30301d | oklch(25% 0.04 105)
-  --xh-panel-title-border-color: #0d110d; // was rgb(0 0 0 / 0) | oklch(17% 0.01 146)
+  --xh-panel-title-border-color: #0b1013; // was rgb(0 0 0 / 0) | oklch(17% 0.01 232)
   --xh-intent-primary: #0c71d1; // was #0082e6 | oklch(55% 0.17 254)
   --xh-intent-primary-darker: #0061c0; // was #005799 | oklch(50.2% 0.168 255)
   --xh-intent-primary-darkest: #0052b0; // was #004880 | oklch(45.5% 0.165 257)
@@ -254,7 +250,7 @@ body:where(.xh-dark) {
     190 35 35 / 0.3
   ); // was rgb(165 29 29 / 0.3) | oklch(52% 0.19 27 / 0.3)
   --xh-intent-danger-text-color: #ff786c; // was #f04c57 | oklch(73% 0.166 27)
-  --xh-form-field-label-text-color: #9ea89e; // was #ffffff | oklch(72% 0.018 146)
+  --xh-form-field-label-text-color: var(--xh-neutral-9); // was #ffffff | oklch(80% 0.015 232)
 }
 
 /* Tuner state. Reload with xhTuner.setState(...)
@@ -298,9 +294,7 @@ body:where(.xh-dark) {
     "form-labels": "medium",
     "form-rhythm": "messages",
     "form-invalid": "sets",
-    "form-input-shape": "hover",
-    "brand-seeds": "forest",
-    "caps-style": "labels"
+    "form-input-shape": "hover"
   },
   "tweaks": {
     "light": {},
