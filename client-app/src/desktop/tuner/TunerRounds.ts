@@ -661,6 +661,70 @@ function brandPreset(hue: number, tint: number): Pick<TunerOption, 'vars' | 'var
     };
 }
 
+// One caps recipe for short structural text. Hoist ships caps on menu headings and vertical tab group
+// headers today, each with its own spacing.
+const CAPS_SPACING = '0.02em';
+const CAPS_SIZE = 0.85;
+const capsRule = (selector: string) =>
+    `${selector} { text-transform: uppercase; letter-spacing: ${CAPS_SPACING}; }`;
+
+const CAPS_LABEL_VARS: VarMap = {
+    '--xh-form-field-label-font-size': `calc(var(--xh-font-size) * ${CAPS_SIZE})`,
+    '--xh-form-field-label-font-weight': '600',
+    '--xh-form-field-label-text-color': 'var(--xh-text-color-muted)',
+    '--xh-form-field-label-text-transform': 'uppercase',
+    '--xh-stat-card-title-text-transform': 'uppercase',
+    '--xh-stat-card-title-letter-spacing': CAPS_SPACING,
+    '--xh-card-header-font-size': `calc(var(--xh-font-size) * ${CAPS_SIZE})`,
+    '--xh-card-header-font-weight': '600',
+    '--xh-menu-heading-letter-spacing': CAPS_SPACING,
+    '--xh-tab-switcher-vertical-group-header-letter-spacing': CAPS_SPACING
+};
+const CAPS_LABEL_CSS = [
+    `.xh-form-field__label { letter-spacing: ${CAPS_SPACING}; }`,
+    capsRule('.xh-card__header')
+].join('\n');
+const CAPS_GRID_CSS = capsRule('.xh-grid-header, .ag-header-group-text');
+const CAPS_TOOLBAR_CSS = capsRule('.xh-toolbar--compact .xh-button');
+
+const CAPS_ROUND: TunerRound = {
+    id: 'caps-style',
+    theme: 'both',
+    title: 'A shared caps style',
+    why:
+        'Sentence case stays the default for form labels. This round previews an opt-in: one ' +
+        'caps recipe that an app turns on once, so every label-like element changes together. ' +
+        'Hoist already ships caps on menu headings and vertical tab group headers. Caps suit ' +
+        'short, fixed text. They erase case in units and codes, so "mm" becomes "MM".',
+    lookAt:
+        'Forms + Inputs > FormModel, then a grid, then Components > Buttons for the compact ' +
+        'toolbar.',
+    options: [
+        {
+            id: 'labels',
+            label: 'Labels and titles',
+            note: 'Form labels, card titles and stat card titles join menu and tab group headings.',
+            vars: CAPS_LABEL_VARS,
+            css: CAPS_LABEL_CSS
+        },
+        {
+            id: 'grid',
+            label: 'Plus grid headers',
+            note: 'Also sets grid column headers in caps.',
+            vars: CAPS_LABEL_VARS,
+            css: [CAPS_LABEL_CSS, CAPS_GRID_CSS].join('\n')
+        },
+        {
+            id: 'toolbar',
+            label: 'Plus compact toolbar buttons',
+            note: 'Also sets buttons in compact toolbars in caps.',
+            vars: CAPS_LABEL_VARS,
+            css: [CAPS_LABEL_CSS, CAPS_GRID_CSS, CAPS_TOOLBAR_CSS].join('\n')
+        }
+    ],
+    watch: []
+};
+
 const BRAND_ROUND: TunerRound = {
     id: 'brand-seeds',
     theme: 'both',
@@ -2135,5 +2199,6 @@ export const ROUNDS: TunerRound[] = [
     },
     TOAST_ROUND,
     ...FORM_ROUNDS,
-    BRAND_ROUND
+    BRAND_ROUND,
+    CAPS_ROUND
 ];
