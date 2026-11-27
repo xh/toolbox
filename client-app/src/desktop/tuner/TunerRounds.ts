@@ -2,6 +2,13 @@ import type {ColorSpec, PairKind} from './ContrastPairs';
 
 export type ThemeKey = 'light' | 'dark';
 
+/** The theme a round is about. A round for both themes sets the same values in each. */
+export type RoundTheme = ThemeKey | 'both';
+
+export function roundAppliesTo(round: TunerRound, theme: ThemeKey): boolean {
+    return round.theme === 'both' || round.theme === theme;
+}
+
 /** CSS custom property name to value. Values can be any CSS, including `var()` and `calc()`. */
 export type VarMap = Record<string, string>;
 
@@ -40,7 +47,7 @@ export interface WatchPair {
 /** One decision, shown as a set of options to flip between. */
 export interface TunerRound {
     id: string;
-    theme: ThemeKey;
+    theme: RoundTheme;
     title: string;
     why: string;
     lookAt: string;
@@ -361,28 +368,277 @@ const TOAST_INTENT_CSS = (['primary', 'success', 'warning', 'danger'] as IntentN
     })
     .join('\n');
 
-function toastRound(theme: ThemeKey): TunerRound {
+const TOAST_ROUND: TunerRound = {
+    id: 'toasts',
+    theme: 'both',
+    title: 'Toasts follow the intents',
+    why:
+        'Toasts use four fixed colors left over from Blueprint. No Hoist var reaches them, so ' +
+        'a success toast and a success button are different greens. This option paints toasts ' +
+        'from the intent colors.',
+    lookAt: 'System > Toast. Show one of each intent, next to a button of that intent.',
+    options: [
+        {
+            id: 'intents',
+            label: 'Intent colors',
+            note: 'A toast takes the fill color of its intent.',
+            recommended: true,
+            vars: {},
+            css: TOAST_INTENT_CSS
+        }
+    ]
+};
+
+//------------------------------------------------------------------
+// Form fields
+//------------------------------------------------------------------
+const FORM_LOOK_AT = 'Forms + Inputs > FormModel. Press Submit on the empty form to see errors.';
+
+// One line for the outline, with no second soft line under the top edge.
+const FLAT_OUTLINE: VarMap = {
+    '--xh-form-field-box-shadow': 'inset 0 0 0 1px var(--xh-form-field-box-shadow-color-top)'
+};
+
+const INPUT_HOVER_CSS = [
+    ':is(.xh-input-group__input, .xh-text-area):hover:not(:focus):not(:disabled),',
+    '.xh-select__control:hover:not(.xh-select__control--is-focused) {',
+    '  box-shadow: inset 0 0 0 1px',
+    '    color-mix(in oklch, var(--xh-form-field-box-shadow-color-top), var(--xh-text-color) 30%);',
+    '}'
+].join('\n');
+
+// A label keeps its own color when its field has a message. The required marker takes the color.
+const QUIET_INVALID_CSS = [
+    '.xh-form-field:is(.xh-form-field--invalid, .xh-form-field--warning, .xh-form-field--info)',
+    '  .xh-form-field__label {',
+    '  color: var(--xh-form-field-label-text-color);',
+    '}',
+    '.xh-form-field--invalid:not(.xh-form-field--readonly) .xh-form-field__required-indicator {',
+    '  color: var(--xh-form-field-invalid-text-color);',
+    '}'
+].join('\n');
+
+// A field set with a message keeps its neutral border. Its title still takes the intent color.
+const QUIET_SETS_CSS = [
+    QUIET_INVALID_CSS,
+    '.xh-card:is(.xh-card--intent-danger, .xh-card--intent-warning):has(.xh-form-field) {',
+    '  border-color: var(--xh-card-border-color);',
+    '}'
+].join('\n');
+
+const TINTED_INVALID_CSS = [
+    QUIET_SETS_CSS,
+    '.xh-form-field--invalid:not(.xh-form-field--readonly)',
+    '  :is(.xh-input-group__input, .xh-text-area, .xh-select__control) {',
+    '  background-color: var(--xh-intent-danger-trans1);',
+    '}'
+].join('\n');
+
+// One focus color for both themes. At this lightness it is 3:1 or better on a light and a dark page.
+const FOCUS_COLOR = 'oklch(from var(--xh-intent-primary) 0.6 max(c, 0.13) h)';
+
+function focusVars(fieldShadow: string): VarMap {
     return {
-        id: `${theme}-toasts`,
-        theme,
-        title: 'Toasts follow the intents',
-        why:
-            'Toasts use four fixed colors left over from Blueprint. No Hoist var reaches them, ' +
-            'so a success toast and a success button are different greens. This option paints ' +
-            'toasts from the intent colors.',
-        lookAt: 'System > Toasts. Show one of each intent, next to a button of that intent.',
-        options: [
-            {
-                id: 'intents',
-                label: 'Intent colors',
-                note: 'A toast takes the fill color of its intent.',
-                recommended: true,
-                vars: {},
-                css: TOAST_INTENT_CSS
-            }
-        ]
+        '--xh-focus-outline-color': FOCUS_COLOR,
+        '--xh-focus-outline-width': '2px',
+        '--xh-focus-outline-offset': '-2px',
+        '--xh-focus-outline': 'var(--xh-focus-outline-width) solid var(--xh-focus-outline-color)',
+        '--xh-form-field-focused-box-shadow': fieldShadow
     };
 }
+
+const FORM_ROUNDS: TunerRound[] = [
+    {
+        id: 'form-labels',
+        theme: 'both',
+        title: 'Form field labels',
+        why:
+            'A label is 13px regular in the text color: the same as the value under it, so a ' +
+            'form reads as one block of text. Toolbox restyles its labels in three places, ' +
+            'which says the default is not good enough. These options give the label its own ' +
+            'voice. Sentence case keeps units and acronyms as typed. Small caps is the look ' +
+            'Toolbox uses, but it turns "mm" into "MM".',
+        lookAt: FORM_LOOK_AT,
+        options: [
+            {
+                id: 'medium',
+                label: 'Medium',
+                note: 'A little smaller and heavier than the value, in a softer color. Sentence case.',
+                recommended: true,
+                vars: {
+                    '--xh-form-field-label-font-size': 'calc(var(--xh-font-size) * 0.92)',
+                    '--xh-form-field-label-font-weight': '500',
+                    '--xh-form-field-label-text-color': 'var(--tn-9)'
+                }
+            },
+            {
+                id: 'caps',
+                label: 'Small caps',
+                note: 'Small, uppercase and muted, with open spacing. The Toolbox look, as the default.',
+                vars: {
+                    '--xh-form-field-label-font-size': 'calc(var(--xh-font-size) * 0.85)',
+                    '--xh-form-field-label-font-weight': '600',
+                    '--xh-form-field-label-text-color': 'var(--xh-text-color-muted)',
+                    '--xh-form-field-label-text-transform': 'uppercase'
+                },
+                css: '.xh-form-field__label { letter-spacing: 0.05em; }'
+            },
+            {
+                id: 'strong',
+                label: 'Strong',
+                note: 'Same size as the value, semibold, in the text color.',
+                vars: {
+                    '--xh-form-field-label-font-weight': '600'
+                }
+            }
+        ],
+        watch: [
+            {
+                label: 'Label on page',
+                fg: '--xh-form-field-label-text-color',
+                bg: '--xh-bg',
+                kind: 'body'
+            }
+        ]
+    },
+    {
+        id: 'form-rhythm',
+        theme: 'both',
+        title: 'Field spacing and messages',
+        why:
+            'Fields sit 10px apart, with the label 3px above its input. Validation and help ' +
+            'messages are 10.4px, the smallest text in Hoist. These options open the rhythm a ' +
+            'little and bring messages up to a readable size.',
+        lookAt: FORM_LOOK_AT,
+        options: [
+            {
+                id: 'roomy',
+                label: 'Roomier',
+                note: 'Fields 14px apart, label 5px above its input, messages at 11.5px.',
+                recommended: true,
+                vars: {
+                    '--xh-form-field-margin': '0 0 14px 0',
+                    '--xh-form-field-label-margin': '0 0 5px 0',
+                    '--xh-form-field-message-font-size': 'calc(var(--xh-font-size) * 0.885)',
+                    '--xh-form-field-message-margin': '4px 0 0 0'
+                }
+            },
+            {
+                id: 'messages',
+                label: 'Messages only',
+                note: 'Spacing as shipped. Messages at 11.5px.',
+                vars: {
+                    '--xh-form-field-message-font-size': 'calc(var(--xh-font-size) * 0.885)'
+                }
+            }
+        ]
+    },
+    {
+        id: 'form-invalid',
+        theme: 'both',
+        title: 'Invalid fields',
+        why:
+            'An invalid field turns its label, its outline and its message red. A form with ' +
+            'several errors becomes a wall of red, and the label stops reading as a stable ' +
+            'name. A field set with an error also turns its whole border red. These options ' +
+            'keep the label in its own color.',
+        lookAt: FORM_LOOK_AT,
+        options: [
+            {
+                id: 'quiet',
+                label: 'Outline and message',
+                note: 'The label keeps its color. The outline, message and required marker are red.',
+                recommended: true,
+                vars: {},
+                css: QUIET_INVALID_CSS
+            },
+            {
+                id: 'sets',
+                label: 'Quiet field sets too',
+                note: 'As above. A field set with an invalid field keeps its neutral border, and only its title turns red.',
+                css: QUIET_SETS_CSS,
+                vars: {}
+            },
+            {
+                id: 'tinted',
+                label: 'Tinted field',
+                note: 'As above, and the input takes a faint red fill.',
+                vars: {},
+                css: TINTED_INVALID_CSS
+            }
+        ]
+    },
+    {
+        id: 'form-input-shape',
+        theme: 'both',
+        title: 'Input outline shape',
+        why:
+            'An input draws its outline as two inset shadows: a 1px line, and a second soft ' +
+            'line under the top edge. That second line dates from the inset look of older ' +
+            'toolkits and makes the top edge heavier. An input also gives no sign on hover.',
+        lookAt: 'Forms + Inputs > FormModel. Move the pointer over the inputs.',
+        options: [
+            {
+                id: 'hover',
+                label: 'Flat, with hover',
+                note: 'One even line. It darkens when the pointer is over the input.',
+                recommended: true,
+                vars: FLAT_OUTLINE,
+                css: INPUT_HOVER_CSS
+            },
+            {
+                id: 'flat',
+                label: 'Flat',
+                note: 'One even line, with no hover change.',
+                vars: FLAT_OUTLINE
+            }
+        ]
+    },
+    {
+        id: 'form-focus',
+        theme: 'both',
+        title: 'Focus ring',
+        why:
+            'A focused input swaps its 1px outline for a blue at 60% opacity. It measures ' +
+            '2.36:1 on the page in light and 2.22:1 in dark, and WCAG asks for 3:1. The same ' +
+            'color draws the keyboard focus outline on buttons and grid cells, half a pixel ' +
+            'wide. These options use one solid blue, derived from the primary intent, that ' +
+            'passes on both themes.',
+        lookAt: 'Forms + Inputs > FormModel. Click into an input, then press Tab through the form.',
+        options: [
+            {
+                id: 'solid',
+                label: 'Solid ring',
+                note: 'A 2px ring inside the edge. It cannot be clipped by a toolbar or a grid.',
+                recommended: true,
+                vars: focusVars('inset 0 0 0 2px var(--xh-form-field-focused-border-color)')
+            },
+            {
+                id: 'halo',
+                label: 'Halo',
+                note: 'A 1px line with a soft 3px glow outside the edge.',
+                vars: focusVars(
+                    'inset 0 0 0 1px var(--xh-form-field-focused-border-color), ' +
+                        '0 0 0 3px color-mix(in oklch, var(--xh-form-field-focused-border-color) 30%, transparent)'
+                )
+            }
+        ],
+        watch: [
+            {
+                label: 'Focus ring vs page',
+                fg: '--xh-form-field-focused-border-color',
+                bg: '--xh-bg',
+                kind: 'ui'
+            },
+            {
+                label: 'Focus ring vs toolbar',
+                fg: '--xh-form-field-focused-border-color',
+                bg: '--xh-bg-alt',
+                kind: 'ui'
+            }
+        ]
+    }
+];
 
 export const ROUNDS: TunerRound[] = [
     //------------------------------------------------------------------
@@ -1798,6 +2054,6 @@ export const ROUNDS: TunerRound[] = [
             }
         ]
     },
-    toastRound('light'),
-    toastRound('dark')
+    TOAST_ROUND,
+    ...FORM_ROUNDS
 ];

@@ -20,7 +20,8 @@ import {THRESHOLDS} from './ContrastPairs';
 import './ThemeTuner.scss';
 import type {WatchRow} from './ThemeTunerModel';
 import {fmtRatio, ThemeTunerModel} from './ThemeTunerModel';
-import type {TunerOption, TunerSeed} from './TunerRounds';
+import type {RoundTheme, TunerOption, TunerSeed} from './TunerRounds';
+import {roundAppliesTo} from './TunerRounds';
 
 /**
  * Docked panel for the theme tuner. Renders nothing until the tuner is opened.
@@ -93,9 +94,11 @@ const viewContent = hoistCmp.factory<ThemeTunerModel>(({model}) => {
 //------------------------------------------------------------------
 // Rounds
 //------------------------------------------------------------------
+const THEME_LABELS: Record<RoundTheme, string> = {light: 'Light', dark: 'Dark', both: 'Both'};
+
 const roundsView = hoistCmp.factory<ThemeTunerModel>(({model}) => {
     const {activeRound: round, rounds, activeRoundIdx, activeOption, picks} = model,
-        wrongTheme = round.theme !== model.theme;
+        wrongTheme = !roundAppliesTo(round, model.theme);
 
     return panel({
         className: 'tb-tuner__rounds',
@@ -113,7 +116,7 @@ const roundsView = hoistCmp.factory<ThemeTunerModel>(({model}) => {
                     enableFilter: false,
                     options: rounds.map((it, i) => ({
                         value: it.id,
-                        label: `${i + 1}. ${it.theme === 'dark' ? 'Dark' : 'Light'} - ${it.title}${picks[it.id] ? '  ✓' : ''}`
+                        label: `${i + 1}. ${THEME_LABELS[it.theme]} - ${it.title}${picks[it.id] ? '  ✓' : ''}`
                     })),
                     onChange: id => model.activateRound(id)
                 }),
@@ -147,7 +150,7 @@ const roundsView = hoistCmp.factory<ThemeTunerModel>(({model}) => {
             children: [
                 div({
                     className: 'tb-tuner__eyebrow',
-                    children: `Round ${activeRoundIdx + 1} of ${rounds.length} · ${round.theme} theme`
+                    children: `Round ${activeRoundIdx + 1} of ${rounds.length} · ${round.theme === 'both' ? 'both themes' : round.theme + ' theme'}`
                 }),
                 div({className: 'tb-tuner__title', children: round.title}),
                 div({className: 'tb-tuner__why', children: round.why}),

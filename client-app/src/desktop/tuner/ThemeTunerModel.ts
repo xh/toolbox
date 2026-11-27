@@ -11,7 +11,7 @@ import {apca, fmtOklch, fromOklch, over, toCss, toOklch, toOklchCss, wcag} from 
 import type {ColorSpec, PairKind} from './ContrastPairs';
 import {CONTRAST_PAIRS, THRESHOLDS} from './ContrastPairs';
 import type {ThemeKey, TunerOption, TunerRound, TunerSeed, VarMap} from './TunerRounds';
-import {BASE, ROUNDS, SEEDS} from './TunerRounds';
+import {BASE, roundAppliesTo, ROUNDS, SEEDS} from './TunerRounds';
 
 export type TunerView = 'rounds' | 'contrast' | 'vars' | 'export';
 
@@ -151,7 +151,7 @@ export class ThemeTunerModel extends HoistModel {
                 track: () => XH.darkTheme,
                 run: () => {
                     const {theme, activeRound, rounds} = this;
-                    if (activeRound.theme === theme) return;
+                    if (roundAppliesTo(activeRound, theme)) return;
                     this.activeRoundId = rounds.find(it => it.theme === theme).id;
                 },
                 fireImmediately: true
@@ -179,7 +179,7 @@ export class ThemeTunerModel extends HoistModel {
         const round = this.rounds.find(it => it.id === id);
         if (!round) return;
         this.activeRoundId = id;
-        if (round.theme !== this.theme) XH.toggleTheme();
+        if (!roundAppliesTo(round, this.theme)) XH.toggleTheme();
     }
 
     stepRound(delta: number) {
@@ -196,8 +196,11 @@ export class ThemeTunerModel extends HoistModel {
 
         // A pick replaces any direct edit to the vars that this round sets.
         const roundVars = round.options.flatMap(it => Object.keys(it.vars)),
-            {theme} = round;
-        this.tweaks = {...this.tweaks, [theme]: omit(this.tweaks[theme], roundVars)};
+            tweaks = {...this.tweaks};
+        THEMES.filter(theme => roundAppliesTo(round, theme)).forEach(theme => {
+            tweaks[theme] = omit(tweaks[theme], roundVars);
+        });
+        this.tweaks = tweaks;
         this.picks = optionId ? {...this.picks, [roundId]: optionId} : omit(this.picks, roundId);
         this.showTuned = true;
     }
@@ -316,7 +319,7 @@ export class ThemeTunerModel extends HoistModel {
 
         add(BASE[theme], 'Ramp');
         this.rounds.forEach(round => {
-            if (round.theme !== theme) return;
+            if (!roundAppliesTo(round, theme)) return;
             const option = round.options.find(it => it.id === this.picks[round.id]);
             if (option) add(option.vars, `${round.title}: ${option.label}`);
         });
@@ -351,7 +354,7 @@ export class ThemeTunerModel extends HoistModel {
     /** The extra rules of the options picked for a theme. */
     private pickedCss(theme: ThemeKey): string {
         return this.rounds
-            .filter(round => round.theme === theme)
+            .filter(round => roundAppliesTo(round, theme))
             .map(round => round.options.find(it => it.id === this.picks[round.id])?.css)
             .filter(Boolean)
             .join('\n');
@@ -421,7 +424,7 @@ export class ThemeTunerModel extends HoistModel {
         if (!this.open) return;
         const {theme, activeRound} = this,
             pairs = CONTRAST_PAIRS,
-            watch = activeRound.theme === theme ? (activeRound.watch ?? []) : [];
+            watch = roundAppliesTo(activeRound, theme) ? (activeRound.watch ?? []) : [];
 
         const measureAll = () => ({
             pairs: pairs.map(it => this.measure(it.fg, it.bg)),
