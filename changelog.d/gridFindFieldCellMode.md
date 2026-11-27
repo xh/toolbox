@@ -1,4 +1,6 @@
 ### New Features
 
 * Added a Mode option to the GridFindField demo to try its new `cells` mode, which finds matching
-  column headers and cells and steps between them like Excel's Find.
+  cells and steps between them like Excel's Find, with a Headers option to find column headers too.
+  The demo grid is now a collapsed positions tree with a collapsed column group, to show find
+  expanding both.
