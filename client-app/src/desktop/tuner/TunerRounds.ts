@@ -30,6 +30,8 @@ export interface TunerOption {
     /** True for the option proposed as the starting point. */
     recommended?: boolean;
     vars: VarMap;
+    /** Values that differ by theme, for an option in a round for both themes. */
+    varsByTheme?: Partial<Record<ThemeKey, VarMap>>;
     /**
      * Extra rules, for a structural change that vars cannot express. The tuner nests them under
      * the body selector of the round's theme.
@@ -639,6 +641,57 @@ const FORM_ROUNDS: TunerRound[] = [
         ]
     }
 ];
+
+//------------------------------------------------------------------
+// Brand seeds
+//------------------------------------------------------------------
+/** A whole-theme preset: the two seeds of the neutral ramp, and a light title bar that follows them. */
+function brandPreset(hue: number, tint: number): Pick<TunerOption, 'vars' | 'varsByTheme'> {
+    return {
+        vars: {'--tn-h': String(hue), '--tn-c': String(tint)},
+        varsByTheme: {light: title(n(0.522, 0.036), 'white')}
+    };
+}
+
+const BRAND_ROUND: TunerRound = {
+    id: 'brand-seeds',
+    theme: 'both',
+    title: 'One more thing: a theme from two numbers',
+    why:
+        'Every neutral in the tuned theme comes from one ramp, and the ramp reads two ' +
+        'numbers: a hue and a tint strength. These presets change only those two numbers. ' +
+        'They are not looks proposed for Hoist. They show what a client app could do with ' +
+        'two vars: its own chrome in both themes, on the same lightness steps, so the ' +
+        'contrast grades hold.',
+    lookAt: 'Any busy page, in both themes. Try the sliders below for values in between.',
+    seeds: ['--tn-h', '--tn-c'],
+    options: [
+        {
+            id: 'graphite',
+            label: 'Graphite',
+            note: 'Almost no tint. A neutral, hard-edged gray.',
+            ...brandPreset(255, 0.3)
+        },
+        {
+            id: 'navy',
+            label: 'Navy',
+            note: 'A bluer hue at nearly twice the tint.',
+            ...brandPreset(256, 1.9)
+        },
+        {
+            id: 'stone',
+            label: 'Stone',
+            note: 'A warm gray, for a brand with warm colors.',
+            ...brandPreset(65, 0.9)
+        }
+    ],
+    watch: [
+        {label: 'Text on page', fg: '--xh-text-color', bg: '--xh-bg', kind: 'body'},
+        {label: 'Muted on toolbar', fg: '--xh-text-color-muted', bg: '--xh-bg-alt', kind: 'sec'},
+        {label: 'Title text', fg: '--xh-title-text-color', bg: '--xh-title-bg', kind: 'body'},
+        {label: 'Toolbar vs page', fg: '--xh-bg-alt', bg: '--xh-bg', kind: 'info'}
+    ]
+};
 
 export const ROUNDS: TunerRound[] = [
     //------------------------------------------------------------------
@@ -2055,5 +2108,6 @@ export const ROUNDS: TunerRound[] = [
         ]
     },
     TOAST_ROUND,
-    ...FORM_ROUNDS
+    ...FORM_ROUNDS,
+    BRAND_ROUND
 ];

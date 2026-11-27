@@ -195,7 +195,10 @@ export class ThemeTunerModel extends HoistModel {
         if (!round) return;
 
         // A pick replaces any direct edit to the vars that this round sets.
-        const roundVars = round.options.flatMap(it => Object.keys(it.vars)),
+        const roundVars = round.options.flatMap(it => [
+                ...Object.keys(it.vars),
+                ...Object.values(it.varsByTheme ?? {}).flatMap(vars => Object.keys(vars))
+            ]),
             tweaks = {...this.tweaks};
         THEMES.filter(theme => roundAppliesTo(round, theme)).forEach(theme => {
             tweaks[theme] = omit(tweaks[theme], roundVars);
@@ -321,7 +324,11 @@ export class ThemeTunerModel extends HoistModel {
         this.rounds.forEach(round => {
             if (!roundAppliesTo(round, theme)) return;
             const option = round.options.find(it => it.id === this.picks[round.id]);
-            if (option) add(option.vars, `${round.title}: ${option.label}`);
+            if (!option) return;
+            add(
+                {...option.vars, ...option.varsByTheme?.[theme]},
+                `${round.title}: ${option.label}`
+            );
         });
         add(this.tweaks[theme], 'Direct edit');
         return ret;
