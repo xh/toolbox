@@ -60,7 +60,7 @@ export interface TunerRound {
 
 export const SEEDS: TunerSeed[] = [
     {
-        name: '--tn-h',
+        name: '--xh-neutral-hue',
         label: 'Neutral hue',
         help: 'OKLCH hue shared by every neutral. 232 is the slate blue Hoist uses today.',
         min: 0,
@@ -69,7 +69,7 @@ export const SEEDS: TunerSeed[] = [
         themes: ['light', 'dark']
     },
     {
-        name: '--tn-c',
+        name: '--xh-neutral-tint',
         label: 'Neutral tint',
         help: 'Chroma multiplier for every neutral. 0 is pure gray.',
         min: 0,
@@ -78,7 +78,7 @@ export const SEEDS: TunerSeed[] = [
         themes: ['light', 'dark']
     },
     {
-        name: '--tn-d',
+        name: '--xh-neutral-depth',
         label: 'Surface depth',
         help: 'Lightness added to every dark surface and border. Text is not moved.',
         min: -0.04,
@@ -89,94 +89,114 @@ export const SEEDS: TunerSeed[] = [
 ];
 
 //------------------------------------------------------------------
-// Neutral ramps. Always defined while the tuner is on. They change
-// nothing until a round option points an --xh-* var at them.
+// Neutral ramps and their seeds. Hoist defines these in `styles/vars.scss`. This copy must match
+// it. The tuner holds a copy so each step and seed can be edited and reset. They change nothing
+// until a round option points an --xh-* var at them.
 //------------------------------------------------------------------
-const n = (l: number, c: number) => `oklch(${l} calc(${c} * var(--tn-c)) var(--tn-h))`;
+const RAMP_VAR = /^--xh-neutral-(hue|tint|depth|\d+)$/;
+
+/** True for a step or a seed of the neutral ramp. */
+export function isRampVar(name: string): boolean {
+    return RAMP_VAR.test(name);
+}
+
+const LEGACY_VARS: Record<string, string> = {
+    '--tn-h': '--xh-neutral-hue',
+    '--tn-c': '--xh-neutral-tint',
+    '--tn-d': '--xh-neutral-depth'
+};
+
+/** The current name of a ramp var, for state saved before the ramp moved into Hoist. */
+export function currentVarName(name: string): string {
+    return LEGACY_VARS[name] ?? name.replace(/^--tn-(\d+)$/, '--xh-neutral-$1');
+}
+
+const n = (l: number, c: number) =>
+    `oklch(${l} calc(${c} * var(--xh-neutral-tint)) var(--xh-neutral-hue))`;
 const d = (l: number, c: number) =>
-    `oklch(calc(${l} + var(--tn-d)) calc(${c} * var(--tn-c)) var(--tn-h))`;
+    `oklch(calc(${l} + var(--xh-neutral-depth)) calc(${c} * var(--xh-neutral-tint)) var(--xh-neutral-hue))`;
 
 export const BASE: Record<ThemeKey, VarMap> = {
     light: {
-        '--tn-h': '232',
-        '--tn-c': '1',
-        '--tn-1': n(0.985, 0.002), // stripe, subtle fill
-        '--tn-2': n(0.968, 0.004), // chrome: toolbars, app bar, sidebars
-        '--tn-3': n(0.94, 0.006), // hover fill, tracks
-        '--tn-4': n(0.915, 0.007), // hairlines
-        '--tn-5': n(0.87, 0.009), // quiet border
-        '--tn-6': n(0.8, 0.012), // defined border
-        '--tn-7': n(0.63, 0.016), // control outline, 3:1 on white
-        '--tn-8': n(0.53, 0.02), // muted text, 4.5:1 on chrome
-        '--tn-9': n(0.45, 0.025), // secondary text
-        '--tn-10': n(0.31, 0.02), // body text
-        '--tn-11': n(0.24, 0.018) // strong text
+        '--xh-neutral-hue': '232',
+        '--xh-neutral-tint': '1',
+        '--xh-neutral-1': n(0.985, 0.002), // stripe, subtle fill
+        '--xh-neutral-2': n(0.968, 0.004), // chrome: toolbars, app bar, sidebars
+        '--xh-neutral-3': n(0.94, 0.006), // hover fill, tracks
+        '--xh-neutral-4': n(0.915, 0.007), // hairlines
+        '--xh-neutral-5': n(0.87, 0.009), // quiet border
+        '--xh-neutral-6': n(0.8, 0.012), // defined border
+        '--xh-neutral-7': n(0.63, 0.016), // control outline, 3:1 on white
+        '--xh-neutral-8': n(0.53, 0.02), // muted text, 4.5:1 on chrome
+        '--xh-neutral-9': n(0.45, 0.025), // secondary text
+        '--xh-neutral-10': n(0.31, 0.02), // body text
+        '--xh-neutral-11': n(0.24, 0.018) // strong text
     },
     dark: {
-        '--tn-h': '232',
-        '--tn-c': '1',
-        '--tn-d': '0',
-        '--tn-0': d(0.155, 0.008), // sunken: tracks, wells
-        '--tn-1': d(0.19, 0.01), // app background
-        '--tn-2': d(0.215, 0.011), // stripe
-        '--tn-3': d(0.245, 0.013), // chrome: toolbars, app bar, sidebars
-        '--tn-4': d(0.285, 0.015), // raised, hover fill
-        '--tn-5': d(0.33, 0.016), // hairlines
-        '--tn-6': d(0.39, 0.018), // border
-        '--tn-7': d(0.55, 0.02), // control outline, 3:1 on chrome
-        '--tn-8': n(0.72, 0.018), // muted text
-        '--tn-9': n(0.8, 0.015), // secondary text
-        '--tn-10': n(0.94, 0.008), // body text
-        '--tn-11': n(0.98, 0.004) // strong text
+        '--xh-neutral-hue': '232',
+        '--xh-neutral-tint': '1',
+        '--xh-neutral-depth': '0',
+        '--xh-neutral-0': d(0.155, 0.008), // sunken: tracks, wells
+        '--xh-neutral-1': d(0.19, 0.01), // app background
+        '--xh-neutral-2': d(0.215, 0.011), // stripe
+        '--xh-neutral-3': d(0.245, 0.013), // chrome: toolbars, app bar, sidebars
+        '--xh-neutral-4': d(0.285, 0.015), // raised, hover fill
+        '--xh-neutral-5': d(0.33, 0.016), // hairlines
+        '--xh-neutral-6': d(0.39, 0.018), // border
+        '--xh-neutral-7': d(0.55, 0.02), // control outline, 3:1 on chrome
+        '--xh-neutral-8': n(0.72, 0.018), // muted text
+        '--xh-neutral-9': n(0.8, 0.015), // secondary text
+        '--xh-neutral-10': n(0.94, 0.008), // body text
+        '--xh-neutral-11': n(0.98, 0.004) // strong text
     }
 };
 
 const lightNeutrals: VarMap = {
-    '--xh-bg-alt': 'var(--tn-2)',
-    '--xh-panel-collapsed-strip-bg': 'var(--tn-2)',
-    '--xh-panel-collapsed-strip-hover-bg': 'var(--tn-4)',
-    '--xh-resizable-bg': 'var(--tn-2)',
-    '--xh-resizable-border-color': 'var(--tn-5)',
-    '--xh-loading-indicator-bg': 'var(--tn-4)'
+    '--xh-bg-alt': 'var(--xh-neutral-2)',
+    '--xh-panel-collapsed-strip-bg': 'var(--xh-neutral-2)',
+    '--xh-panel-collapsed-strip-hover-bg': 'var(--xh-neutral-4)',
+    '--xh-resizable-bg': 'var(--xh-neutral-2)',
+    '--xh-resizable-border-color': 'var(--xh-neutral-5)',
+    '--xh-loading-indicator-bg': 'var(--xh-neutral-4)'
 };
 
 const lightSecondaryText: VarMap = {
     // Deliberately quieter than other secondary text: a hint, not a label.
-    '--xh-input-placeholder-text-color': 'var(--tn-7)',
-    '--xh-neutral-val-color': 'var(--tn-8)',
-    '--xh-menu-heading-text-color': 'var(--tn-9)',
-    '--xh-separator-label-text-color': 'var(--tn-9)',
-    '--xh-property-table-label-text-color': 'var(--tn-9)',
-    '--xh-property-table-empty-text-color': 'var(--tn-9)',
-    '--xh-panel-collapsed-strip-icon-color': 'var(--tn-9)',
-    '--xh-loading-indicator-text-color': 'var(--tn-9)'
+    '--xh-input-placeholder-text-color': 'var(--xh-neutral-7)',
+    '--xh-neutral-val-color': 'var(--xh-neutral-8)',
+    '--xh-menu-heading-text-color': 'var(--xh-neutral-9)',
+    '--xh-separator-label-text-color': 'var(--xh-neutral-9)',
+    '--xh-property-table-label-text-color': 'var(--xh-neutral-9)',
+    '--xh-property-table-empty-text-color': 'var(--xh-neutral-9)',
+    '--xh-panel-collapsed-strip-icon-color': 'var(--xh-neutral-9)',
+    '--xh-loading-indicator-text-color': 'var(--xh-neutral-9)'
 };
 
 const lightGridGroup: VarMap = {
     '--xh-grid-group-bg': n(0.54, 0.03),
-    '--xh-grid-group-border-color': 'var(--tn-6)'
+    '--xh-grid-group-border-color': 'var(--xh-neutral-6)'
 };
 
 const darkSurfaces: VarMap = {
-    '--xh-bg': 'var(--tn-1)',
-    '--xh-bg-alt': 'var(--tn-3)',
-    '--xh-toolbar-bg': 'var(--tn-3)',
-    '--xh-grid-odd-row-bg': 'var(--tn-2)',
-    '--xh-panel-collapsed-strip-bg': 'var(--tn-3)',
-    '--xh-panel-collapsed-strip-hover-bg': 'var(--tn-4)',
-    '--xh-resizable-bg': 'var(--tn-4)',
-    '--xh-resizable-border-color': 'var(--tn-3)',
-    '--xh-dash-canvas-grid-cell-color': 'var(--tn-0)',
-    '--xh-loading-indicator-bg': 'var(--tn-5)'
+    '--xh-bg': 'var(--xh-neutral-1)',
+    '--xh-bg-alt': 'var(--xh-neutral-3)',
+    '--xh-toolbar-bg': 'var(--xh-neutral-3)',
+    '--xh-grid-odd-row-bg': 'var(--xh-neutral-2)',
+    '--xh-panel-collapsed-strip-bg': 'var(--xh-neutral-3)',
+    '--xh-panel-collapsed-strip-hover-bg': 'var(--xh-neutral-4)',
+    '--xh-resizable-bg': 'var(--xh-neutral-4)',
+    '--xh-resizable-border-color': 'var(--xh-neutral-3)',
+    '--xh-dash-canvas-grid-cell-color': 'var(--xh-neutral-0)',
+    '--xh-loading-indicator-bg': 'var(--xh-neutral-5)'
 };
 
 const darkSecondaryText: VarMap = {
-    '--xh-text-color-muted': 'var(--tn-8)',
+    '--xh-text-color-muted': 'var(--xh-neutral-8)',
     '--xh-input-placeholder-text-color': n(0.64, 0.018),
-    '--xh-menu-heading-text-color': 'var(--tn-9)',
-    '--xh-loading-indicator-text-color': 'var(--tn-9)',
-    '--xh-panel-collapsed-strip-icon-color': 'var(--tn-8)',
-    '--xh-panel-splitter-button-icon-color': 'var(--tn-9)'
+    '--xh-menu-heading-text-color': 'var(--xh-neutral-9)',
+    '--xh-loading-indicator-text-color': 'var(--xh-neutral-9)',
+    '--xh-panel-collapsed-strip-icon-color': 'var(--xh-neutral-8)',
+    '--xh-panel-splitter-button-icon-color': 'var(--xh-neutral-9)'
 };
 
 /** Both edges of an input outline, in one color. */
@@ -256,7 +276,7 @@ function darkTreeLevels(l: number, c: number, hues: number[] = DARK_TREE_HUES): 
     return Object.fromEntries(
         hues.map((hue, level) => [
             `--xh-grid-tree-group-level-${level}-bg`,
-            `oklch(calc(${l} + var(--tn-d)) ${c} ${hue})`
+            `oklch(calc(${l} + var(--xh-neutral-depth)) ${c} ${hue})`
         ])
     );
 }
@@ -466,7 +486,7 @@ const FORM_ROUNDS: TunerRound[] = [
                 vars: {
                     '--xh-form-field-label-font-size': 'calc(var(--xh-font-size) * 0.92)',
                     '--xh-form-field-label-font-weight': '500',
-                    '--xh-form-field-label-text-color': 'var(--tn-9)'
+                    '--xh-form-field-label-text-color': 'var(--xh-neutral-9)'
                 }
             },
             {
@@ -660,7 +680,7 @@ function brandPreset(
     titleBg: string = n(0.522, 0.036)
 ): Pick<TunerOption, 'vars' | 'varsByTheme'> {
     return {
-        vars: {'--tn-h': String(hue), '--tn-c': String(tint)},
+        vars: {'--xh-neutral-hue': String(hue), '--xh-neutral-tint': String(tint)},
         varsByTheme: {light: title(titleBg, 'white')}
     };
 }
@@ -740,7 +760,7 @@ const BRAND_ROUND: TunerRound = {
         'two vars: its own chrome in both themes, on the same lightness steps, so the ' +
         'contrast grades hold.',
     lookAt: 'Any busy page, in both themes. Try the sliders below for values in between.',
-    seeds: ['--tn-h', '--tn-c'],
+    seeds: ['--xh-neutral-hue', '--xh-neutral-tint'],
     options: [
         {
             id: 'graphite',
@@ -788,7 +808,7 @@ export const ROUNDS: TunerRound[] = [
             'grid stripes and borders read flat. These options put every surface on one ramp. ' +
             'They also lift toolbars from 95% to 97% lightness, which makes the chrome quieter.',
         lookAt: 'App bar, toolbars and side tabs together.',
-        seeds: ['--tn-h', '--tn-c'],
+        seeds: ['--xh-neutral-hue', '--xh-neutral-tint'],
         options: [
             {
                 id: 'slate',
@@ -801,13 +821,13 @@ export const ROUNDS: TunerRound[] = [
                 id: 'gray',
                 label: 'True gray',
                 note: 'Same ramp with no tint.',
-                vars: {...lightNeutrals, '--tn-c': '0'}
+                vars: {...lightNeutrals, '--xh-neutral-tint': '0'}
             },
             {
                 id: 'tinted',
                 label: 'Stronger tint',
                 note: 'Twice the chroma. More character, more blue.',
-                vars: {...lightNeutrals, '--tn-c': '2'}
+                vars: {...lightNeutrals, '--xh-neutral-tint': '2'}
             }
         ],
         watch: [
@@ -830,7 +850,7 @@ export const ROUNDS: TunerRound[] = [
                 label: 'AA floor',
                 note: 'About 5.2:1 on white, 4.8:1 on toolbars.',
                 recommended: true,
-                vars: {...lightSecondaryText, '--xh-text-color-muted': 'var(--tn-8)'}
+                vars: {...lightSecondaryText, '--xh-text-color-muted': 'var(--xh-neutral-8)'}
             },
             {
                 id: 'strong',
@@ -876,9 +896,9 @@ export const ROUNDS: TunerRound[] = [
                 note: 'The current lightness, on the shared neutral hue.',
                 recommended: true,
                 vars: {
-                    '--xh-text-color': 'var(--tn-10)',
-                    '--xh-text-color-highlight': 'var(--tn-11)',
-                    '--xh-appbar-title-text-color': 'var(--tn-9)'
+                    '--xh-text-color': 'var(--xh-neutral-10)',
+                    '--xh-text-color-highlight': 'var(--xh-neutral-11)',
+                    '--xh-appbar-title-text-color': 'var(--xh-neutral-9)'
                 }
             },
             {
@@ -886,9 +906,9 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Ink',
                 note: 'One step darker, about 16.4:1.',
                 vars: {
-                    '--xh-text-color': 'var(--tn-11)',
-                    '--xh-text-color-highlight': 'var(--tn-11)',
-                    '--xh-appbar-title-text-color': 'var(--tn-10)'
+                    '--xh-text-color': 'var(--xh-neutral-11)',
+                    '--xh-text-color-highlight': 'var(--xh-neutral-11)',
+                    '--xh-appbar-title-text-color': 'var(--xh-neutral-10)'
                 }
             }
         ],
@@ -912,11 +932,11 @@ export const ROUNDS: TunerRound[] = [
                 note: 'Lighter panel borders and grid lines.',
                 recommended: true,
                 vars: {
-                    '--xh-border-color': 'var(--tn-5)',
-                    '--xh-toolbar-border-color': 'var(--tn-5)',
-                    '--xh-toolbar-separator-color': 'var(--tn-6)',
-                    '--xh-grid-border-color': 'var(--tn-4)',
-                    '--xh-grid-pinned-column-border-color': 'var(--tn-5)'
+                    '--xh-border-color': 'var(--xh-neutral-5)',
+                    '--xh-toolbar-border-color': 'var(--xh-neutral-5)',
+                    '--xh-toolbar-separator-color': 'var(--xh-neutral-6)',
+                    '--xh-grid-border-color': 'var(--xh-neutral-4)',
+                    '--xh-grid-pinned-column-border-color': 'var(--xh-neutral-5)'
                 }
             },
             {
@@ -924,11 +944,11 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Defined frames',
                 note: 'Panel borders keep their current weight, on the shared hue.',
                 vars: {
-                    '--xh-border-color': 'var(--tn-6)',
-                    '--xh-toolbar-border-color': 'var(--tn-6)',
-                    '--xh-toolbar-separator-color': 'var(--tn-6)',
-                    '--xh-grid-border-color': 'var(--tn-4)',
-                    '--xh-grid-pinned-column-border-color': 'var(--tn-5)'
+                    '--xh-border-color': 'var(--xh-neutral-6)',
+                    '--xh-toolbar-border-color': 'var(--xh-neutral-6)',
+                    '--xh-toolbar-separator-color': 'var(--xh-neutral-6)',
+                    '--xh-grid-border-color': 'var(--xh-neutral-4)',
+                    '--xh-grid-pinned-column-border-color': 'var(--xh-neutral-5)'
                 }
             }
         ],
@@ -953,7 +973,7 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Quiet',
                 note: 'Lighter than today at about the same contrast, 1.7:1.',
                 vars: {
-                    '--xh-scrollbar-bg': 'var(--tn-2)',
+                    '--xh-scrollbar-bg': 'var(--xh-neutral-2)',
                     '--xh-scrollbar-thumb-color': n(0.8, 0.018)
                 }
             },
@@ -963,7 +983,7 @@ export const ROUNDS: TunerRound[] = [
                 note: 'A clear thumb that stays in the background, 2.3:1.',
                 recommended: true,
                 vars: {
-                    '--xh-scrollbar-bg': 'var(--tn-2)',
+                    '--xh-scrollbar-bg': 'var(--xh-neutral-2)',
                     '--xh-scrollbar-thumb-color': n(0.72, 0.026)
                 }
             },
@@ -972,7 +992,7 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Visible',
                 note: 'Meets 3:1 for control contrast. The heaviest of the three.',
                 vars: {
-                    '--xh-scrollbar-bg': 'var(--tn-2)',
+                    '--xh-scrollbar-bg': 'var(--xh-neutral-2)',
                     '--xh-scrollbar-thumb-color': n(0.63, 0.033)
                 }
             }
@@ -1008,7 +1028,7 @@ export const ROUNDS: TunerRound[] = [
                 id: 'faint',
                 label: 'Faint',
                 note: 'Half the shipped contrast, 1.05:1. Clean, but easy to lose.',
-                vars: {'--xh-grid-odd-row-bg': 'var(--tn-1)'}
+                vars: {'--xh-grid-odd-row-bg': 'var(--xh-neutral-1)'}
             },
             {
                 id: 'strong',
@@ -1055,7 +1075,7 @@ export const ROUNDS: TunerRound[] = [
                 note: 'Hover is gray, so blue always means selected.',
                 vars: {
                     ...lightGridGroup,
-                    '--xh-grid-row-hover-bg': 'var(--tn-3)',
+                    '--xh-grid-row-hover-bg': 'var(--xh-neutral-3)',
                     '--xh-bg-highlight': `oklch(0.92 0.042 ${SEL_HUE})`,
                     '--xh-grid-tree-group-bg': `oklch(0.965 0.014 ${SEL_HUE})`
                 }
@@ -1118,7 +1138,7 @@ export const ROUNDS: TunerRound[] = [
             'glow against the page. These options keep the slate hue and close the gap to about ' +
             '5 points. Deep keeps the current page. Dim lifts every surface.',
         lookAt: 'App bar and toolbars against the page, then a full grid.',
-        seeds: ['--tn-d', '--tn-h', '--tn-c'],
+        seeds: ['--xh-neutral-depth', '--xh-neutral-hue', '--xh-neutral-tint'],
         options: [
             {
                 id: 'deep',
@@ -1131,7 +1151,7 @@ export const ROUNDS: TunerRound[] = [
                 id: 'dim',
                 label: 'Dim',
                 note: 'Every surface about 5 points lighter. Softer, less contrast.',
-                vars: {...darkSurfaces, '--tn-d': '0.055'}
+                vars: {...darkSurfaces, '--xh-neutral-depth': '0.055'}
             }
         ],
         watch: [
@@ -1163,9 +1183,9 @@ export const ROUNDS: TunerRound[] = [
                 recommended: true,
                 vars: {
                     ...darkSecondaryText,
-                    '--xh-text-color': 'var(--tn-10)',
-                    '--xh-text-color-highlight': 'var(--tn-11)',
-                    '--xh-appbar-title-text-color': 'var(--tn-10)'
+                    '--xh-text-color': 'var(--xh-neutral-10)',
+                    '--xh-text-color-highlight': 'var(--xh-neutral-11)',
+                    '--xh-appbar-title-text-color': 'var(--xh-neutral-10)'
                 }
             },
             {
@@ -1175,7 +1195,7 @@ export const ROUNDS: TunerRound[] = [
                 vars: {
                     ...darkSecondaryText,
                     '--xh-text-color': n(0.9, 0.01),
-                    '--xh-text-color-highlight': 'var(--tn-11)',
+                    '--xh-text-color-highlight': 'var(--xh-neutral-11)',
                     '--xh-appbar-title-text-color': n(0.9, 0.01)
                 }
             }
@@ -1212,12 +1232,12 @@ export const ROUNDS: TunerRound[] = [
                 note: 'Hairline panels and grid lines.',
                 recommended: true,
                 vars: {
-                    '--xh-border-color': 'var(--tn-5)',
-                    '--xh-toolbar-border-color': 'var(--tn-5)',
-                    '--xh-appbar-border-color': 'var(--tn-5)',
-                    '--xh-toolbar-separator-color': 'var(--tn-6)',
-                    '--xh-grid-border-color': 'var(--tn-3)',
-                    '--xh-grid-pinned-column-border-color': 'var(--tn-5)'
+                    '--xh-border-color': 'var(--xh-neutral-5)',
+                    '--xh-toolbar-border-color': 'var(--xh-neutral-5)',
+                    '--xh-appbar-border-color': 'var(--xh-neutral-5)',
+                    '--xh-toolbar-separator-color': 'var(--xh-neutral-6)',
+                    '--xh-grid-border-color': 'var(--xh-neutral-3)',
+                    '--xh-grid-pinned-column-border-color': 'var(--xh-neutral-5)'
                 }
             },
             {
@@ -1225,12 +1245,12 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Defined frames',
                 note: 'Panel borders at their current weight. Grid lines a little stronger.',
                 vars: {
-                    '--xh-border-color': 'var(--tn-6)',
-                    '--xh-toolbar-border-color': 'var(--tn-6)',
-                    '--xh-appbar-border-color': 'var(--tn-6)',
-                    '--xh-toolbar-separator-color': 'var(--tn-7)',
-                    '--xh-grid-border-color': 'var(--tn-4)',
-                    '--xh-grid-pinned-column-border-color': 'var(--tn-6)'
+                    '--xh-border-color': 'var(--xh-neutral-6)',
+                    '--xh-toolbar-border-color': 'var(--xh-neutral-6)',
+                    '--xh-appbar-border-color': 'var(--xh-neutral-6)',
+                    '--xh-toolbar-separator-color': 'var(--xh-neutral-7)',
+                    '--xh-grid-border-color': 'var(--xh-neutral-4)',
+                    '--xh-grid-pinned-column-border-color': 'var(--xh-neutral-6)'
                 }
             }
         ],
@@ -1254,7 +1274,7 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Quiet',
                 note: 'A little easier to find than today, 1.9:1.',
                 vars: {
-                    '--xh-scrollbar-bg': 'var(--tn-1)',
+                    '--xh-scrollbar-bg': 'var(--xh-neutral-1)',
                     '--xh-scrollbar-thumb-color': d(0.39, 0.025)
                 }
             },
@@ -1264,7 +1284,7 @@ export const ROUNDS: TunerRound[] = [
                 note: 'A clear thumb that stays in the background, 2.6:1.',
                 recommended: true,
                 vars: {
-                    '--xh-scrollbar-bg': 'var(--tn-1)',
+                    '--xh-scrollbar-bg': 'var(--xh-neutral-1)',
                     '--xh-scrollbar-thumb-color': d(0.46, 0.03)
                 }
             },
@@ -1273,7 +1293,7 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Visible',
                 note: 'Meets 3:1 for control contrast. The brightest of the three.',
                 vars: {
-                    '--xh-scrollbar-bg': 'var(--tn-1)',
+                    '--xh-scrollbar-bg': 'var(--xh-neutral-1)',
                     '--xh-scrollbar-thumb-color': d(0.55, 0.038)
                 }
             }
@@ -1303,11 +1323,11 @@ export const ROUNDS: TunerRound[] = [
                 note: 'Hover is a faint blue. Selection is clearly stronger.',
                 recommended: true,
                 vars: {
-                    '--xh-grid-row-hover-bg': `oklch(calc(0.265 + var(--tn-d)) 0.03 ${SEL_HUE})`,
-                    '--xh-bg-highlight': `oklch(calc(0.34 + var(--tn-d)) 0.065 ${SEL_HUE})`,
-                    '--xh-grid-tree-group-bg': `oklch(calc(0.26 + var(--tn-d)) 0.035 ${SEL_HUE})`,
-                    '--xh-grid-group-bg': 'var(--tn-6)',
-                    '--xh-grid-group-border-color': 'var(--tn-7)'
+                    '--xh-grid-row-hover-bg': `oklch(calc(0.265 + var(--xh-neutral-depth)) 0.03 ${SEL_HUE})`,
+                    '--xh-bg-highlight': `oklch(calc(0.34 + var(--xh-neutral-depth)) 0.065 ${SEL_HUE})`,
+                    '--xh-grid-tree-group-bg': `oklch(calc(0.26 + var(--xh-neutral-depth)) 0.035 ${SEL_HUE})`,
+                    '--xh-grid-group-bg': 'var(--xh-neutral-6)',
+                    '--xh-grid-group-border-color': 'var(--xh-neutral-7)'
                 }
             },
             {
@@ -1315,11 +1335,11 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Neutral hover',
                 note: 'Hover is gray, so blue always means selected.',
                 vars: {
-                    '--xh-grid-row-hover-bg': 'var(--tn-4)',
-                    '--xh-bg-highlight': `oklch(calc(0.34 + var(--tn-d)) 0.065 ${SEL_HUE})`,
-                    '--xh-grid-tree-group-bg': `oklch(calc(0.26 + var(--tn-d)) 0.035 ${SEL_HUE})`,
-                    '--xh-grid-group-bg': 'var(--tn-6)',
-                    '--xh-grid-group-border-color': 'var(--tn-7)'
+                    '--xh-grid-row-hover-bg': 'var(--xh-neutral-4)',
+                    '--xh-bg-highlight': `oklch(calc(0.34 + var(--xh-neutral-depth)) 0.065 ${SEL_HUE})`,
+                    '--xh-grid-tree-group-bg': `oklch(calc(0.26 + var(--xh-neutral-depth)) 0.035 ${SEL_HUE})`,
+                    '--xh-grid-group-bg': 'var(--xh-neutral-6)',
+                    '--xh-grid-group-border-color': 'var(--xh-neutral-7)'
                 }
             }
         ],
@@ -1442,7 +1462,7 @@ export const ROUNDS: TunerRound[] = [
                 id: 'full',
                 label: 'Full 3:1',
                 note: '3.5:1 on the page, 3.2:1 in a toolbar. The only one that passes.',
-                vars: outline('var(--tn-7)')
+                vars: outline('var(--xh-neutral-7)')
             }
         ],
         watch: [
@@ -1488,7 +1508,7 @@ export const ROUNDS: TunerRound[] = [
                 id: 'full',
                 label: 'Full 3:1',
                 note: '3.8:1 on the page, 3.3:1 in a toolbar. The only one that passes.',
-                vars: outline('var(--tn-7)')
+                vars: outline('var(--xh-neutral-7)')
             }
         ],
         watch: [
@@ -1526,19 +1546,19 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Light band',
                 note: 'A pale band with a dark label. Reads as a heading, not a bar.',
                 recommended: true,
-                vars: groupRow(n(0.91, 0.01), 'var(--tn-11)', 'var(--tn-5)')
+                vars: groupRow(n(0.91, 0.01), 'var(--xh-neutral-11)', 'var(--xh-neutral-5)')
             },
             {
                 id: 'mid',
                 label: 'Mid band',
                 note: 'A clear cool gray band with a dark label.',
-                vars: groupRow(n(0.83, 0.016), 'var(--tn-11)', 'var(--tn-6)')
+                vars: groupRow(n(0.83, 0.016), 'var(--xh-neutral-11)', 'var(--xh-neutral-6)')
             },
             {
                 id: 'solid',
                 label: 'Solid slate',
                 note: 'The dark bar from the grid states round, white label.',
-                vars: groupRow(n(0.54, 0.035), 'white', 'var(--tn-6)')
+                vars: groupRow(n(0.54, 0.035), 'white', 'var(--xh-neutral-6)')
             }
         ],
         watch: groupRowWatch()
@@ -1557,19 +1577,19 @@ export const ROUNDS: TunerRound[] = [
                 label: 'Low band',
                 note: 'One step above the rows, soft label.',
                 recommended: true,
-                vars: groupRow(d(0.3, 0.024), 'var(--tn-10)', 'var(--tn-6)')
+                vars: groupRow(d(0.3, 0.024), 'var(--xh-neutral-10)', 'var(--xh-neutral-6)')
             },
             {
                 id: 'mid',
                 label: 'Mid band',
                 note: 'A clear band with a bright label.',
-                vars: groupRow(d(0.37, 0.03), 'var(--tn-11)', 'var(--tn-7)')
+                vars: groupRow(d(0.37, 0.03), 'var(--xh-neutral-11)', 'var(--xh-neutral-7)')
             },
             {
                 id: 'solid',
                 label: 'Solid slate',
                 note: 'The shipped weight on the shared hue.',
-                vars: groupRow(d(0.43, 0.034), 'white', 'var(--tn-7)')
+                vars: groupRow(d(0.43, 0.034), 'white', 'var(--xh-neutral-7)')
             }
         ],
         watch: groupRowWatch()
@@ -1599,7 +1619,7 @@ export const ROUNDS: TunerRound[] = [
                 recommended: true,
                 vars: {
                     '--xh-grid-tree-group-bg': n(0.945, 0.008),
-                    '--xh-grid-tree-group-border-color': 'var(--tn-5)'
+                    '--xh-grid-tree-group-border-color': 'var(--xh-neutral-5)'
                 }
             }
         ],
@@ -1623,7 +1643,7 @@ export const ROUNDS: TunerRound[] = [
                 note: 'On the selection hue.',
                 recommended: true,
                 vars: {
-                    '--xh-grid-tree-group-bg': `oklch(calc(0.25 + var(--tn-d)) 0.03 ${SEL_HUE})`
+                    '--xh-grid-tree-group-bg': `oklch(calc(0.25 + var(--xh-neutral-depth)) 0.03 ${SEL_HUE})`
                 }
             },
             {
@@ -1632,7 +1652,7 @@ export const ROUNDS: TunerRound[] = [
                 note: 'Gray tiers. Blue then only means selected.',
                 vars: {
                     '--xh-grid-tree-group-bg': d(0.26, 0.014),
-                    '--xh-grid-tree-group-border-color': 'var(--tn-5)'
+                    '--xh-grid-tree-group-border-color': 'var(--xh-neutral-5)'
                 }
             }
         ],
@@ -1676,19 +1696,19 @@ export const ROUNDS: TunerRound[] = [
                 id: 'slate',
                 label: 'Clean slate',
                 note: 'A clear bar, well below the shipped brightness.',
-                vars: title(d(0.4, 0.04), 'var(--tn-11)')
+                vars: title(d(0.4, 0.04), 'var(--xh-neutral-11)')
             },
             {
                 id: 'ink',
                 label: 'Deep slate',
                 note: 'A low bar, just above the toolbar.',
-                vars: title(d(0.33, 0.035), 'var(--tn-10)')
+                vars: title(d(0.33, 0.035), 'var(--xh-neutral-10)')
             },
             {
                 id: 'raised',
                 label: 'Raised surface',
                 note: 'Nearly neutral. The header reads as a raised surface.',
-                vars: title(d(0.29, 0.018), 'var(--tn-10)')
+                vars: title(d(0.29, 0.018), 'var(--xh-neutral-10)')
             }
         ],
         watch: titleWatch()
@@ -2021,7 +2041,7 @@ export const ROUNDS: TunerRound[] = [
                         'oklch(0.78 0.16 72)',
                         'oklch(from var(--xh-intent-warning) 0.5 calc(c * 0.8) h)'
                     ),
-                    '--tn-on-warning': 'var(--tn-11)'
+                    '--tn-on-warning': 'var(--xh-neutral-11)'
                 },
                 css: AMBER_LABEL_CSS
             },
@@ -2160,7 +2180,7 @@ export const ROUNDS: TunerRound[] = [
                         'oklch(0.78 0.16 72)',
                         'var(--xh-intent-warning)'
                     ),
-                    '--tn-on-warning': 'var(--tn-0)'
+                    '--tn-on-warning': 'var(--xh-neutral-0)'
                 },
                 css: AMBER_LABEL_CSS
             },

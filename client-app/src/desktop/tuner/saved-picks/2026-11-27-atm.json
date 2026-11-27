@@ -1,0 +1,56 @@
+{
+  "savedOn": "2026-11-27",
+  "note": "Picks after a full pass through all 43 rounds. No pick means the shipped value stays, as in form-focus (round 41). brand-seeds 'forest' and caps-style 'labels' were the options on screen at the end of the pass. Both rounds are demos, so confirm before treating them as choices.",
+  "restore": "In the browser console: localStorage.setItem('toolbox.' + XH.getUsername() + '.themeTuner', JSON.stringify(state)), then reload.",
+  "state": {
+    "picks": {
+      "dark-inputs": "soft",
+      "dark-grid": "calm",
+      "dark-scrollbar-shape": "pill",
+      "light-scrollbar-shape": "pill",
+      "dark-scrollbars": "quiet",
+      "light-tree": "open",
+      "dark-tree": "open",
+      "dark-headers": "ink",
+      "light-widget-headers": "cool",
+      "light-neutrals": "slate",
+      "light-secondary-text": "aa",
+      "light-text": "same",
+      "light-borders": "quiet",
+      "light-scrollbars": "balanced",
+      "light-stripes": "same",
+      "dark-depth": "deep",
+      "dark-text": "soft",
+      "dark-borders": "quiet",
+      "light-charts": "validated",
+      "dark-charts": "validated",
+      "light-inputs": "soft",
+      "light-group-rows": "band",
+      "dark-group-rows": "band",
+      "dark-tree-colors": "calm",
+      "dark-header-edge": "cut",
+      "light-grid": "cool-hover",
+      "light-intent-warning": "vivid",
+      "light-intent-primary": "hoist",
+      "light-intent-success": "leaf",
+      "light-intent-danger": "hoist",
+      "dark-intent-primary": "clear",
+      "dark-intent-success": "leaf",
+      "dark-intent-warning": "burnt",
+      "dark-intent-danger": "red",
+      "toasts": "intents",
+      "form-labels": "medium",
+      "form-rhythm": "messages",
+      "form-invalid": "sets",
+      "form-input-shape": "hover",
+      "brand-seeds": "forest",
+      "caps-style": "labels"
+    },
+    "tweaks": {
+      "light": {},
+      "dark": {
+        "--xh-neutral-depth": "-0.02"
+      }
+    }
+  }
+}

@@ -5,13 +5,13 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {action, bindable, computed, observable, observableRef} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {debounced} from '@xh/hoist/utils/js';
-import {forOwn, isEmpty, omit, pickBy, uniq} from 'lodash';
+import {forOwn, isEmpty, mapKeys, omit, pickBy, uniq} from 'lodash';
 import type {Rgba} from './ColorMath';
 import {apca, fmtOklch, fromOklch, over, toCss, toOklch, toOklchCss, wcag} from './ColorMath';
 import type {ColorSpec, PairKind} from './ContrastPairs';
 import {CONTRAST_PAIRS, THRESHOLDS} from './ContrastPairs';
 import type {ThemeKey, TunerOption, TunerRound, TunerSeed, VarMap} from './TunerRounds';
-import {BASE, roundAppliesTo, ROUNDS, SEEDS} from './TunerRounds';
+import {BASE, currentVarName, isRampVar, roundAppliesTo, ROUNDS, SEEDS} from './TunerRounds';
 
 export type TunerView = 'rounds' | 'contrast' | 'vars' | 'export';
 
@@ -35,6 +35,12 @@ interface TunerState {
 }
 
 const STORAGE_KEY = 'themeTuner';
+
+// A value that reads a step or a seed of the neutral ramp.
+const RAMP_REF = /var\(--xh-neutral-(hue|tint|depth|\d+)\)/;
+
+/** True for a var the tuner does not propose as a Hoist theme value: the ramp, or a tuner helper. */
+const isInternalVar = (name: string) => isRampVar(name) || name.startsWith('--tn-');
 const STYLE_ID = 'tb-theme-tuner-vars';
 const THEMES: ThemeKey[] = ['light', 'dark'];
 const SECTIONS = uniq(CONTRAST_PAIRS.map(it => it.section));
@@ -302,7 +308,7 @@ export class ThemeTunerModel extends HoistModel {
     @action
     setState(state: Partial<TunerState>) {
         this.picks = state.picks ?? {};
-        this.tweaks = {light: {}, dark: {}, ...state.tweaks};
+        this.tweaks = this.readTweaks(state.tweaks);
     }
 
     /** The graded pair list for the active theme, as plain objects. */
@@ -486,12 +492,12 @@ export class ThemeTunerModel extends HoistModel {
             .map((name, i) => ({
                 id: name,
                 name,
-                group: name.startsWith('--tn-') ? 'Ramp and seeds' : 'Theme vars',
+                group: isInternalVar(name) ? 'Ramp and seeds' : 'Theme vars',
                 value: vars[name].value,
                 source: vars[name].source,
                 isColor: CSS.supports('color', vars[name].value) || tuned[i].a > 0,
                 css: toCss(tuned[i]),
-                shippedCss: name.startsWith('--tn-') ? null : toCss(shipped[i]),
+                shippedCss: isInternalVar(name) ? null : toCss(shipped[i]),
                 oklch: fmtOklch(tuned[i])
             }))
             .filter(it => it.isColor);
@@ -510,25 +516,32 @@ export class ThemeTunerModel extends HoistModel {
     //------------------------------------------------------------------
     // Export
     //------------------------------------------------------------------
-    /** SCSS for `styles/vars.scss`, with each changed var flattened to a literal color. */
+    /**
+     * SCSS for `styles/vars.scss`. A var that reads the neutral ramp keeps that reference, so the
+     * theme still follows the ramp seeds. Any other changed var is flattened to a literal color.
+     */
     createExport(): string {
         const blocks = THEMES.map(theme => {
-            const names = Object.keys(this.effectiveVars(theme)).filter(
-                it => !it.startsWith('--tn-')
-            );
+            const vars = this.effectiveVars(theme),
+                names = Object.keys(vars).filter(it => !isInternalVar(it)),
+                rampLines = Object.keys(vars)
+                    .filter(it => isRampVar(it) && vars[it] !== BASE[theme][it])
+                    .map(it => `  ${it}: ${vars[it]};`);
             const lines = this.withTheme(theme, () => {
                 const tuned = this.withSheet(true, () => names.map(it => this.readColor(it))),
                     shipped = this.withSheet(false, () => names.map(it => this.readColor(it)));
                 return names
                     .map((name, i) => ({name, now: tuned[i], was: shipped[i]}))
                     .filter(it => toCss(it.now) !== toCss(it.was))
-                    .map(
-                        it =>
-                            `  ${it.name}: ${toCss(it.now)}; // was ${toCss(it.was)} | ${toOklchCss(it.now)}`
-                    );
+                    .map(it => {
+                        const raw = vars[it.name],
+                            value = RAMP_REF.test(raw) ? raw : toCss(it.now);
+                        return `  ${it.name}: ${value}; // was ${toCss(it.was)} | ${toOklchCss(it.now)}`;
+                    });
             });
-            const selector = theme === 'light' ? 'body' : 'body:where(.xh-dark)';
-            return `// ${theme} theme - ${lines.length} vars\n${selector} {\n${lines.join('\n')}\n}`;
+            const selector = theme === 'light' ? 'body' : 'body:where(.xh-dark)',
+                all = [...rampLines, ...lines];
+            return `// ${theme} theme - ${all.length} vars\n${selector} {\n${all.join('\n')}\n}`;
         });
 
         const state = JSON.stringify(this.getState(), null, 2);
@@ -576,12 +589,17 @@ export class ThemeTunerModel extends HoistModel {
             .sort();
     }
 
+    private readTweaks(tweaks: Partial<Record<ThemeKey, VarMap>>): Record<ThemeKey, VarMap> {
+        const read = (vars: VarMap) => mapKeys(vars ?? {}, (v, name) => currentVarName(name));
+        return {light: read(tweaks?.light), dark: read(tweaks?.dark)};
+    }
+
     private loadState() {
         const state = XH.localStorageService.get(STORAGE_KEY, {});
         this.picks = pickBy(state.picks ?? {}, (optionId, roundId) =>
             this.rounds.some(r => r.id === roundId && r.options.some(o => o.id === optionId))
         );
-        this.tweaks = {light: {}, dark: {}, ...state.tweaks};
+        this.tweaks = this.readTweaks(state.tweaks);
         this.open = !!state.open;
         if (this.rounds.some(it => it.id === state.activeRoundId)) {
             this.activeRoundId = state.activeRoundId;

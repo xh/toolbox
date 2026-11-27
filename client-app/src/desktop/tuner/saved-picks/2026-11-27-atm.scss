@@ -1,0 +1,312 @@
+// Theme Tuner export for the picks in 2026-11-27-atm.json.
+// A var that reads the neutral ramp keeps its reference, so the theme follows --xh-neutral-hue and
+// --xh-neutral-tint. Options that inject CSS rules are not in this file.
+// light theme - 82 vars
+body {
+  --xh-neutral-hue: 146;
+  --xh-bg-alt: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 146)
+  --xh-panel-collapsed-strip-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 146)
+  --xh-panel-collapsed-strip-hover-bg: var(--xh-neutral-4); // was #cfd8dc | oklch(91.5% 0.007 146)
+  --xh-resizable-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 146)
+  --xh-resizable-border-color: var(--xh-neutral-5); // was #cfd8dc | oklch(87% 0.009 146)
+  --xh-loading-indicator-bg: var(--xh-neutral-4); // was #cfd8dc | oklch(91.5% 0.007 146)
+  --xh-input-placeholder-text-color: var(--xh-neutral-7); // was #afb7bf | oklch(63% 0.016 146)
+  --xh-neutral-val-color: var(--xh-neutral-8); // was #9e9e9e | oklch(53% 0.02 146)
+  --xh-menu-heading-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
+  --xh-separator-label-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
+  --xh-property-table-label-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
+  --xh-property-table-empty-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
+  --xh-panel-collapsed-strip-icon-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
+  --xh-loading-indicator-text-color: var(--xh-neutral-9); // was #546e7a | oklch(45% 0.025 146)
+  --xh-text-color-muted: var(--xh-neutral-8); // was #9e9e9e | oklch(53% 0.02 146)
+  --xh-text-color: var(--xh-neutral-10); // was #263238 | oklch(31% 0.02 146)
+  --xh-text-color-highlight: var(--xh-neutral-11); // was #37474f | oklch(24% 0.018 146)
+  --xh-appbar-title-text-color: var(--xh-neutral-9); // was #455a64 | oklch(45% 0.025 146)
+  --xh-border-color: var(--xh-neutral-5); // was #bdbdbd | oklch(87% 0.009 146)
+  --xh-toolbar-border-color: var(--xh-neutral-5); // was #bdbdbd | oklch(87% 0.009 146)
+  --xh-toolbar-separator-color: var(--xh-neutral-6); // was #bdbdbd | oklch(80% 0.012 146)
+  --xh-grid-border-color: var(--xh-neutral-4); // was #eeeeee | oklch(91.5% 0.007 146)
+  --xh-grid-pinned-column-border-color: var(--xh-neutral-5); // was #e0e0e0 | oklch(87% 0.009 146)
+  --xh-scrollbar-bg: var(--xh-neutral-2); // was #cfd8dc | oklch(96.8% 0.004 146)
+  --xh-scrollbar-thumb-color: oklch(
+    0.72 calc(0.026 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #90a4ae | oklch(72% 0.026 146)
+  --xh-grid-odd-row-bg: oklch(
+    0.97 calc(0.003 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #f5f5f5 | oklch(97% 0.003 146)
+  --xh-grid-group-bg: oklch(
+    0.91 calc(0.01 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #78909c | oklch(91% 0.01 146)
+  --xh-grid-group-border-color: var(--xh-neutral-5); // was #b0bec5 | oklch(87% 0.009 146)
+  --xh-grid-row-hover-bg: #e4eef5; // was #d0e9fb | oklch(94.3% 0.015 240)
+  --xh-bg-highlight: #cee8ff; // was #b8def9 | oklch(92% 0.042 245)
+  --xh-grid-tree-group-bg: #e6f2fd; // was #e3f2fd | oklch(95.5% 0.02 245)
+  --xh-chart-color-1: #257de0; // was #2caffe | oklch(59.2% 0.171 255)
+  --xh-chart-color-2: #f47230; // was #544fc5 | oklch(69.8% 0.177 44)
+  --xh-chart-color-3: #00b894; // was #00e272 | oklch(69.7% 0.135 172)
+  --xh-chart-color-4: #f2a600; // was #fe6a35 | oklch(77.9% 0.164 76)
+  --xh-chart-color-5: #ee7fac; // was #6b8abc | oklch(73.2% 0.144 356)
+  --xh-chart-color-6: #008a17; // was #d568fb | oklch(55% 0.18 144)
+  --xh-chart-color-7: #6a4ce2; // was #2ee0ca | oklch(53.7% 0.216 286)
+  --xh-chart-color-8: #ec4647; // was #fa4b42 | oklch(63.4% 0.203 25)
+  --xh-chart-color-9: #257de0; // was #feb56a | oklch(59.2% 0.171 255)
+  --xh-chart-color-10: #f47230; // was #91e8e1 | oklch(69.8% 0.177 44)
+  --xh-form-field-box-shadow-color-top: oklch(
+    0.78 calc(0.016 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was rgb(207 216 220 / 0.85) | oklch(78% 0.016 146)
+  --xh-form-field-box-shadow-color-bottom: oklch(
+    0.78 calc(0.016 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was rgb(207 216 220 / 0.8) | oklch(78% 0.016 146)
+  --xh-grid-group-text-color: var(--xh-neutral-11); // was #ffffff | oklch(24% 0.018 146)
+  --xh-scrollbar-thumb-hover-color: #768377; // was #90a4ae | oklch(59.7% 0.024 146)
+  --xh-dash-canvas-widget-title-bg: oklch(
+    0.92 calc(0.007 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #546e7a | oklch(92% 0.007 146)
+  --xh-dash-canvas-widget-title-text-color: oklch(
+    0.38 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #eceff1 | oklch(38% 0.02 146)
+  --xh-intent-primary-darker: #004889; // was #004b85 | oklch(40.4% 0.124 253)
+  --xh-intent-primary-darkest: #003a79; // was #004275 | oklch(35.7% 0.121 256)
+  --xh-intent-primary-lighter: #b5d5f6; // was #b3deff | oklch(86% 0.058 250)
+  --xh-intent-primary-lightest: #e2f0ff; // was #e6f4ff | oklch(95% 0.025 249)
+  --xh-intent-primary-trans1: rgb(
+    -1 87 153 / 0.15
+  ); // was rgb(0 87 153 / 0.15) | oklch(45% 0.128 250 / 0.15)
+  --xh-intent-primary-trans2: rgb(
+    -1 87 153 / 0.3
+  ); // was rgb(0 87 153 / 0.3) | oklch(45% 0.128 250 / 0.3)
+  --xh-intent-primary-text-color: #1060a2; // was #004b85 | oklch(48% 0.128 250)
+  --xh-intent-success: #1e7729; // was #36873a | oklch(50% 0.14 145)
+  --xh-intent-success-darker: #036819; // was #2c6d2f | oklch(45% 0.14 145)
+  --xh-intent-success-darkest: #005905; // was #265f29 | oklch(40.4% 0.135 143)
+  --xh-intent-success-lighter: #b8ddb8; // was #c8e9ca | oklch(86% 0.063 145)
+  --xh-intent-success-lightest: #e3f4e3; // was #edf8ed | oklch(95% 0.028 145)
+  --xh-intent-success-trans1: rgb(
+    30 119 41 / 0.15
+  ); // was rgb(54 135 58 / 0.15) | oklch(50% 0.14 145 / 0.15)
+  --xh-intent-success-trans2: rgb(
+    30 119 41 / 0.3
+  ); // was rgb(54 135 58 / 0.3) | oklch(50% 0.14 145 / 0.3)
+  --xh-intent-success-text-color: #157123; // was #2c6d2f | oklch(48% 0.14 145)
+  --xh-intent-warning: #c95b0a; // was #db6e00 | oklch(60% 0.16 48)
+  --xh-intent-warning-darker: #b84c00; // was #c26100 | oklch(55.1% 0.157 45)
+  --xh-intent-warning-darkest: #a73c00; // was #ad5700 | oklch(50.2% 0.153 42)
+  --xh-intent-warning-lighter: #f9c4a8; // was #ffd9b3 | oklch(86% 0.072 48)
+  --xh-intent-warning-lightest: #ffe9dc; // was #fff2e6 | oklch(94.8% 0.029 51)
+  --xh-intent-warning-trans1: rgb(
+    201 91 10 / 0.15
+  ); // was rgb(219 110 0 / 0.15) | oklch(60% 0.16 48 / 0.15)
+  --xh-intent-warning-trans2: rgb(
+    201 91 10 / 0.3
+  ); // was rgb(219 110 0 / 0.3) | oklch(60% 0.16 48 / 0.3)
+  --xh-intent-warning-text-color: #a13500; // was #c26100 | oklch(48.2% 0.151 40)
+  --xh-intent-danger: #b01c1d; // was #b01c1c | oklch(48.8% 0.182 27)
+  --xh-intent-danger-darker: #9e000b; // was #841515 | oklch(44% 0.18 28)
+  --xh-intent-danger-darkest: #8d0000; // was #731212 | oklch(40.4% 0.166 29)
+  --xh-intent-danger-lighter: #ffbdb4; // was #f5bdbd | oklch(85.6% 0.078 27)
+  --xh-intent-danger-lightest: #ffe6e1; // was #fce9e9 | oklch(94.4% 0.028 30)
+  --xh-intent-danger-trans1: rgb(
+    176 28 29 / 0.15
+  ); // was rgb(176 28 28 / 0.15) | oklch(48.8% 0.182 27 / 0.15)
+  --xh-intent-danger-trans2: rgb(
+    176 28 29 / 0.3
+  ); // was rgb(176 28 28 / 0.3) | oklch(48.8% 0.182 27 / 0.3)
+  --xh-intent-danger-text-color: #ad181b; // was #841515 | oklch(48% 0.182 27)
+  --xh-form-field-label-text-color: #656f65; // was #263238 | oklch(53% 0.02 146)
+  --xh-title-bg: #004912; // was #546e7a | oklch(35.3% 0.108 146)
+  --xh-title-text-color: #ffffff; // was #eceff1 | oklch(100% 0 0)
+}
+
+// dark theme - 90 vars
+body:where(.xh-dark) {
+  --xh-neutral-hue: 146;
+  --xh-neutral-depth: -0.02;
+  --xh-bg: var(--xh-neutral-1); // was #13181b | oklch(17% 0.01 146)
+  --xh-bg-alt: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
+  --xh-toolbar-bg: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
+  --xh-grid-odd-row-bg: var(--xh-neutral-2); // was #151e23 | oklch(19.5% 0.011 146)
+  --xh-panel-collapsed-strip-bg: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
+  --xh-panel-collapsed-strip-hover-bg: var(--xh-neutral-4); // was #37474f | oklch(26.5% 0.015 146)
+  --xh-resizable-bg: var(--xh-neutral-4); // was #37474f | oklch(26.5% 0.015 146)
+  --xh-resizable-border-color: var(--xh-neutral-3); // was #263238 | oklch(22.5% 0.013 146)
+  --xh-dash-canvas-grid-cell-color: var(--xh-neutral-0); // was #111518 | oklch(13.5% 0.008 146)
+  --xh-loading-indicator-bg: var(--xh-neutral-5); // was #455a64 | oklch(31% 0.016 146)
+  --xh-text-color-muted: var(--xh-neutral-8); // was #9e9e9e | oklch(72% 0.018 146)
+  --xh-input-placeholder-text-color: oklch(
+    0.64 calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #afb7bf | oklch(64% 0.018 146)
+  --xh-menu-heading-text-color: var(--xh-neutral-9); // was #b0bec5 | oklch(80% 0.015 146)
+  --xh-loading-indicator-text-color: var(--xh-neutral-9); // was #b0bec5 | oklch(80% 0.015 146)
+  --xh-panel-collapsed-strip-icon-color: var(--xh-neutral-8); // was #90a4ae | oklch(72% 0.018 146)
+  --xh-panel-splitter-button-icon-color: var(--xh-neutral-9); // was #cfd8dc | oklch(80% 0.015 146)
+  --xh-text-color: var(--xh-neutral-10); // was #ffffff | oklch(94% 0.008 146)
+  --xh-text-color-highlight: var(--xh-neutral-11); // was #ffffff | oklch(98% 0.004 146)
+  --xh-appbar-title-text-color: var(--xh-neutral-10); // was #eceff1 | oklch(94% 0.008 146)
+  --xh-border-color: var(--xh-neutral-5); // was #37474f | oklch(31% 0.016 146)
+  --xh-toolbar-border-color: var(--xh-neutral-5); // was #37474f | oklch(31% 0.016 146)
+  --xh-appbar-border-color: var(--xh-neutral-5); // was #455a64 | oklch(31% 0.016 146)
+  --xh-toolbar-separator-color: var(--xh-neutral-6); // was #546e7a | oklch(37% 0.018 146)
+  --xh-grid-border-color: var(--xh-neutral-3); // was #293233 | oklch(22.5% 0.013 146)
+  --xh-grid-pinned-column-border-color: var(--xh-neutral-5); // was #424242 | oklch(31% 0.016 146)
+  --xh-scrollbar-bg: var(--xh-neutral-1); // was #13181b | oklch(17% 0.01 146)
+  --xh-scrollbar-thumb-color: oklch(
+    calc(0.39 + var(--xh-neutral-depth)) calc(0.025 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #263238 | oklch(37% 0.025 146)
+  --xh-grid-row-hover-bg: oklch(
+    calc(0.265 + var(--xh-neutral-depth)) 0.03 245
+  ); // was #1c4154 | oklch(24.5% 0.03 245)
+  --xh-bg-highlight: oklch(
+    calc(0.34 + var(--xh-neutral-depth)) 0.065 245
+  ); // was #1f3a47 | oklch(32% 0.065 245)
+  --xh-grid-tree-group-bg: oklch(
+    calc(0.25 + var(--xh-neutral-depth)) 0.03 245
+  ); // was #173645 | oklch(23% 0.03 245)
+  --xh-grid-group-bg: oklch(
+    calc(0.3 + var(--xh-neutral-depth)) calc(0.024 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #37474f | oklch(28% 0.024 146)
+  --xh-grid-group-border-color: var(--xh-neutral-6); // was #455a64 | oklch(37% 0.018 146)
+  --xh-chart-color-1: #338ced; // was #2b908f | oklch(63.6% 0.168 254)
+  --xh-chart-color-2: #e76624; // was #90ee7e | oklch(66.1% 0.177 44)
+  --xh-chart-color-3: #00a888; // was #f45b5b | oklch(65.2% 0.126 173)
+  --xh-chart-color-4: #d28e05; // was #7798bf | oklch(69.8% 0.146 75)
+  --xh-chart-color-5: #e24d8b; // was #aaeeee | oklch(64.1% 0.192 358)
+  --xh-chart-color-6: #0aac23; // was #ff0066 | oklch(64.7% 0.209 144)
+  --xh-chart-color-7: #9887ef; // was #eeaaee | oklch(68.3% 0.15 289)
+  --xh-chart-color-8: #eb6263; // was #55bf3b | oklch(66.9% 0.17 22)
+  --xh-chart-color-9: #338ced; // was #df5353 | oklch(63.6% 0.168 254)
+  --xh-chart-color-10: #e76624; // was #7798bf | oklch(66.1% 0.177 44)
+  --xh-form-field-box-shadow-color-top: oklch(
+    calc(0.41 + var(--xh-neutral-depth)) calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was rgb(55 71 79 / 0.85) | oklch(39% 0.018 146)
+  --xh-form-field-box-shadow-color-bottom: oklch(
+    calc(0.41 + var(--xh-neutral-depth)) calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was rgb(55 71 79 / 0.8) | oklch(39% 0.018 146)
+  --xh-grid-group-text-color: var(--xh-neutral-10); // was #ffffff | oklch(94% 0.008 146)
+  --xh-title-bg: oklch(
+    calc(0.33 + var(--xh-neutral-depth)) calc(0.035 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #546e7a | oklch(31% 0.035 146)
+  --xh-title-text-color: var(--xh-neutral-10); // was #eceff1 | oklch(94% 0.008 146)
+  --xh-scrollbar-thumb-hover-color: #687268; // was #263238 | oklch(54.1% 0.02 146)
+  --xh-grid-tree-group-level-0-bg: oklch(
+    calc(0.27 + var(--xh-neutral-depth)) 0.04 235
+  ); // was #0d2a3f | oklch(25% 0.04 235)
+  --xh-grid-tree-group-level-1-bg: oklch(
+    calc(0.27 + var(--xh-neutral-depth)) 0.04 275
+  ); // was #160d3f | oklch(25% 0.04 275)
+  --xh-grid-tree-group-level-2-bg: oklch(
+    calc(0.27 + var(--xh-neutral-depth)) 0.04 320
+  ); // was #3b0d3f | oklch(25% 0.04 320)
+  --xh-grid-tree-group-level-3-bg: oklch(
+    calc(0.27 + var(--xh-neutral-depth)) 0.04 5
+  ); // was #3f0d1e | oklch(25% 0.04 5)
+  --xh-grid-tree-group-level-4-bg: oklch(
+    calc(0.27 + var(--xh-neutral-depth)) 0.04 50
+  ); // was #3f220d | oklch(25% 0.04 50)
+  --xh-grid-tree-group-level-5-bg: oklch(
+    calc(0.27 + var(--xh-neutral-depth)) 0.04 105
+  ); // was #30301d | oklch(25% 0.04 105)
+  --xh-panel-title-border-color: #0d110d; // was rgb(0 0 0 / 0) | oklch(17% 0.01 146)
+  --xh-intent-primary: #0c71d1; // was #0082e6 | oklch(55% 0.17 254)
+  --xh-intent-primary-darker: #0061c0; // was #005799 | oklch(50.2% 0.168 255)
+  --xh-intent-primary-darkest: #0052b0; // was #004880 | oklch(45.5% 0.165 257)
+  --xh-intent-primary-lighter: #5cb3ff; // was #4db2ff | oklch(74.6% 0.138 247)
+  --xh-intent-primary-lightest: #76ceff; // was #80c8ff | oklch(81.4% 0.11 235)
+  --xh-intent-primary-trans1: rgb(
+    12 113 209 / 0.15
+  ); // was rgb(0 130 230 / 0.15) | oklch(55% 0.17 254 / 0.15)
+  --xh-intent-primary-trans2: rgb(
+    12 113 209 / 0.3
+  ); // was rgb(0 130 230 / 0.3) | oklch(55% 0.17 254 / 0.3)
+  --xh-intent-primary-text-color: #5cb3ff; // was #4db2ff | oklch(74.6% 0.138 247)
+  --xh-intent-success: #1f8432; // was #339938 | oklch(54% 0.15 146)
+  --xh-intent-success-darker: #007522; // was #26732a | oklch(49% 0.15 146)
+  --xh-intent-success-darkest: #006610; // was #1d5820 | oklch(44.4% 0.144 144)
+  --xh-intent-success-lighter: #6bca75; // was #66cc6b | oklch(76% 0.15 146)
+  --xh-intent-success-lightest: #85e48e; // was #9fdfa3 | oklch(84% 0.15 146)
+  --xh-intent-success-trans1: rgb(
+    31 132 50 / 0.15
+  ); // was rgb(51 153 56 / 0.15) | oklch(54% 0.15 146 / 0.15)
+  --xh-intent-success-trans2: rgb(
+    31 132 50 / 0.3
+  ); // was rgb(51 153 56 / 0.3) | oklch(54% 0.15 146 / 0.3)
+  --xh-intent-success-text-color: #6bca75; // was #47d14e | oklch(76% 0.15 146)
+  --xh-intent-warning: #b2580b; // was #cc6600 | oklch(56% 0.14 52)
+  --xh-intent-warning-darker: #a24900; // was #994d00 | oklch(51.1% 0.136 49)
+  --xh-intent-warning-darkest: #913a00; // was #804000 | oklch(46.2% 0.132 45)
+  --xh-intent-warning-lighter: #f69557; // was #ffa64d | oklch(76% 0.14 52)
+  --xh-intent-warning-lightest: #ffaf71; // was #ffbf80 | oklch(81.8% 0.122 58)
+  --xh-intent-warning-trans1: rgb(
+    178 88 11 / 0.15
+  ); // was rgb(204 102 0 / 0.15) | oklch(56% 0.14 52 / 0.15)
+  --xh-intent-warning-trans2: rgb(
+    178 88 11 / 0.3
+  ); // was rgb(204 102 0 / 0.3) | oklch(56% 0.14 52 / 0.3)
+  --xh-intent-warning-text-color: #f69557; // was #ffa64d | oklch(76% 0.14 52)
+  --xh-intent-danger: #be2323; // was #a51d1d | oklch(52% 0.19 27)
+  --xh-intent-danger-darker: #ac0311; // was #821717 | oklch(47% 0.19 27)
+  --xh-intent-danger-darkest: #9b0000; // was #6c1313 | oklch(43.3% 0.177 29)
+  --xh-intent-danger-lighter: #ff786c; // was #dd3c3c | oklch(73% 0.166 27)
+  --xh-intent-danger-lightest: #ff9385; // was #e46767 | oklch(77.4% 0.133 28)
+  --xh-intent-danger-trans1: rgb(
+    190 35 35 / 0.15
+  ); // was rgb(165 29 29 / 0.15) | oklch(52% 0.19 27 / 0.15)
+  --xh-intent-danger-trans2: rgb(
+    190 35 35 / 0.3
+  ); // was rgb(165 29 29 / 0.3) | oklch(52% 0.19 27 / 0.3)
+  --xh-intent-danger-text-color: #ff786c; // was #f04c57 | oklch(73% 0.166 27)
+  --xh-form-field-label-text-color: #9ea89e; // was #ffffff | oklch(72% 0.018 146)
+}
+
+/* Tuner state. Reload with xhTuner.setState(...)
+{
+  "picks": {
+    "dark-inputs": "soft",
+    "dark-grid": "calm",
+    "dark-scrollbar-shape": "pill",
+    "light-scrollbar-shape": "pill",
+    "dark-scrollbars": "quiet",
+    "light-tree": "open",
+    "dark-tree": "open",
+    "dark-headers": "ink",
+    "light-widget-headers": "cool",
+    "light-neutrals": "slate",
+    "light-secondary-text": "aa",
+    "light-text": "same",
+    "light-borders": "quiet",
+    "light-scrollbars": "balanced",
+    "light-stripes": "same",
+    "dark-depth": "deep",
+    "dark-text": "soft",
+    "dark-borders": "quiet",
+    "light-charts": "validated",
+    "dark-charts": "validated",
+    "light-inputs": "soft",
+    "light-group-rows": "band",
+    "dark-group-rows": "band",
+    "dark-tree-colors": "calm",
+    "dark-header-edge": "cut",
+    "light-grid": "cool-hover",
+    "light-intent-warning": "vivid",
+    "light-intent-primary": "hoist",
+    "light-intent-success": "leaf",
+    "light-intent-danger": "hoist",
+    "dark-intent-primary": "clear",
+    "dark-intent-success": "leaf",
+    "dark-intent-warning": "burnt",
+    "dark-intent-danger": "red",
+    "toasts": "intents",
+    "form-labels": "medium",
+    "form-rhythm": "messages",
+    "form-invalid": "sets",
+    "form-input-shape": "hover",
+    "brand-seeds": "forest",
+    "caps-style": "labels"
+  },
+  "tweaks": {
+    "light": {},
+    "dark": {
+      "--xh-neutral-depth": "-0.02"
+    }
+  }
+}
+*/
