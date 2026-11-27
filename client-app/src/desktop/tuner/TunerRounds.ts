@@ -488,6 +488,18 @@ const FORM_ROUNDS: TunerRound[] = [
                 vars: {
                     '--xh-form-field-label-font-weight': '600'
                 }
+            },
+            {
+                id: 'caps-tight',
+                label: 'Small caps, tight',
+                note: 'Small caps at medium weight with less spacing, so labels run narrower.',
+                vars: {
+                    '--xh-form-field-label-font-size': 'calc(var(--xh-font-size) * 0.85)',
+                    '--xh-form-field-label-font-weight': '500',
+                    '--xh-form-field-label-text-color': 'var(--xh-text-color-muted)',
+                    '--xh-form-field-label-text-transform': 'uppercase'
+                },
+                css: '.xh-form-field__label { letter-spacing: 0.02em; }'
             }
         ],
         watch: [
