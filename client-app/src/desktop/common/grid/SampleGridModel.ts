@@ -255,8 +255,7 @@ export class SampleGridModel extends HoistModel {
                     }
                     return ret;
                 },
-                exportName: 'Company',
-                headerTooltip: 'Select a company & continue'
+                exportName: 'Company'
             },
             {...winLoseCol, hidden: true},
             {
