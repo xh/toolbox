@@ -348,10 +348,6 @@ const AMBER_LABEL_CSS = [
     '.xh-button.xh-button--intent-warning.xh-button--standard,',
     '.xh-button.xh-button--intent-warning.xh-button--standard svg {',
     '  color: var(--tn-on-warning) !important;',
-    '}',
-    '.xh-button.xh-button--intent-warning:is(.xh-button--minimal, .xh-button--outlined),',
-    '.xh-button.xh-button--intent-warning:is(.xh-button--minimal, .xh-button--outlined) svg {',
-    '  color: var(--xh-intent-warning-text-color) !important;',
     '}'
 ].join('\n');
 
