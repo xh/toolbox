@@ -272,38 +272,6 @@ function thumbShape(radius: string, inset: string): VarMap {
 
 const SEL_HUE = 245;
 
-// Rows that are not an expanded parent go back to the standard row and stripe colors.
-const TREE_COLORS_OPEN_ONLY_ROW =
-    '.xh-grid.xh-grid--tree-style-colors .ag-row:not(.ag-row-group-expanded)' +
-    ':not(.ag-row-selected):not(.ag-row-pinned):not(.ag-full-width-row)';
-const TREE_COLORS_OPEN_ONLY_CSS =
-    `${TREE_COLORS_OPEN_ONLY_ROW} { background-color: var(--ag-background-color) !important; }\n` +
-    `${TREE_COLORS_OPEN_ONLY_ROW}.ag-row-odd { background-color: var(--ag-odd-row-background-color) !important; }`;
-
-function treeColorsOpenRound(theme: ThemeKey): TunerRound {
-    return {
-        id: `${theme}-tree-colors-open`,
-        theme,
-        title: 'Tree color groups: open rows only',
-        why:
-            'The colors tree style fills every row above the deepest level, open or not. A ' +
-            'collapsed tree is then one solid block of the top color. This option fills ' +
-            'expanded parents only, the same rule the highlights style now uses. Other rows ' +
-            'style as standard rows.',
-        lookAt: 'Grids > Tree. Set Tree Style to Color Groups. Collapse all, then open one branch.',
-        options: [
-            {
-                id: 'open',
-                label: 'Open groups only',
-                note: 'A level shows its color only while it is open.',
-                recommended: true,
-                vars: {},
-                css: TREE_COLORS_OPEN_ONLY_CSS
-            }
-        ]
-    };
-}
-
 /** Vars for the ten chart series slots. Colors repeat from the start when fewer are given. */
 function chartColors(colors: string[]): VarMap {
     const ret = {};
@@ -318,6 +286,102 @@ function chartWatch(): WatchPair[] {
         bg: '--xh-bg',
         kind: 'info'
     }));
+}
+
+//------------------------------------------------------------------
+// Intents
+//------------------------------------------------------------------
+type IntentName = 'primary' | 'success' | 'warning' | 'danger';
+
+// Lightness of intent text in each theme. One value for every intent gives each the same contrast.
+const INTENT_TEXT_L: Record<ThemeKey, number> = {light: 0.48, dark: 0.76};
+
+// Label color on a solid warning surface. White unless an option says otherwise.
+const ON_WARNING = 'var(--tn-on-warning, #fff)';
+
+/**
+ * Every role of one intent, derived from its fill color with relative color syntax. The role
+ * names are the ones Hoist ships today, so every component follows.
+ */
+function intentVars(intent: IntentName, theme: ThemeKey, fill: string, text?: string): VarMap {
+    const name = `--xh-intent-${intent}`,
+        from = (l: string | number, c = 'c') => `oklch(from var(${name}) ${l} ${c} h)`,
+        textL = INTENT_TEXT_L[theme],
+        dark = theme === 'dark';
+    return {
+        [name]: fill,
+        [`${name}-darker`]: from('calc(l - 0.05)'),
+        [`${name}-darkest`]: from('calc(l - 0.1)'),
+        [`${name}-lighter`]: dark ? (text ?? from(textL)) : from(0.86, 'calc(c * 0.45)'),
+        [`${name}-lightest`]: dark ? from(0.84) : from(0.95, 'calc(c * 0.2)'),
+        [`${name}-trans1`]: `rgb(from var(${name}) r g b / var(--xh-intent-a1))`,
+        [`${name}-trans2`]: `rgb(from var(${name}) r g b / var(--xh-intent-a2))`,
+        [`${name}-text-color`]: text ?? from(textL)
+    };
+}
+
+function intentWatch(intent: IntentName, label = '#fff'): WatchPair[] {
+    const name = `--xh-intent-${intent}`,
+        text = `${name}-text-color`;
+    return [
+        {label: 'Label on fill', fg: label, bg: name, kind: 'body'},
+        {label: 'Label on hover', fg: label, bg: `${name}-darker`, kind: 'body'},
+        {label: 'Text on page', fg: text, bg: '--xh-bg', kind: 'body'},
+        {label: 'Text on toolbar', fg: text, bg: '--xh-bg-alt', kind: 'body'},
+        {label: 'Text on its tint', fg: text, bg: ['--xh-bg', `${name}-trans1`], kind: 'body'},
+        {label: 'Fill vs page', fg: name, bg: '--xh-bg', kind: 'ui'}
+    ];
+}
+
+// A bright warning fill takes a dark label. Outlined and minimal buttons take the text color,
+// because the hover shade they use today is too light to read.
+const AMBER_LABEL_CSS = [
+    '.xh-button.xh-button--intent-warning.xh-button--standard,',
+    '.xh-button.xh-button--intent-warning.xh-button--standard svg {',
+    '  color: var(--tn-on-warning) !important;',
+    '}',
+    '.xh-button.xh-button--intent-warning:is(.xh-button--minimal, .xh-button--outlined),',
+    '.xh-button.xh-button--intent-warning:is(.xh-button--minimal, .xh-button--outlined) svg {',
+    '  color: var(--xh-intent-warning-text-color) !important;',
+    '}'
+].join('\n');
+
+const INTENT_LOOK_AT = 'Components > Buttons, then Components > Callout.';
+
+// Paint toasts from the Hoist intents. Today they use fixed colors that no theme var reaches.
+const TOAST_INTENT_CSS = (['primary', 'success', 'warning', 'danger'] as IntentName[])
+    .map(it => {
+        const toast = `.xh-toast.xh-toast--intent-${it}`,
+            color = `var(--xh-intent-${it}`;
+        return [
+            `${toast}, ${toast} .xh-button { background-color: ${color}) !important; }`,
+            `${toast} .xh-button:hover { background-color: ${color}-darker) !important; }`,
+            `${toast} .xh-button:active { background-color: ${color}-darkest) !important; }`
+        ].join('\n');
+    })
+    .join('\n');
+
+function toastRound(theme: ThemeKey): TunerRound {
+    return {
+        id: `${theme}-toasts`,
+        theme,
+        title: 'Toasts follow the intents',
+        why:
+            'Toasts use four fixed colors left over from Blueprint. No Hoist var reaches them, ' +
+            'so a success toast and a success button are different greens. This option paints ' +
+            'toasts from the intent colors.',
+        lookAt: 'System > Toasts. Show one of each intent, next to a button of that intent.',
+        options: [
+            {
+                id: 'intents',
+                label: 'Intent colors',
+                note: 'A toast takes the fill color of its intent.',
+                recommended: true,
+                vars: {},
+                css: TOAST_INTENT_CSS
+            }
+        ]
+    };
 }
 
 export const ROUNDS: TunerRound[] = [
@@ -1362,7 +1426,9 @@ export const ROUNDS: TunerRound[] = [
             'The colors tree style gives each level its own hue. The dark values are deep ' +
             'jewel tones at uneven strength, so magenta and crimson shout over blue. These ' +
             'options hold every level to one lightness and one strength. The light theme ' +
-            'values are the shipped ones and have no round.',
+            'values are the shipped ones and have no round. In both themes a level now shows ' +
+            'its color only while it is open. That is built into Hoist, so it also shows ' +
+            'under Shipped.',
         lookAt: 'Grids > Tree. Set Tree Style to Color Groups, then expand a few levels.',
         options: [
             {
@@ -1452,6 +1518,286 @@ export const ROUNDS: TunerRound[] = [
             }
         ]
     },
-    treeColorsOpenRound('light'),
-    treeColorsOpenRound('dark')
+
+    //------------------------------------------------------------------
+    // Intents
+    //------------------------------------------------------------------
+    {
+        id: 'light-intent-primary',
+        theme: 'light',
+        title: 'Primary intent',
+        why:
+            'Primary passes today: a white label and blue text are both 7.4:1. Each intent has ' +
+            'seven hand-set shades, though, and the four intents sit at four lightness levels. ' +
+            'These options set one fill color. Hover, pressed, tint and text derive from it by ' +
+            'one rule that every intent shares.',
+        lookAt: INTENT_LOOK_AT,
+        options: [
+            {
+                id: 'hoist',
+                label: 'Hoist blue',
+                note: 'The blue Hoist ships today, on the shared rule.',
+                recommended: true,
+                vars: intentVars('primary', 'light', 'oklch(0.45 0.128 250)')
+            },
+            {
+                id: 'royal',
+                label: 'Royal',
+                note: 'Bluer and more saturated. Less teal than today.',
+                vars: intentVars('primary', 'light', 'oklch(0.46 0.16 257)')
+            },
+            {
+                id: 'ink',
+                label: 'Ink navy',
+                note: 'Darker and quieter. Reads as navy.',
+                vars: intentVars('primary', 'light', 'oklch(0.4 0.12 254)')
+            }
+        ],
+        watch: intentWatch('primary')
+    },
+    {
+        id: 'light-intent-success',
+        theme: 'light',
+        title: 'Success intent',
+        why:
+            'Success text is 4.48:1 on the page, 4.10:1 on a toolbar and 3.72:1 on its own ' +
+            'callout tint. A white label on a success button is 4.48:1. Positive values in ' +
+            'grids use the same color.',
+        lookAt: `${INTENT_LOOK_AT} Then a grid with positive values.`,
+        options: [
+            {
+                id: 'leaf',
+                label: 'Leaf',
+                note: 'The green of today, one step deeper so it passes on every surface.',
+                recommended: true,
+                vars: intentVars('success', 'light', 'oklch(0.5 0.14 145)')
+            },
+            {
+                id: 'emerald',
+                label: 'Emerald',
+                note: 'A cooler green, away from yellow.',
+                vars: intentVars('success', 'light', 'oklch(0.5 0.115 158)')
+            },
+            {
+                id: 'forest',
+                label: 'Forest',
+                note: 'Darker and more reserved.',
+                vars: intentVars('success', 'light', 'oklch(0.47 0.12 150)')
+            }
+        ],
+        watch: [
+            ...intentWatch('success'),
+            {
+                label: 'Positive value in grid',
+                fg: '--xh-pos-val-color',
+                bg: '--xh-grid-bg',
+                kind: 'body'
+            }
+        ]
+    },
+    {
+        id: 'light-intent-warning',
+        theme: 'light',
+        title: 'Warning intent',
+        why:
+            'Warning is the weakest intent. Its text is 3.36:1 on the page and 2.84:1 on its ' +
+            'callout tint, and a white label on a warning button is 3.36:1. An orange that is ' +
+            'dark enough for a white label reads as burnt orange. The other route is a bright ' +
+            'fill with a dark label.',
+        lookAt: INTENT_LOOK_AT,
+        options: [
+            {
+                id: 'burnt',
+                label: 'Burnt orange',
+                note: 'Deep enough for a white label and for text.',
+                recommended: true,
+                vars: intentVars('warning', 'light', 'oklch(0.55 0.14 52)')
+            },
+            {
+                id: 'rust',
+                label: 'Rust',
+                note: 'Redder and a touch darker.',
+                vars: intentVars('warning', 'light', 'oklch(0.53 0.15 45)')
+            },
+            {
+                id: 'amber',
+                label: 'Amber, dark label',
+                note: 'A bright amber fill with a dark label. Text is a deep amber. Hoist needs a new label color var for this.',
+                vars: {
+                    ...intentVars(
+                        'warning',
+                        'light',
+                        'oklch(0.78 0.16 72)',
+                        'oklch(from var(--xh-intent-warning) 0.5 calc(c * 0.8) h)'
+                    ),
+                    '--tn-on-warning': 'var(--tn-11)'
+                },
+                css: AMBER_LABEL_CSS
+            }
+        ],
+        watch: intentWatch('warning', ON_WARNING)
+    },
+    {
+        id: 'light-intent-danger',
+        theme: 'light',
+        title: 'Danger intent',
+        why:
+            'Danger passes today at 6.9:1 for a white label and for text. The options move it ' +
+            'onto the shared rule. Negative values in grids use the same color.',
+        lookAt: `${INTENT_LOOK_AT} Then a grid with negative values.`,
+        options: [
+            {
+                id: 'hoist',
+                label: 'Hoist red',
+                note: 'The red Hoist ships today, on the shared rule.',
+                recommended: true,
+                vars: intentVars('danger', 'light', 'oklch(0.488 0.182 27)')
+            },
+            {
+                id: 'crimson',
+                label: 'Crimson',
+                note: 'A cooler red.',
+                vars: intentVars('danger', 'light', 'oklch(0.5 0.19 22)')
+            }
+        ],
+        watch: [
+            ...intentWatch('danger'),
+            {
+                label: 'Negative value in grid',
+                fg: '--xh-neg-val-color',
+                bg: '--xh-grid-bg',
+                kind: 'body'
+            }
+        ]
+    },
+    {
+        id: 'dark-intent-primary',
+        theme: 'dark',
+        title: 'Primary intent',
+        why:
+            'A white label on a primary button is 3.94:1 in dark. The fill is a little too ' +
+            'bright for it. These options deepen the fill until the label passes, and derive ' +
+            'the other shades from it.',
+        lookAt: INTENT_LOOK_AT,
+        options: [
+            {
+                id: 'clear',
+                label: 'Clear blue',
+                note: 'The hue of today, one step deeper.',
+                recommended: true,
+                vars: intentVars('primary', 'dark', 'oklch(0.55 0.17 254)')
+            },
+            {
+                id: 'royal',
+                label: 'Royal',
+                note: 'Bluer and more saturated.',
+                vars: intentVars('primary', 'dark', 'oklch(0.55 0.19 259)')
+            }
+        ],
+        watch: intentWatch('primary')
+    },
+    {
+        id: 'dark-intent-success',
+        theme: 'dark',
+        title: 'Success intent',
+        why:
+            'A white label on a success button is 3.65:1 in dark. Success text passes, but it ' +
+            'is a hand-set color that does not follow the fill.',
+        lookAt: `${INTENT_LOOK_AT} Then a grid with positive values.`,
+        options: [
+            {
+                id: 'leaf',
+                label: 'Leaf',
+                note: 'The green of today, one step deeper.',
+                recommended: true,
+                vars: intentVars('success', 'dark', 'oklch(0.54 0.15 146)')
+            },
+            {
+                id: 'emerald',
+                label: 'Emerald',
+                note: 'A cooler green, away from yellow.',
+                vars: intentVars('success', 'dark', 'oklch(0.54 0.125 158)')
+            }
+        ],
+        watch: [
+            ...intentWatch('success'),
+            {
+                label: 'Positive value in grid',
+                fg: '--xh-pos-val-color',
+                bg: '--xh-grid-bg',
+                kind: 'body'
+            }
+        ]
+    },
+    {
+        id: 'dark-intent-warning',
+        theme: 'dark',
+        title: 'Warning intent',
+        why:
+            'A white label on a warning button is 3.84:1 in dark. Warning text passes. As in ' +
+            'light, the choice is a deeper orange with a white label, or a bright amber with a ' +
+            'dark one.',
+        lookAt: INTENT_LOOK_AT,
+        options: [
+            {
+                id: 'burnt',
+                label: 'Burnt orange',
+                note: 'Deep enough for a white label.',
+                recommended: true,
+                vars: intentVars('warning', 'dark', 'oklch(0.56 0.14 52)')
+            },
+            {
+                id: 'amber',
+                label: 'Amber, dark label',
+                note: 'A bright amber fill with a dark label. Hoist needs a new label color var for this.',
+                vars: {
+                    ...intentVars(
+                        'warning',
+                        'dark',
+                        'oklch(0.78 0.16 72)',
+                        'var(--xh-intent-warning)'
+                    ),
+                    '--tn-on-warning': 'var(--tn-0)'
+                },
+                css: AMBER_LABEL_CSS
+            }
+        ],
+        watch: intentWatch('warning', ON_WARNING)
+    },
+    {
+        id: 'dark-intent-danger',
+        theme: 'dark',
+        title: 'Danger intent',
+        why:
+            'A danger button is only 2.54:1 against the dark page, so it recedes where it ' +
+            'should stand out. Danger text on a minimal button is 4.36:1. These options ' +
+            'brighten the fill and derive the text from it.',
+        lookAt: `${INTENT_LOOK_AT} Then a grid with negative values.`,
+        options: [
+            {
+                id: 'red',
+                label: 'Clear red',
+                note: 'Brighter than today. A white label still passes.',
+                recommended: true,
+                vars: intentVars('danger', 'dark', 'oklch(0.52 0.19 27)')
+            },
+            {
+                id: 'bright',
+                label: 'Bright red',
+                note: 'One step brighter again.',
+                vars: intentVars('danger', 'dark', 'oklch(0.55 0.2 25)')
+            }
+        ],
+        watch: [
+            ...intentWatch('danger'),
+            {
+                label: 'Negative value in grid',
+                fg: '--xh-neg-val-color',
+                bg: '--xh-grid-bg',
+                kind: 'body'
+            }
+        ]
+    },
+    toastRound('light'),
+    toastRound('dark')
 ];
