@@ -654,10 +654,14 @@ const FORM_ROUNDS: TunerRound[] = [
 // Brand seeds
 //------------------------------------------------------------------
 /** A whole-theme preset: the two seeds of the neutral ramp, and a light title bar that follows them. */
-function brandPreset(hue: number, tint: number): Pick<TunerOption, 'vars' | 'varsByTheme'> {
+function brandPreset(
+    hue: number,
+    tint: number,
+    titleBg: string = n(0.522, 0.036)
+): Pick<TunerOption, 'vars' | 'varsByTheme'> {
     return {
         vars: {'--tn-h': String(hue), '--tn-c': String(tint)},
-        varsByTheme: {light: title(n(0.522, 0.036), 'white')}
+        varsByTheme: {light: title(titleBg, 'white')}
     };
 }
 
@@ -755,6 +759,12 @@ const BRAND_ROUND: TunerRound = {
             label: 'Stone',
             note: 'A warm gray, for a brand with warm colors.',
             ...brandPreset(65, 0.9)
+        },
+        {
+            id: 'forest',
+            label: 'Forest',
+            note: 'A green-gray from the hue of #004912, with that green as the light title bar.',
+            ...brandPreset(146, 1, '#004912')
         }
     ],
     watch: [
