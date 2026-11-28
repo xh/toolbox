@@ -1,7 +1,7 @@
 // Theme Tuner export for the picks in 2026-11-27-atm.json.
 // A var that reads the neutral ramp keeps its reference, so the theme follows --xh-neutral-hue and
 // --xh-neutral-tint. Options that inject CSS rules are not in this file.
-// light theme - 91 vars
+// light theme - 96 vars
 body {
   --xh-bg-alt: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
   --xh-panel-collapsed-strip-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
@@ -148,9 +148,20 @@ body {
   --xh-button-bg-lightest: oklch(
     0.977 calc(0.003 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
   ); // was #f7f8f8 | oklch(97.7% 0.003 232)
+  --xh-base-text-color-disabled: rgb(
+    97 110 118 / 0.6
+  ); // was rgb(95 107 124 / 0.6) | oklch(53% 0.02 232 / 0.6)
+  --xh-base-text-color: #263239; // was #1c2127 | oklch(31% 0.02 232)
+  --xh-base-text-color-muted: #616e76; // was #5f6b7c | oklch(53% 0.02 232)
+  --xh-base-surface-border-color: oklch(
+    from var(--xh-neutral-8) l c h / 0.12
+  ); // was rgb(95 107 124 / 0.12) | oklch(53% 0.02 232 / 0.12)
+  --xh-base-surface-border-color-strong: oklch(
+    from var(--xh-neutral-8) l c h / 0.25
+  ); // was rgb(95 107 124 / 0.25) | oklch(53% 0.02 232 / 0.25)
 }
 
-// dark theme - 102 vars
+// dark theme - 108 vars
 body:where(.xh-dark) {
   --xh-neutral-hue: 245;
   --xh-neutral-depth: -0.02;
@@ -324,6 +335,18 @@ body:where(.xh-dark) {
   --xh-intent-neutral-trans2: rgb(
     78 87 96 / 0.3
   ); // was rgb(73 90 90 / 0.3) | oklch(45.3% 0.019 245 / 0.3)
+  --xh-base-text-color-disabled: rgb(
+    156 166 175 / 0.6
+  ); // was rgb(171 179 191 / 0.6) | oklch(72% 0.018 245 / 0.6)
+  --xh-base-text-color: #e7ecf0; // was #f6f7f9 | oklch(94% 0.008 245)
+  --xh-base-text-color-muted: #9ca6af; // was #abb3bf | oklch(72% 0.018 245)
+  --xh-base-surface-bg: var(--xh-neutral-2); // was #111418 | oklch(19.5% 0.011 245)
+  --xh-base-surface-border-color: oklch(
+    from var(--xh-neutral-11) l c h / 0.2
+  ); // was rgb(255 255 255 / 0.2) | oklch(98% 0.004 245 / 0.2)
+  --xh-base-surface-border-color-strong: oklch(
+    from var(--xh-neutral-11) l c h / 0.3
+  ); // was rgb(255 255 255 / 0.3) | oklch(98% 0.004 245 / 0.3)
 }
 
 /* Tuner state. Reload with xhTuner.setState(...)
@@ -368,7 +391,8 @@ body:where(.xh-dark) {
     "form-rhythm": "messages",
     "form-invalid": "sets",
     "form-input-shape": "hover",
-    "buttons-neutral": "ramp"
+    "buttons-neutral": "ramp",
+    "base-grays": "theme"
   },
   "tweaks": {
     "light": {},

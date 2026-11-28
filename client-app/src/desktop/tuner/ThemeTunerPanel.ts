@@ -59,7 +59,12 @@ export const themeTunerPanel = hoistCmp.factory({
                             {value: true, label: 'Tuned'}
                         ]
                     }),
-                    span({className: 'tb-tuner__key', children: 'X'}),
+                    span({
+                        className: 'tb-tuner__key',
+                        title: 'Press X to flip between Shipped and Tuned',
+                        children: 'X'
+                    }),
+                    span({className: 'xh-text-color-muted', children: 'key flips'}),
                     filler(),
                     segmentedControl({
                         bind: 'view',
