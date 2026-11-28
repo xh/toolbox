@@ -55,13 +55,13 @@ export const themeTunerPanel = hoistCmp.factory({
                         bind: 'showTuned',
                         compact: true,
                         options: [
-                            {value: false, label: 'Shipped'},
-                            {value: true, label: 'Tuned'}
+                            {value: false, label: 'All shipped'},
+                            {value: true, label: 'All tuned'}
                         ]
                     }),
                     span({
                         className: 'tb-tuner__key',
-                        title: 'Press X to flip between Shipped and Tuned',
+                        title: 'Press X to turn every pick off or on at once',
                         children: 'X'
                     }),
                     span({className: 'xh-text-color-muted', children: 'key flips'}),
@@ -175,8 +175,8 @@ const roundsView = hoistCmp.factory<ThemeTunerModel>(({model}) => {
                           children: [
                               optionCard({
                                   idx: 0,
-                                  label: 'Shipped',
-                                  note: 'The theme as it is today.',
+                                  label: 'Shipped, this round only',
+                                  note: 'No pick for this round. Your picks in other rounds stay on.',
                                   selected: !activeOption,
                                   onClick: () => model.pickByIndex(0)
                               }),
