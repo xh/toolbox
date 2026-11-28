@@ -1,6 +1,6 @@
 {
   "savedOn": "2026-11-27",
-  "note": "Picks after a full pass through all 43 rounds. No pick means the shipped value stays: form-focus (41), brand-seeds (42) and caps-style (43) have none.",
+  "note": "Picks after a full pass through all 43 rounds, plus two slider settings for dark: surface depth -0.02 and neutral hue 245. The hue matches the dark grays and panel headers to the selection blue. No pick means the shipped value stays: form-focus (41), brand-seeds (42) and caps-style (43) have none. These picks are landed in the hoist-react branch theme-refresh.",
   "restore": "In the browser console: localStorage.setItem('toolbox.' + XH.getUsername() + '.themeTuner', JSON.stringify(state)), then reload.",
   "state": {
     "picks": {
@@ -47,7 +47,8 @@
     "tweaks": {
       "light": {},
       "dark": {
-        "--xh-neutral-depth": "-0.02"
+        "--xh-neutral-depth": "-0.02",
+        "--xh-neutral-hue": "245"
       }
     }
   }
