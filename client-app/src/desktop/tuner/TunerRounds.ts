@@ -46,10 +46,25 @@ export interface WatchPair {
     kind: PairKind;
 }
 
+/** Topics for grouping rounds in the picker, in display order. */
+export const TOPICS = [
+    'Neutrals and text',
+    'Surfaces',
+    'Grids and trees',
+    'Charts',
+    'Inputs and forms',
+    'Intents and toasts',
+    'Buttons',
+    'Demos'
+] as const;
+
+export type TunerTopic = (typeof TOPICS)[number];
+
 /** One decision, shown as a set of options to flip between. */
 export interface TunerRound {
     id: string;
     theme: RoundTheme;
+    topic: TunerTopic;
     title: string;
     why: string;
     lookAt: string;
@@ -389,6 +404,7 @@ const TOAST_INTENT_CSS = (['primary', 'success', 'warning', 'danger'] as IntentN
 const TOAST_ROUND: TunerRound = {
     id: 'toasts',
     theme: 'both',
+    topic: 'Intents and toasts',
     title: 'Toasts follow the intents',
     why:
         'Toasts use four fixed colors left over from Blueprint. No Hoist var reaches them, so ' +
@@ -469,6 +485,7 @@ const FORM_ROUNDS: TunerRound[] = [
     {
         id: 'form-labels',
         theme: 'both',
+        topic: 'Inputs and forms',
         title: 'Form field labels',
         why:
             'A label is 13px regular in the text color: the same as the value under it, so a ' +
@@ -534,6 +551,7 @@ const FORM_ROUNDS: TunerRound[] = [
     {
         id: 'form-rhythm',
         theme: 'both',
+        topic: 'Inputs and forms',
         title: 'Field spacing and messages',
         why:
             'Fields sit 10px apart, with the label 3px above its input. Validation and help ' +
@@ -566,6 +584,7 @@ const FORM_ROUNDS: TunerRound[] = [
     {
         id: 'form-invalid',
         theme: 'both',
+        topic: 'Inputs and forms',
         title: 'Invalid fields',
         why:
             'An invalid field turns its label, its outline and its message red. A form with ' +
@@ -601,6 +620,7 @@ const FORM_ROUNDS: TunerRound[] = [
     {
         id: 'form-input-shape',
         theme: 'both',
+        topic: 'Inputs and forms',
         title: 'Input outline shape',
         why:
             'An input draws its outline as two inset shadows: a 1px line, and a second soft ' +
@@ -627,6 +647,7 @@ const FORM_ROUNDS: TunerRound[] = [
     {
         id: 'form-focus',
         theme: 'both',
+        topic: 'Inputs and forms',
         title: 'Focus ring',
         why:
             'A focused input swaps its 1px outline for a blue at 60% opacity. It measures ' +
@@ -714,6 +735,7 @@ const CAPS_TOOLBAR_CSS = capsRule('.xh-toolbar--compact .xh-button');
 const CAPS_ROUND: TunerRound = {
     id: 'caps-style',
     theme: 'both',
+    topic: 'Demos',
     title: 'A shared caps style',
     why:
         'Sentence case stays the default for form labels. This round previews an opt-in: one ' +
@@ -752,6 +774,7 @@ const CAPS_ROUND: TunerRound = {
 const BRAND_ROUND: TunerRound = {
     id: 'brand-seeds',
     theme: 'both',
+    topic: 'Demos',
     title: 'One more thing: a theme from two numbers',
     why:
         'Every neutral in the tuned theme comes from one ramp, and the ramp reads two ' +
@@ -800,6 +823,7 @@ const BRAND_ROUND: TunerRound = {
 const BUTTON_ROUND: TunerRound = {
     id: 'buttons-neutral',
     theme: 'both',
+    topic: 'Buttons',
     title: 'Standard buttons',
     why:
         'A standard button with no intent uses fixed grays with a hue of their own. The neutral ' +
@@ -900,6 +924,7 @@ const BASE_DARK: VarMap = {
 const BASE_ROUND: TunerRound = {
     id: 'base-grays',
     theme: 'both',
+    topic: 'Neutrals and text',
     title: 'Grays left over from Blueprint',
     why:
         'Six --xh-base-* vars still hold Blueprint grays, such as #5f6b7c and #1c2127. Desktop ' +
@@ -987,6 +1012,7 @@ const STATE_CSS = [
 const STATE_ROUND: TunerRound = {
     id: 'surface-states',
     theme: 'both',
+    topic: 'Surfaces',
     title: 'States as overlays',
     why:
         'Hover and pressed fills are solid grays, picked to show on the base surface. On a ' +
@@ -1042,6 +1068,7 @@ const STATE_ROUND: TunerRound = {
 const STANDARD_BUTTON_ROUND: TunerRound = {
     id: 'surface-buttons',
     theme: 'light',
+    topic: 'Buttons',
     title: 'Standard button on a toolbar',
     why:
         'A standard button with no intent rests on a 97.7% gray. A toolbar is 96.8%, so the ' +
@@ -1118,6 +1145,7 @@ function raisedCss(base: number, alt: number): string {
 const RAISED_ROUND: TunerRound = {
     id: 'surface-raised',
     theme: 'dark',
+    topic: 'Surfaces',
     title: 'Raised dialogs and popovers',
     why:
         'In dark, a dialog body, popover or menu uses the page color, 17% lightness. Only its ' +
@@ -1154,6 +1182,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-neutrals',
         theme: 'light',
+        topic: 'Neutrals and text',
         title: 'One neutral family',
         why:
             'Light chrome mixes Material blue-gray with untinted grays, so toolbars read cool while ' +
@@ -1190,6 +1219,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-secondary-text',
         theme: 'light',
+        topic: 'Neutrals and text',
         title: 'Secondary text you can read',
         why:
             'Muted text and grid headers are #9e9e9e on white, 2.7:1. Placeholders are 2.0:1. ' +
@@ -1236,6 +1266,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-text',
         theme: 'light',
+        topic: 'Neutrals and text',
         title: 'Body text',
         why:
             'Body text is #263238, 13:1 on white. That is already strong. The choice is whether ' +
@@ -1272,6 +1303,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-borders',
         theme: 'light',
+        topic: 'Surfaces',
         title: 'Borders',
         why:
             'Panel borders are a flat #bdbdbd and draw more attention than they need. These ' +
@@ -1312,6 +1344,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-scrollbars',
         theme: 'light',
+        topic: 'Surfaces',
         title: 'Scrollbars',
         why:
             'The shipped track is a mid gray gutter with a thumb only a little darker. These options ' +
@@ -1362,6 +1395,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-stripes',
         theme: 'light',
+        topic: 'Grids and trees',
         title: 'Grid stripes',
         why:
             'The shipped stripe is an untinted gray. These options put it on the neutral ramp at ' +
@@ -1402,6 +1436,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-grid',
         theme: 'light',
+        topic: 'Grids and trees',
         title: 'Grid row states',
         why:
             'Hover and selection are both saturated sky blue and only 4% apart in lightness, so a ' +
@@ -1484,6 +1519,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-depth',
         theme: 'dark',
+        topic: 'Surfaces',
         title: 'How dark is dark',
         why:
             'The page is 20% lightness and toolbars are 31%. That 10 point jump makes the chrome ' +
@@ -1521,6 +1557,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-text',
         theme: 'dark',
+        topic: 'Neutrals and text',
         title: 'Text on dark',
         why:
             'Body text is pure white, 17.9:1 on the page. Full white on a dark surface is harsh ' +
@@ -1572,6 +1609,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-borders',
         theme: 'dark',
+        topic: 'Surfaces',
         title: 'Borders',
         why:
             'Borders come from three families: slate panels, teal grid lines and flat gray pinned ' +
@@ -1614,6 +1652,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-scrollbars',
         theme: 'dark',
+        topic: 'Surfaces',
         title: 'Scrollbars',
         why:
             'The shipped track is pure black with a thumb that is hard to find. These options match ' +
@@ -1663,6 +1702,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-grid',
         theme: 'dark',
+        topic: 'Grids and trees',
         title: 'Grid row states',
         why:
             'A hovered row is brighter than a selected one today, so hover reads as the stronger ' +
@@ -1729,6 +1769,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-charts',
         theme: 'light',
+        topic: 'Charts',
         title: 'Chart series colors',
         why:
             'Light charts have no Hoist palette. They fall back to the Highcharts defaults. Four ' +
@@ -1759,6 +1800,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-charts',
         theme: 'dark',
+        topic: 'Charts',
         title: 'Chart series colors',
         why:
             'The dark palette mixes pastels with saturated colors, so some series shout and ' +
@@ -1790,6 +1832,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-inputs',
         theme: 'light',
+        topic: 'Inputs and forms',
         title: 'Input outlines',
         why:
             'Input outlines are 1.4:1 against the page and nearly vanish. WCAG asks 3:1 for the ' +
@@ -1836,6 +1879,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-inputs',
         theme: 'dark',
+        topic: 'Inputs and forms',
         title: 'Input outlines',
         why:
             'Input outlines are 1.7:1 against the page and nearly vanish. WCAG asks 3:1 for the ' +
@@ -1886,6 +1930,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-group-rows',
         theme: 'light',
+        topic: 'Grids and trees',
         title: 'Group rows',
         why:
             'A group row is a solid blue-gray bar with white text. Collapse the groups and the ' +
@@ -1918,6 +1963,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-group-rows',
         theme: 'dark',
+        topic: 'Grids and trees',
         title: 'Group rows',
         why:
             'Group rows are a solid slate bar. Collapse the groups and the bars stack into one ' +
@@ -1949,6 +1995,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-tree',
         theme: 'light',
+        topic: 'Grids and trees',
         title: 'Tree grid highlights',
         why:
             'The highlights tree style now fills open parent rows only, in every option here. ' +
@@ -1980,6 +2027,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-tree',
         theme: 'dark',
+        topic: 'Grids and trees',
         title: 'Tree grid highlights',
         why:
             'The highlights tree style now fills open parent rows only, in every option here. ' +
@@ -2013,6 +2061,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-headers',
         theme: 'light',
+        topic: 'Surfaces',
         title: 'Panel headers',
         why:
             'Panel and dialog title bars are Material blue-gray 600, a mid tone that is neither ' +
@@ -2038,6 +2087,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-headers',
         theme: 'dark',
+        topic: 'Surfaces',
         title: 'Panel headers',
         why:
             'Dark title bars use the same blue-gray 600 as the light theme. On a dark page that ' +
@@ -2068,6 +2118,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-scrollbar-shape',
         theme: 'light',
+        topic: 'Surfaces',
         title: 'Scrollbar shape',
         why:
             'The thumb is a square block that fills the full width of the bar. No color makes a ' +
@@ -2100,6 +2151,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-scrollbar-shape',
         theme: 'dark',
+        topic: 'Surfaces',
         title: 'Scrollbar shape',
         why:
             'The thumb is a square block that fills the full width of the bar. No color makes a ' +
@@ -2132,6 +2184,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-widget-headers',
         theme: 'light',
+        topic: 'Surfaces',
         title: 'Dashboard widget headers',
         why:
             'Widget headers in a DashCanvas now follow the panel title color by default. On a ' +
@@ -2184,6 +2237,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-tree-colors',
         theme: 'dark',
+        topic: 'Grids and trees',
         title: 'Tree color groups',
         why:
             'The colors tree style gives each level its own hue. The dark values are deep ' +
@@ -2238,6 +2292,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-header-edge',
         theme: 'dark',
+        topic: 'Surfaces',
         title: 'Panel header edge',
         why:
             'Stacked panels rely on a border line to keep their headers apart. With the darker ' +
@@ -2288,6 +2343,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-intent-primary',
         theme: 'light',
+        topic: 'Intents and toasts',
         title: 'Primary intent',
         why:
             'Primary passes today: a white label and blue text are both 7.4:1. Each intent has ' +
@@ -2321,6 +2377,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-intent-success',
         theme: 'light',
+        topic: 'Intents and toasts',
         title: 'Success intent',
         why:
             'Success text is 4.48:1 on the page, 4.10:1 on a toolbar and 3.72:1 on its own ' +
@@ -2361,6 +2418,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-intent-warning',
         theme: 'light',
+        topic: 'Intents and toasts',
         title: 'Warning intent',
         why:
             'Warning is the weakest intent. Its text is 3.36:1 on the page and 2.84:1 on its ' +
@@ -2415,6 +2473,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'light-intent-danger',
         theme: 'light',
+        topic: 'Intents and toasts',
         title: 'Danger intent',
         why:
             'Danger passes today at 6.9:1 for a white label and for text. The options move it ' +
@@ -2448,6 +2507,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-intent-primary',
         theme: 'dark',
+        topic: 'Intents and toasts',
         title: 'Primary intent',
         why:
             'A white label on a primary button is 3.94:1 in dark. The fill is a little too ' +
@@ -2474,6 +2534,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-intent-success',
         theme: 'dark',
+        topic: 'Intents and toasts',
         title: 'Success intent',
         why:
             'A white label on a success button is 3.65:1 in dark. Success text passes, but it ' +
@@ -2507,6 +2568,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-intent-warning',
         theme: 'dark',
+        topic: 'Intents and toasts',
         title: 'Warning intent',
         why:
             'A white label on a warning button is 3.84:1 in dark. Warning text passes. As in ' +
@@ -2548,6 +2610,7 @@ export const ROUNDS: TunerRound[] = [
     {
         id: 'dark-intent-danger',
         theme: 'dark',
+        topic: 'Intents and toasts',
         title: 'Danger intent',
         why:
             'A danger button is only 2.54:1 against the dark page, so it recedes where it ' +

@@ -21,7 +21,7 @@ import './ThemeTuner.scss';
 import type {WatchRow} from './ThemeTunerModel';
 import {fmtRatio, ThemeTunerModel} from './ThemeTunerModel';
 import type {RoundTheme, TunerOption, TunerSeed} from './TunerRounds';
-import {roundAppliesTo} from './TunerRounds';
+import {roundAppliesTo, TOPICS} from './TunerRounds';
 
 /**
  * Docked panel for the theme tuner. Renders nothing until the tuner is opened.
@@ -119,9 +119,15 @@ const roundsView = hoistCmp.factory<ThemeTunerModel>(({model}) => {
                     flex: 1,
                     value: round.id,
                     enableFilter: false,
-                    options: rounds.map((it, i) => ({
-                        value: it.id,
-                        label: `${i + 1}. ${THEME_LABELS[it.theme]} - ${it.title}${picks[it.id] ? '  ✓' : ''}`
+                    options: TOPICS.map(topic => ({
+                        label: topic,
+                        options: rounds
+                            .map((it, i) => ({round: it, num: i + 1}))
+                            .filter(it => it.round.topic === topic)
+                            .map(({round: it, num}) => ({
+                                value: it.id,
+                                label: `${num}. ${THEME_LABELS[it.theme]} - ${it.title}${picks[it.id] ? '  ✓' : ''}`
+                            }))
                     })),
                     onChange: id => model.activateRound(id)
                 }),
@@ -155,7 +161,7 @@ const roundsView = hoistCmp.factory<ThemeTunerModel>(({model}) => {
             children: [
                 div({
                     className: 'tb-tuner__eyebrow',
-                    children: `Round ${activeRoundIdx + 1} of ${rounds.length} · ${round.theme === 'both' ? 'both themes' : round.theme + ' theme'}`
+                    children: `Round ${activeRoundIdx + 1} of ${rounds.length} · ${round.topic} · ${round.theme === 'both' ? 'both themes' : round.theme + ' theme'}`
                 }),
                 div({className: 'tb-tuner__title', children: round.title}),
                 div({className: 'tb-tuner__why', children: round.why}),
