@@ -108,7 +108,7 @@ const infoRail = hoistCmp.factory<InfoRailProps>({
             headerItems: [
                 button({
                     icon: Icon.chevronLeft(),
-                    title: 'Collapse info panel',
+                    tooltip: 'Collapse info panel',
                     onClick: () => (railModel.collapsed = true)
                 })
             ],

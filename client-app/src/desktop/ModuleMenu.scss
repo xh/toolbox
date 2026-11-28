@@ -1,5 +1,5 @@
-// Blueprint buttons default to a 30px min-height/width, which pushes these menu items taller
-// than the standard AppMenuButton items. Shrink to fit within the default menu item height.
+// Buttons default to a larger min-height/width, which pushes these menu items taller than the
+// standard AppMenuButton items. Shrink to fit within the default menu item height.
 .tb-module-menu-item__favorite-button {
   padding: 0 !important;
   min-height: 18px;

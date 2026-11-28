@@ -72,7 +72,7 @@ const bbar = hoistCmp.factory<CubePerfMatrixModel>(({model}) =>
             button({
                 text: c.id,
                 disabled: model.running,
-                title: c.label,
+                tooltip: c.label,
                 onClick: () => model.runConfigAsync(c.id)
             })
         )

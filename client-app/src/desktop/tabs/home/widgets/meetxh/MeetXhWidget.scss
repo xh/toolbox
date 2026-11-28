@@ -67,16 +67,6 @@
     gap: var(--xh-spacing-half);
     flex-wrap: wrap;
     border-top: var(--xh-border-solid);
-
-    // Cursor + hover live on the tooltip target wrapper - Blueprint renders the wrapped
-    // img with pointer-events: none, so the img itself never sees the mouse.
-    > span {
-      cursor: pointer;
-
-      &:hover .tb-meet-xh__avatar {
-        opacity: 1;
-      }
-    }
   }
 
   &__avatar {
@@ -86,6 +76,11 @@
     border-radius: 50%;
     opacity: 0.75;
     transition: opacity 0.15s ease;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 

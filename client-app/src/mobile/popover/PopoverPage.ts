@@ -3,8 +3,8 @@ import {hoistCmp, HoistModel, creates, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import type {ReactElement} from 'react';
 import {div, filler, p, vbox} from '@xh/hoist/cmp/layout';
+import {popover} from '@xh/hoist/cmp/popover';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {popover} from '@xh/hoist/mobile/cmp/popover';
 import {dialog} from '@xh/hoist/mobile/cmp/dialog';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
@@ -59,7 +59,7 @@ export const popoverPage = hoistCmp.factory({
             ],
             links: [
                 {url: '$TB/client-app/src/mobile/popover/PopoverPage.ts', notes: 'This example.'},
-                {url: '$HR/mobile/cmp/popover/Popover.ts', text: 'Popover source'},
+                {url: '$HR/cmp/popover/Popover.ts', text: 'Popover source'},
                 {url: '$HR/mobile/cmp/dialog/Dialog.ts', text: 'Dialog source'}
             ],
             children: panel({

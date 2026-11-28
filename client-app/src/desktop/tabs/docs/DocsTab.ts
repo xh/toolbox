@@ -10,7 +10,6 @@ import {menuButton} from '@xh/hoist/desktop/cmp/menu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {tooltip} from '@xh/hoist/kit/blueprint';
 import {pluralize} from '@xh/hoist/utils/js';
 import {useEffect, useRef} from 'react';
 import {docContent} from '../../../core/docs/DocContent';
@@ -90,15 +89,15 @@ const contentPanel = hoistCmp.factory<DocsPanelModel>({
             tbar: toolbar({
                 className: 'tb-docs__content-toolbar',
                 children: [
-                    tooltip({
-                        content: searchTooltip(),
-                        hoverOpenDelay: 500,
-                        placement: 'bottom',
-                        children: button({
-                            icon: Icon.search(),
-                            minimal: true,
-                            onClick: () => model.enterSearchMode()
-                        })
+                    button({
+                        icon: Icon.search(),
+                        minimal: true,
+                        tooltip: {
+                            content: searchTooltip(),
+                            hoverOpenDelay: 500,
+                            position: 'bottom'
+                        },
+                        onClick: () => model.enterSearchMode()
                     }),
                     breadcrumb(),
                     filler(),
@@ -191,15 +190,15 @@ const searchPanel = hoistCmp.factory<DocsPanelModel>({
             tbar: toolbar({
                 className: 'tb-docs__content-toolbar',
                 children: [
-                    tooltip({
-                        content: searchTooltip('Back to document'),
-                        hoverOpenDelay: 400,
-                        placement: 'bottom',
-                        children: button({
-                            icon: Icon.arrowLeft(),
-                            minimal: true,
-                            onClick: () => model.exitSearchMode()
-                        })
+                    button({
+                        icon: Icon.arrowLeft(),
+                        minimal: true,
+                        tooltip: {
+                            content: searchTooltip('Back to document'),
+                            hoverOpenDelay: 400,
+                            position: 'bottom'
+                        },
+                        onClick: () => model.exitSearchMode()
                     }),
                     textInput({
                         bind: 'searchQuery',
