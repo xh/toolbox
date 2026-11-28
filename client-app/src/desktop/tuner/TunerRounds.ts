@@ -660,7 +660,9 @@ const FORM_ROUNDS: TunerRound[] = [
             {
                 id: 'solid',
                 label: 'Solid ring',
-                note: 'A 2px ring inside the edge. It cannot be clipped by a toolbar or a grid.',
+                note:
+                    'A 2px ring inside the edge. It cannot be clipped by a toolbar or a grid. The ring on buttons ' +
+                    'in compact toolbars is clipped, a known issue for later toolbar work.',
                 recommended: true,
                 vars: focusVars('inset 0 0 0 2px var(--xh-form-field-focused-border-color)')
             },

@@ -1,7 +1,7 @@
 // Theme Tuner export for the picks in 2026-11-27-atm.json.
 // A var that reads the neutral ramp keeps its reference, so the theme follows --xh-neutral-hue and
 // --xh-neutral-tint. Options that inject CSS rules are not in this file.
-// light theme - 96 vars
+// light theme - 97 vars
 body {
   --xh-bg-alt: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
   --xh-panel-collapsed-strip-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
@@ -112,6 +112,7 @@ body {
   ); // was rgb(176 28 28 / 0.3) | oklch(48.8% 0.182 27 / 0.3)
   --xh-intent-danger-text-color: #ad181b; // was #841515 | oklch(48% 0.182 27)
   --xh-form-field-label-text-color: var(--xh-neutral-9); // was #263238 | oklch(45% 0.025 232)
+  --xh-focus-outline-color: #3a84ca; // was rgb(19 124 189 / 0.6) | oklch(60% 0.13 250)
   --xh-intent-neutral-darkest: oklch(
     0.868 calc(0.009 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
   ); // was #cdd6d6 | oklch(86.8% 0.009 232)
@@ -161,7 +162,7 @@ body {
   ); // was rgb(95 107 124 / 0.25) | oklch(53% 0.02 232 / 0.25)
 }
 
-// dark theme - 108 vars
+// dark theme - 109 vars
 body:where(.xh-dark) {
   --xh-neutral-hue: 245;
   --xh-neutral-depth: -0.02;
@@ -299,6 +300,7 @@ body:where(.xh-dark) {
   ); // was rgb(165 29 29 / 0.3) | oklch(52% 0.19 27 / 0.3)
   --xh-intent-danger-text-color: #ff786c; // was #f04c57 | oklch(73% 0.166 27)
   --xh-form-field-label-text-color: var(--xh-neutral-9); // was #ffffff | oklch(80% 0.015 245)
+  --xh-focus-outline-color: #2580e2; // was rgb(19 124 189 / 0.6) | oklch(60% 0.17 254)
   --xh-intent-neutral-darkest: oklch(
     0.332 calc(0.017 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
   ); // was #2e3838 | oklch(33.2% 0.017 245)
@@ -391,6 +393,7 @@ body:where(.xh-dark) {
     "form-rhythm": "messages",
     "form-invalid": "sets",
     "form-input-shape": "hover",
+    "form-focus": "solid",
     "buttons-neutral": "ramp",
     "base-grays": "theme"
   },

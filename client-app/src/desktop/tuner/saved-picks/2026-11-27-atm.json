@@ -1,6 +1,6 @@
 {
   "savedOn": "2026-11-27",
-  "note": "Picks after a full pass through the rounds, plus two slider settings for dark: surface depth -0.02 and neutral hue 245. The hue matches the dark grays and panel headers to the selection blue. Round 44 puts standard buttons on the neutral ramp, and round 45 points the grays left over from Blueprint at the theme. No pick means the shipped value stays: form-focus (41), brand-seeds (42) and caps-style (43) have none. These picks are landed in the hoist-react branch theme-refresh.",
+  "note": "Picks after a full pass through the rounds, plus two slider settings for dark: surface depth -0.02 and neutral hue 245. The hue matches the dark grays and panel headers to the selection blue. Round 44 puts standard buttons on the neutral ramp, and round 45 points the grays left over from Blueprint at the theme. No pick means the shipped value stays: brand-seeds (42) and caps-style (43) have none. These picks are landed in the hoist-react branch theme-refresh.",
   "restore": "In the browser console: localStorage.setItem('toolbox.' + XH.getUsername() + '.themeTuner', JSON.stringify(state)), then reload.",
   "state": {
     "picks": {
@@ -43,6 +43,7 @@
       "form-rhythm": "messages",
       "form-invalid": "sets",
       "form-input-shape": "hover",
+      "form-focus": "solid",
       "buttons-neutral": "ramp",
       "base-grays": "theme"
     },
