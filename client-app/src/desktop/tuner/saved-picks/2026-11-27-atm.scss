@@ -1,7 +1,7 @@
 // Theme Tuner export for the picks in 2026-11-27-atm.json.
 // A var that reads the neutral ramp keeps its reference, so the theme follows --xh-neutral-hue and
 // --xh-neutral-tint. Options that inject CSS rules are not in this file.
-// light theme - 79 vars
+// light theme - 91 vars
 body {
   --xh-bg-alt: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
   --xh-panel-collapsed-strip-bg: var(--xh-neutral-2); // was #eceff1 | oklch(96.8% 0.004 232)
@@ -112,9 +112,45 @@ body {
   ); // was rgb(176 28 28 / 0.3) | oklch(48.8% 0.182 27 / 0.3)
   --xh-intent-danger-text-color: #ad181b; // was #841515 | oklch(48% 0.182 27)
   --xh-form-field-label-text-color: var(--xh-neutral-9); // was #263238 | oklch(45% 0.025 232)
+  --xh-intent-neutral-darkest: oklch(
+    0.868 calc(0.009 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #cdd6d6 | oklch(86.8% 0.009 232)
+  --xh-intent-neutral-darker: oklch(
+    0.898 calc(0.008 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #d8dfdf | oklch(89.8% 0.008 232)
+  --xh-intent-neutral: oklch(
+    0.927 calc(0.007 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #e3e8e8 | oklch(92.7% 0.007 232)
+  --xh-intent-neutral-lighter: oklch(
+    0.957 calc(0.005 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #eef1f1 | oklch(95.7% 0.005 232)
+  --xh-intent-neutral-lightest: oklch(
+    0.986 calc(0.002 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #f9fafa | oklch(98.6% 0.002 0)
+  --xh-intent-neutral-trans1: rgb(
+    226 232 235 / 0.15
+  ); // was rgb(227 232 232 / 0.15) | oklch(92.7% 0.007 232 / 0.15)
+  --xh-intent-neutral-trans2: rgb(
+    226 232 235 / 0.3
+  ); // was rgb(227 232 232 / 0.3) | oklch(92.7% 0.007 232 / 0.3)
+  --xh-button-bg: oklch(
+    0.908 calc(0.007 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #dee1e3 | oklch(90.8% 0.007 232)
+  --xh-button-bg-darker: oklch(
+    0.862 calc(0.009 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #cdd2d5 | oklch(86.2% 0.009 232)
+  --xh-button-bg-darkest: oklch(
+    0.814 calc(0.011 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #bdc3c7 | oklch(81.4% 0.011 232)
+  --xh-button-bg-lighter: oklch(
+    0.947 calc(0.006 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #eceeef | oklch(94.7% 0.006 232)
+  --xh-button-bg-lightest: oklch(
+    0.977 calc(0.003 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #f7f8f8 | oklch(97.7% 0.003 232)
 }
 
-// dark theme - 90 vars
+// dark theme - 102 vars
 body:where(.xh-dark) {
   --xh-neutral-hue: 245;
   --xh-neutral-depth: -0.02;
@@ -252,6 +288,42 @@ body:where(.xh-dark) {
   ); // was rgb(165 29 29 / 0.3) | oklch(52% 0.19 27 / 0.3)
   --xh-intent-danger-text-color: #ff786c; // was #f04c57 | oklch(73% 0.166 27)
   --xh-form-field-label-text-color: var(--xh-neutral-9); // was #ffffff | oklch(80% 0.015 245)
+  --xh-intent-neutral-darkest: oklch(
+    0.332 calc(0.017 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #2e3838 | oklch(33.2% 0.017 245)
+  --xh-intent-neutral-darker: oklch(
+    0.383 calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #394646 | oklch(38.3% 0.018 245)
+  --xh-intent-neutral: oklch(
+    0.453 calc(0.019 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #495a5a | oklch(45.3% 0.019 245)
+  --xh-intent-neutral-lighter: oklch(
+    0.566 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #657b7b | oklch(56.6% 0.02 245)
+  --xh-intent-neutral-lightest: oklch(
+    0.621 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #738c8c | oklch(62.1% 0.02 245)
+  --xh-button-bg: oklch(
+    0.342 calc(0.017 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #343a3d | oklch(34.2% 0.017 245)
+  --xh-button-bg-darker: oklch(
+    0.302 calc(0.016 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #2a2f32 | oklch(30.2% 0.016 245)
+  --xh-button-bg-darkest: oklch(
+    0.26 calc(0.015 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #212527 | oklch(26% 0.015 245)
+  --xh-button-bg-lighter: oklch(
+    0.42 calc(0.019 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #464f53 | oklch(42% 0.019 245)
+  --xh-button-bg-lightest: oklch(
+    0.494 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue)
+  ); // was #596369 | oklch(49.4% 0.02 245)
+  --xh-intent-neutral-trans1: rgb(
+    78 87 96 / 0.15
+  ); // was rgb(73 90 90 / 0.15) | oklch(45.3% 0.019 245 / 0.15)
+  --xh-intent-neutral-trans2: rgb(
+    78 87 96 / 0.3
+  ); // was rgb(73 90 90 / 0.3) | oklch(45.3% 0.019 245 / 0.3)
 }
 
 /* Tuner state. Reload with xhTuner.setState(...)
@@ -295,7 +367,8 @@ body:where(.xh-dark) {
     "form-labels": "medium",
     "form-rhythm": "messages",
     "form-invalid": "sets",
-    "form-input-shape": "hover"
+    "form-input-shape": "hover",
+    "buttons-neutral": "ramp"
   },
   "tweaks": {
     "light": {},

@@ -795,6 +795,91 @@ const BRAND_ROUND: TunerRound = {
     ]
 };
 
+// Standard buttons and the neutral intent, on the hue and tint of the neutral ramp. Each gray keeps
+// the lightness that Hoist ships, so only its tint moves.
+const BUTTON_ROUND: TunerRound = {
+    id: 'buttons-neutral',
+    theme: 'both',
+    title: 'Standard buttons',
+    why:
+        'A standard button with no intent uses fixed grays with a hue of their own. The neutral ' +
+        'intent leans cyan, at hue 197, and the button grays sit at 229. Neither follows the ' +
+        'neutral ramp, so they drift from the page when the ramp hue moves, as it has in dark. ' +
+        'This option puts them on the ramp at the same lightness.',
+    lookAt: 'Components > Buttons. Compare the standard None button and the Active row.',
+    options: [
+        {
+            id: 'ramp',
+            label: 'On the ramp',
+            note: 'Same lightness as shipped, on the hue and tint of the neutral ramp.',
+            recommended: true,
+            vars: {},
+            varsByTheme: {
+                light: {
+                    '--xh-intent-neutral-darkest':
+                        'oklch(0.868 calc(0.009 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-darker':
+                        'oklch(0.898 calc(0.008 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral':
+                        'oklch(0.927 calc(0.007 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-lighter':
+                        'oklch(0.957 calc(0.005 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-lightest':
+                        'oklch(0.986 calc(0.002 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-trans1':
+                        'rgb(from var(--xh-intent-neutral) r g b / var(--xh-intent-a1))',
+                    '--xh-intent-neutral-trans2':
+                        'rgb(from var(--xh-intent-neutral) r g b / var(--xh-intent-a2))',
+                    '--xh-button-bg':
+                        'oklch(0.908 calc(0.007 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-darker':
+                        'oklch(0.862 calc(0.009 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-darkest':
+                        'oklch(0.814 calc(0.011 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-lighter':
+                        'oklch(0.947 calc(0.006 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-lightest':
+                        'oklch(0.977 calc(0.003 * var(--xh-neutral-tint)) var(--xh-neutral-hue))'
+                },
+                dark: {
+                    '--xh-intent-neutral-darkest':
+                        'oklch(0.332 calc(0.017 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-darker':
+                        'oklch(0.383 calc(0.018 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral':
+                        'oklch(0.453 calc(0.019 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-lighter':
+                        'oklch(0.566 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-lightest':
+                        'oklch(0.621 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg':
+                        'oklch(0.342 calc(0.017 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-darker':
+                        'oklch(0.302 calc(0.016 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-darkest':
+                        'oklch(0.26 calc(0.015 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-lighter':
+                        'oklch(0.42 calc(0.019 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-button-bg-lightest':
+                        'oklch(0.494 calc(0.02 * var(--xh-neutral-tint)) var(--xh-neutral-hue))',
+                    '--xh-intent-neutral-trans1':
+                        'rgb(from var(--xh-intent-neutral) r g b / var(--xh-intent-a1))',
+                    '--xh-intent-neutral-trans2':
+                        'rgb(from var(--xh-intent-neutral) r g b / var(--xh-intent-a2))'
+                }
+            }
+        }
+    ],
+    watch: [
+        {
+            label: 'Label on standard button',
+            fg: '--xh-button-text-color',
+            bg: '--xh-button-bg',
+            kind: 'body'
+        }
+    ]
+};
+
 export const ROUNDS: TunerRound[] = [
     //------------------------------------------------------------------
     // Light theme
@@ -2230,5 +2315,6 @@ export const ROUNDS: TunerRound[] = [
     TOAST_ROUND,
     ...FORM_ROUNDS,
     BRAND_ROUND,
-    CAPS_ROUND
+    CAPS_ROUND,
+    BUTTON_ROUND
 ];
