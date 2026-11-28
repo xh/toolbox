@@ -880,6 +880,78 @@ const BUTTON_ROUND: TunerRound = {
     ]
 };
 
+// The six --xh-base-* vars hold grays that Hoist took over from Blueprint. Desktop buttons, segmented
+// controls, sliders, popovers and inputs read them.
+const baseFrom = (source: string, alpha: number) => `oklch(from var(${source}) l c h / ${alpha})`;
+const BASE_SHARED: VarMap = {
+    '--xh-base-text-color-disabled': baseFrom('--xh-base-text-color-muted', 0.6)
+};
+const BASE_LIGHT: VarMap = {
+    '--xh-base-surface-bg': 'var(--xh-bg)',
+    '--xh-base-surface-border-color': baseFrom('--xh-neutral-8', 0.12),
+    '--xh-base-surface-border-color-strong': baseFrom('--xh-neutral-8', 0.25)
+};
+const BASE_DARK: VarMap = {
+    '--xh-base-surface-bg': 'var(--xh-neutral-2)',
+    '--xh-base-surface-border-color': baseFrom('--xh-neutral-11', 0.2),
+    '--xh-base-surface-border-color-strong': baseFrom('--xh-neutral-11', 0.3)
+};
+
+const BASE_ROUND: TunerRound = {
+    id: 'base-grays',
+    theme: 'both',
+    title: 'Grays left over from Blueprint',
+    why:
+        'Six --xh-base-* vars still hold Blueprint grays, such as #5f6b7c and #1c2127. Desktop ' +
+        'buttons, segmented controls, sliders, popovers and inputs read them for text, disabled ' +
+        'text and outlines. They sit off the neutral ramp, at a hue near 257, so they do not ' +
+        'follow the theme. Both options put them on the ramp. They differ in the text colors.',
+    lookAt:
+        'Components > Buttons for the standard button outline. Forms + Inputs > ' +
+        'SegmentedControl and Slider. Then open any menu, and disable a control.',
+    options: [
+        {
+            id: 'ramp',
+            label: 'Same lightness, on the ramp',
+            note: 'Each gray keeps the lightness Blueprint gave it and takes the ramp hue. Text stays a step darker than other Hoist text.',
+            vars: BASE_SHARED,
+            varsByTheme: {
+                light: {
+                    ...BASE_LIGHT,
+                    '--xh-base-text-color': 'var(--xh-neutral-11)',
+                    '--xh-base-text-color-muted': 'var(--xh-neutral-8)'
+                },
+                dark: {
+                    ...BASE_DARK,
+                    '--xh-base-text-color': 'var(--xh-neutral-11)',
+                    '--xh-base-text-color-muted': n(0.765, 0.016)
+                }
+            }
+        },
+        {
+            id: 'theme',
+            label: 'Theme text colors',
+            note: 'Outlines as in the first option. Text and muted text use the same colors as all other Hoist text.',
+            recommended: true,
+            vars: {
+                ...BASE_SHARED,
+                '--xh-base-text-color': 'var(--xh-text-color)',
+                '--xh-base-text-color-muted': 'var(--xh-text-color-muted)'
+            },
+            varsByTheme: {light: BASE_LIGHT, dark: BASE_DARK}
+        }
+    ],
+    watch: [
+        {label: 'Base text on page', fg: '--xh-base-text-color', bg: '--xh-bg', kind: 'body'},
+        {
+            label: 'Base muted text on page',
+            fg: '--xh-base-text-color-muted',
+            bg: '--xh-bg',
+            kind: 'sec'
+        }
+    ]
+};
+
 export const ROUNDS: TunerRound[] = [
     //------------------------------------------------------------------
     // Light theme
@@ -2316,5 +2388,6 @@ export const ROUNDS: TunerRound[] = [
     ...FORM_ROUNDS,
     BRAND_ROUND,
     CAPS_ROUND,
-    BUTTON_ROUND
+    BUTTON_ROUND,
+    BASE_ROUND
 ];
