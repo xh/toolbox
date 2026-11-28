@@ -1142,35 +1142,37 @@ function raisedCss(base: number, alt: number): string {
     ].join('\n');
 }
 
+// The outer edge of a dialog, popover or menu, at the ramp step for control outlines. Lines inside
+// keep their colors.
+const POPUP_EDGE = 'var(--xh-neutral-7)';
+
 const RAISED_ROUND: TunerRound = {
     id: 'surface-raised',
     theme: 'dark',
     topic: 'Surfaces',
-    title: 'Raised dialogs and popovers',
+    title: 'Dialogs and popovers on a dark page',
     why:
-        'In dark, a dialog body, popover or menu uses the page color, 17% lightness. Only its ' +
-        'border and shadow set it apart, and a shadow barely shows on a dark page. A form ' +
-        'dialog shows a fixed Blueprint gray, #1c2127, that does not follow the theme. These ' +
-        'options lift floating surfaces above the page, with everything inside them: panels, ' +
-        'grids, toolbars and stripes move up together.',
+        'In dark, a dialog, popover or menu has the page color. A dialog border is step 5, ' +
+        '1.45:1 on the page, and a shadow barely shows on a dark page. A popover border is ' +
+        'mixed toward the text color, 5.1:1, brighter than any other line.',
     lookAt:
-        'Grids > REST Editor, press Add for a form dialog. Grids > Column Chooser in Modal ' +
-        'mode. The app menu, a grid context menu and a select dropdown.',
+        'Grids > Column Chooser in Modal mode, over the grid. Grids > REST Editor, press Add. ' +
+        'The app menu and a select dropdown.',
     options: [
+        {
+            id: 'outlined',
+            label: 'Outlined',
+            note: 'The surface keeps the page color. Dialogs and popovers get a 1px edge at step 7, 3.6:1 on the page and 3.4:1 on a grid stripe.',
+            recommended: true,
+            vars: {'--xh-popover-border-color': POPUP_EDGE},
+            css: `.xh-dialog { border-color: ${POPUP_EDGE}; }`
+        },
         {
             id: 'one',
             label: 'One step up',
-            note: 'Base at step 2, the page stripe color. Toolbars at step 4. A blue menu highlight stays 1.13:1 on it.',
-            recommended: true,
+            note: 'A preview of the idea, not a finished design. Surfaces inside move up one step, but lines and borders inside do not follow, so grid lines and outlines fade.',
             vars: {},
             css: raisedCss(2, 4)
-        },
-        {
-            id: 'two',
-            label: 'Two steps up',
-            note: 'Base at step 3, the toolbar color of the page. Toolbars at step 5, the border color. Stands out more over a striped grid, but a blue menu highlight drops to 1.06:1.',
-            vars: {},
-            css: raisedCss(3, 5)
         }
     ]
 };
