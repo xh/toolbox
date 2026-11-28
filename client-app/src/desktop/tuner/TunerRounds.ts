@@ -952,6 +952,201 @@ const BASE_ROUND: TunerRound = {
     ]
 };
 
+//------------------------------------------------------------------
+// Controls on the alt surface
+//------------------------------------------------------------------
+// A state fill is a translucent layer of the strong text color, so it shifts any surface under it
+// by the same amount. Each alpha gives the fill shipped today on the base surface. Item is the hover
+// on list items, today the alt surface. Hover and pressed are those of a minimal button.
+function stateFills(item: number, hover: number, pressed: number): VarMap {
+    return {
+        '--tn-state-item-bg': baseFrom('--xh-neutral-11', item),
+        '--tn-state-hover-bg': baseFrom('--xh-neutral-11', hover),
+        '--tn-state-pressed-bg': baseFrom('--xh-neutral-11', pressed),
+        '--xh-tab-switcher-vertical-item-hover-bg': 'var(--tn-state-item-bg)'
+    };
+}
+
+// Buttons on a title bar keep the hover rules Hoist gives them there. Segmented controls are left
+// out: their option states are translucent fills already.
+const STATE_BUTTON =
+    '.xh-button.xh-button:is(.xh-button--minimal, .xh-button--outlined).xh-button--intent-none' +
+    '.xh-button--enabled:not(:is(.xh-dialog__header, .xh-dock-view__header, ' +
+    '.xh-panel-header__items, .xh-panel-header--right, .xh-panel-header--left) *)';
+const STATE_CSS = [
+    // Three separate :not() match the specificity of the Hoist dark theme rule.
+    `${STATE_BUTTON}:hover:not(:active):not(.xh-button--active):not(.xh-popover__target--active) {`,
+    '  background-color: var(--tn-state-hover-bg);',
+    '}',
+    `${STATE_BUTTON}:active { background-color: var(--tn-state-pressed-bg); }`,
+    '.xh-picker__option:hover, .xh-icon-picker__cell--active {',
+    '  background-color: var(--tn-state-item-bg);',
+    '}'
+].join('\n');
+
+const STATE_ROUND: TunerRound = {
+    id: 'surface-states',
+    theme: 'both',
+    title: 'States as overlays',
+    why:
+        'Hover and pressed fills are solid grays, picked to show on the base surface. On a ' +
+        'toolbar or sidebar they sit next to the alt surface. A vertical tab hovers to the alt ' +
+        'color, so it is 1.10:1 on the page and 1.00:1 on an alt sidebar. A dark minimal ' +
+        'button hover drops from 1.41:1 on the page to 1.27:1 on a toolbar. These options ' +
+        'paint each state as a translucent layer of the strong text color, so it shifts any ' +
+        'surface by the same amount. On the page, each state looks as it does today.',
+    lookAt:
+        'Layout > TabContainer > Left, the inner tabs. Components > Buttons, in the toolbars. ' +
+        'Forms + Inputs > Picker. Check both themes.',
+    options: [
+        {
+            id: 'overlay',
+            label: 'Overlays',
+            note: 'Same look as today on the page. Stronger on toolbars and sidebars.',
+            recommended: true,
+            vars: {},
+            varsByTheme: {light: stateFills(0.05, 0.2, 0.27), dark: stateFills(0.05, 0.13, 0.26)},
+            css: STATE_CSS
+        },
+        {
+            id: 'firm-items',
+            label: 'Overlays, firmer item hover',
+            note: 'As above, with twice the item hover. A tab or list item hover shows clearly on the page too.',
+            vars: {},
+            varsByTheme: {light: stateFills(0.1, 0.2, 0.27), dark: stateFills(0.1, 0.13, 0.26)},
+            css: STATE_CSS
+        }
+    ],
+    watch: [
+        {
+            label: 'Item hover vs page',
+            fg: ['--xh-bg', '--tn-state-item-bg'],
+            bg: '--xh-bg',
+            kind: 'info'
+        },
+        {
+            label: 'Item hover vs toolbar',
+            fg: ['--xh-bg-alt', '--tn-state-item-bg'],
+            bg: '--xh-bg-alt',
+            kind: 'info'
+        },
+        {
+            label: 'Button hover vs toolbar',
+            fg: ['--xh-bg-alt', '--tn-state-hover-bg'],
+            bg: '--xh-bg-alt',
+            kind: 'info'
+        }
+    ]
+};
+
+const STANDARD_BUTTON_ROUND: TunerRound = {
+    id: 'surface-buttons',
+    theme: 'light',
+    title: 'Standard button on a toolbar',
+    why:
+        'A standard button with no intent rests on a 97.7% gray. A toolbar is 96.8%, so the ' +
+        'fill is 1.03:1 against it and only the outline shows the button. This option rests the ' +
+        'button on the base color, white, with its outline. It reads as a raised control on a ' +
+        'toolbar. Hover and pressed keep their shades.',
+    lookAt: 'Components > Buttons. Compare the standard None buttons in the toolbars and the body.',
+    options: [
+        {
+            id: 'base',
+            label: 'Rest on white',
+            note: 'The fill is the base color. Hover darkens it to 94.7%, as today.',
+            recommended: true,
+            vars: {'--xh-button-bg-lightest': 'var(--xh-bg)'}
+        }
+    ],
+    watch: [
+        {
+            label: 'Standard button vs toolbar',
+            fg: '--xh-button-bg-lightest',
+            bg: '--xh-bg-alt',
+            kind: 'info'
+        },
+        {
+            label: 'Hover vs rest',
+            fg: '--xh-button-bg-lighter',
+            bg: '--xh-button-bg-lightest',
+            kind: 'info'
+        }
+    ]
+};
+
+// Floating surfaces in dark. Vars that read --xh-bg or --xh-bg-alt resolve on the body, so each one
+// is declared again inside the container. The toolbar overflow menu keeps its toolbar color, and
+// the filter chooser popover stands in for its input. Tooltips already sit on the alt surface.
+const RAISED_SELECTOR =
+    ':is(.xh-dialog, .xh-select__menu, .xh-popover__content-wrapper:not(.xh-tooltip, ' +
+    '.xh-toolbar-overflow-popover, .xh-filter-chooser__popover))';
+
+function raisedCss(base: number, alt: number): string {
+    const step = (i: number) => `var(--xh-neutral-${i})`;
+    return [
+        `${RAISED_SELECTOR} {`,
+        `  --xh-bg: ${step(base)};`,
+        `  --xh-bg-alt: ${step(alt)};`,
+        `  --xh-grid-odd-row-bg: ${step(base + 1)};`,
+        '  --xh-popup-bg: var(--xh-bg);',
+        '  --xh-popover-bg: var(--xh-popup-bg);',
+        '  --xh-menu-bg: var(--xh-bg);',
+        '  --xh-panel-bg: var(--xh-bg);',
+        '  --xh-panel-title-border-color: var(--xh-bg);',
+        '  --xh-panel-splitter-button-bg: var(--xh-bg);',
+        '  --xh-card-bg: var(--xh-bg);',
+        '  --xh-stat-card-bg: var(--xh-bg);',
+        '  --xh-grid-bg: var(--xh-bg);',
+        '  --xh-grid-header-bg: var(--xh-grid-bg);',
+        '  --xh-scrollbar-bg: var(--xh-bg);',
+        '  --xh-toolbar-bg: var(--xh-bg-alt);',
+        '  --xh-segmented-control-bg: var(--xh-bg-alt);',
+        '  --xh-segmented-control-text-color:',
+        '    color-mix(in srgb, var(--xh-text-color) 75%, var(--xh-segmented-control-bg));',
+        '  --xh-radio-card-input-bg: var(--xh-bg-alt);',
+        '  --xh-stat-card-hover-bg: var(--xh-bg-alt);',
+        '  --xh-mask-text-bg: var(--xh-bg-alt);',
+        '  --xh-pdf-viewer-bg: var(--xh-bg-alt);',
+        '  --xh-date-range-picker-footer-bg: var(--xh-toolbar-bg);',
+        '  --xh-date-range-picker-rail-bg: var(--xh-toolbar-bg);',
+        '}',
+        // The dialog frame itself has a fixed Blueprint color, #1c2127. It shows behind a form.
+        '.xh-dialog { background: var(--xh-popup-bg); }'
+    ].join('\n');
+}
+
+const RAISED_ROUND: TunerRound = {
+    id: 'surface-raised',
+    theme: 'dark',
+    title: 'Raised dialogs and popovers',
+    why:
+        'In dark, a dialog body, popover or menu uses the page color, 17% lightness. Only its ' +
+        'border and shadow set it apart, and a shadow barely shows on a dark page. A form ' +
+        'dialog shows a fixed Blueprint gray, #1c2127, that does not follow the theme. These ' +
+        'options lift floating surfaces above the page, with everything inside them: panels, ' +
+        'grids, toolbars and stripes move up together.',
+    lookAt:
+        'Grids > REST Editor, press Add for a form dialog. Grids > Column Chooser in Modal ' +
+        'mode. The app menu, a grid context menu and a select dropdown.',
+    options: [
+        {
+            id: 'one',
+            label: 'One step up',
+            note: 'Base at step 2, the page stripe color. Toolbars at step 4. A blue menu highlight stays 1.13:1 on it.',
+            recommended: true,
+            vars: {},
+            css: raisedCss(2, 4)
+        },
+        {
+            id: 'two',
+            label: 'Two steps up',
+            note: 'Base at step 3, the toolbar color of the page. Toolbars at step 5, the border color. Stands out more over a striped grid, but a blue menu highlight drops to 1.06:1.',
+            vars: {},
+            css: raisedCss(3, 5)
+        }
+    ]
+};
+
 export const ROUNDS: TunerRound[] = [
     //------------------------------------------------------------------
     // Light theme
@@ -2389,5 +2584,8 @@ export const ROUNDS: TunerRound[] = [
     BRAND_ROUND,
     CAPS_ROUND,
     BUTTON_ROUND,
-    BASE_ROUND
+    BASE_ROUND,
+    STATE_ROUND,
+    STANDARD_BUTTON_ROUND,
+    RAISED_ROUND
 ];
