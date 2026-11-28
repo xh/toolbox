@@ -59,7 +59,7 @@
   }
 
   // The row label shows the current value - hide the handle's own label, which overlaps the ticks.
-  .xh-slider .bp6-slider-handle .bp6-slider-label {
+  .xh-slider .xh-slider__handle .xh-slider__label {
     display: none;
   }
 
