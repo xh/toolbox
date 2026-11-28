@@ -98,8 +98,7 @@ export const dateInputPanel = hoistCmp.factory({
                     timePrecision:
                         model.pgTimePrecision === 'none' ? undefined : model.pgTimePrecision,
                     showActionsBar: model.pgActionsBar || undefined,
-                    ...ambientSnippetProps,
-                    width: '100%'
+                    ...ambientSnippetProps
                 }),
                 value: model.playground,
                 children: dateInput({
@@ -108,8 +107,7 @@ export const dateInputPanel = hoistCmp.factory({
                     enableClear: model.pgEnableClear,
                     leftIcon: model.pgLeftIcon ? Icon.calendar() : null,
                     timePrecision: model.pgTimePrecision === 'none' ? null : model.pgTimePrecision,
-                    showActionsBar: model.pgActionsBar,
-                    width: '100%'
+                    showActionsBar: model.pgActionsBar
                 })
             }),
             variants: [
