@@ -315,9 +315,16 @@ export const buttonsPanel = hoistCmp.factory({
                                                 menuItems: [
                                                     {
                                                         text: 'Export to Excel',
-                                                        icon: Icon.fileExcel()
+                                                        icon: Icon.fileExcel(),
+                                                        actionFn: () =>
+                                                            XH.toast({message: 'Exported to Excel'})
                                                     },
-                                                    {text: 'Export to CSV', icon: Icon.fileCsv()}
+                                                    {
+                                                        text: 'Export to CSV',
+                                                        icon: Icon.fileCsv(),
+                                                        actionFn: () =>
+                                                            XH.toast({message: 'Exported to CSV'})
+                                                    }
                                                 ]
                                             })
                                         )
